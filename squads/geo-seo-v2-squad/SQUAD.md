@@ -4,7 +4,7 @@ version: 1.0.0
 description: "Two-agent GEO squad: Atlas owns GEO strategy and blog engineering, Seren owns Reddit and HN presence"
 author: pancake-official
 tags: [seo, content, growth, reddit, community]
-token_intensity: medium
+token_intensity: high
 agents:
   - id: atlas
     description: "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt. Self-merges content and engineering PRs."
