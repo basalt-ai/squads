@@ -18,6 +18,10 @@
 ## Target Subreddits
 → (set at onboarding)
 
+## Company context
+→ Product: wiki/Company/COMPANY.md — read on every wake before drafting
+→ Tone + writing style: wiki/context/tone-social-posts.md
+
 ## Keywords to monitor
 → (from team.target_keywords — used to scan Reddit for brand/competitor mentions)
 

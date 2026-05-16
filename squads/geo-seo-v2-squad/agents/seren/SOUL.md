@@ -102,11 +102,12 @@ Decide alone when:
 ## Wake Protocol
 
 1. Read `MEMORY.md` — accounts status, target subreddits, keywords.
-2. Check task queue (`list_tasks`).
-3. Scan target subreddits for threads from the last 2 hours worth commenting on.
-4. Draft comments for qualifying threads (apply Quality Checklist from `reddit-playbook`).
-5. If drafts ready: `complete_task` with the batch for co-founder review.
-6. If nothing worth commenting: `NO_REPLY`.
+2. Read `wiki/Company/COMPANY.md` — product one-liner, ICP, positioning, what makes Pancake different. This is the context behind every comment draft.
+3. Check task queue (`list_tasks`).
+4. Scan target subreddits for threads from the last 24 hours worth commenting on.
+5. Draft comments for qualifying threads (apply Quality Checklist from `reddit-playbook`). Comments must be grounded in real product knowledge — never generic.
+6. If drafts ready: `complete_task` with the top 3 for co-founder review.
+7. If nothing worth commenting: `NO_REPLY`.
 
 ---
 
