@@ -1,0 +1,439 @@
+#!/usr/bin/env node
+// Zero-dependency validator for Agent Squad bundles.
+//
+// It mirrors exactly what the Pancake marketplace checks when it ingests a
+// bundle — so a bundle that passes here passes ingestion. The production
+// sources it mirrors are:
+//   - apps/marketplace/src/services/manifest.ts            (validateManifest)
+//   - apps/marketplace/src/services/ingest.ts              (verifyBundleFiles)
+//   - apps/pancake-claw/plugins/squad-store/src/deploy.ts  (assertSquadTargets)
+//
+// Usage:
+//   node scripts/validate.mjs              validate every squads/* and template/
+//   node scripts/validate.mjs <bundle-dir> validate one bundle directory
+//
+// Exits non-zero if any bundle has an error. Warnings never fail the run.
+
+import { lstat, readdir, readFile, realpath } from "node:fs/promises";
+import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+
+// ── manifest.json validation ────────────────────────────────────────────────
+// Behaviour-identical port of apps/marketplace/src/services/manifest.ts.
+
+const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+const MODELS = ["haiku", "sonnet", "opus"];
+const HEARTBEATS = ["15m", "30m", "2h", "daily"];
+const SECRET_TYPES = ["string", "api_key", "token"];
+const MAX_DESCRIPTION = 200;
+
+const isObject = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
+const isStringArray = (v) => Array.isArray(v) && v.every((x) => typeof x === "string");
+
+/** Returns every problem found in a parsed manifest (never fail-fast). */
+function validateManifest(input) {
+  const errors = [];
+  const err = (path, message) => errors.push({ path, message });
+
+  if (!isObject(input)) {
+    return [{ path: "", message: "manifest must be a JSON object" }];
+  }
+
+  // name
+  if (typeof input.name !== "string" || input.name.length === 0) {
+    err("name", "required, must be a non-empty string");
+  } else if (!KEBAB.test(input.name)) {
+    err("name", "must be kebab-case (lowercase letters, digits, single hyphens)");
+  } else if (input.name.length > 64) {
+    err("name", "must be 64 characters or fewer");
+  }
+
+  // version
+  if (typeof input.version !== "string" || !SEMVER.test(input.version)) {
+    err("version", 'required, must be a semver string (e.g. "1.0.0")');
+  }
+
+  // description
+  if (typeof input.description !== "string" || input.description.length === 0) {
+    err("description", "required, must be a non-empty string");
+  } else if (input.description.length > MAX_DESCRIPTION) {
+    err("description", `must be ${MAX_DESCRIPTION} characters or fewer`);
+  }
+
+  // author
+  if (typeof input.author !== "string" || input.author.length === 0) {
+    err("author", "required, must be a non-empty string");
+  }
+
+  // license
+  if (input.license !== undefined && typeof input.license !== "string") {
+    err("license", "must be a string when present");
+  }
+
+  // skills (squad-wide)
+  if (input.skills !== undefined && !isStringArray(input.skills)) {
+    err("skills", "must be an array of bundle-relative file paths");
+  }
+
+  // agents
+  if (!Array.isArray(input.agents) || input.agents.length === 0) {
+    err("agents", "required, must be a non-empty array");
+  } else {
+    const seen = new Set();
+    input.agents.forEach((agent, i) => {
+      const at = `agents[${i}]`;
+      if (!isObject(agent)) {
+        err(at, "must be an object");
+        return;
+      }
+      if (typeof agent.id !== "string" || agent.id.length === 0) {
+        err(`${at}.id`, "required, must be a non-empty string");
+      } else if (!KEBAB.test(agent.id)) {
+        err(`${at}.id`, "must be kebab-case");
+      } else if (seen.has(agent.id)) {
+        err(`${at}.id`, `duplicate agent id "${agent.id}"`);
+      } else {
+        seen.add(agent.id);
+      }
+      if (typeof agent.description !== "string" || agent.description.length === 0) {
+        err(`${at}.description`, "required, must be a non-empty string");
+      }
+      if (agent.model !== undefined && !MODELS.includes(agent.model)) {
+        err(`${at}.model`, `must be one of: ${MODELS.join(", ")}`);
+      }
+      if (agent.heartbeat !== undefined && !HEARTBEATS.includes(agent.heartbeat)) {
+        err(`${at}.heartbeat`, `must be one of: ${HEARTBEATS.join(", ")}`);
+      }
+      if (agent.skills !== undefined && !isStringArray(agent.skills)) {
+        err(`${at}.skills`, "must be an array of bundle-relative file paths");
+      }
+    });
+  }
+
+  // required_identities
+  if (input.required_identities !== undefined) {
+    if (!Array.isArray(input.required_identities)) {
+      err("required_identities", "must be an array when present");
+    } else {
+      input.required_identities.forEach((id, i) => {
+        const at = `required_identities[${i}]`;
+        if (!isObject(id)) {
+          err(at, "must be an object");
+          return;
+        }
+        if (typeof id.site !== "string" || id.site.length === 0) {
+          err(`${at}.site`, "required, must be a non-empty string");
+        }
+        if (typeof id.reason !== "string" || id.reason.length === 0) {
+          err(`${at}.reason`, "required, must be a non-empty string");
+        }
+      });
+    }
+  }
+
+  // required_vault_secrets
+  if (input.required_vault_secrets !== undefined) {
+    if (!Array.isArray(input.required_vault_secrets)) {
+      err("required_vault_secrets", "must be an array when present");
+    } else {
+      input.required_vault_secrets.forEach((s, i) => {
+        const at = `required_vault_secrets[${i}]`;
+        if (!isObject(s)) {
+          err(at, "must be an object");
+          return;
+        }
+        if (typeof s.key !== "string" || s.key.length === 0) {
+          err(`${at}.key`, "required, must be a non-empty vault dot-path");
+        }
+        if (typeof s.label !== "string" || s.label.length === 0) {
+          err(`${at}.label`, "required, must be a non-empty string");
+        }
+        if (!SECRET_TYPES.includes(s.type)) {
+          err(`${at}.type`, `must be one of: ${SECRET_TYPES.join(", ")}`);
+        }
+      });
+    }
+  }
+
+  // required_tool_permissions
+  if (
+    input.required_tool_permissions !== undefined &&
+    !isStringArray(input.required_tool_permissions)
+  ) {
+    err("required_tool_permissions", "must be an array of strings when present");
+  }
+
+  // min_pancake_version
+  if (input.min_pancake_version !== undefined && typeof input.min_pancake_version !== "string") {
+    err("min_pancake_version", "must be a string when present");
+  }
+
+  return errors;
+}
+
+// ── referenced-file verification ────────────────────────────────────────────
+// Behaviour-identical port of verifyBundleFiles in ingest.ts: a referenced
+// path must exist, be a regular file, not be a symlink, and resolve inside the
+// bundle root (no `..` escape, no absolute path).
+
+async function checkReferencedFile(bundleDir, bundleRoot, rel) {
+  const candidate = join(bundleDir, rel);
+  let st;
+  try {
+    st = await lstat(candidate);
+  } catch {
+    return "referenced by the manifest but not found";
+  }
+  if (st.isSymbolicLink()) return "must not be a symlink";
+  let resolved;
+  try {
+    resolved = await realpath(candidate);
+  } catch {
+    return "could not be resolved (broken path)";
+  }
+  const relToRoot = relative(bundleRoot, resolved);
+  if (relToRoot === ".." || relToRoot.startsWith(`..${sep}`) || isAbsolute(relToRoot)) {
+    return "resolves outside the bundle root";
+  }
+  if (!st.isFile()) return "must be a regular file (found a directory or special file)";
+  return null;
+}
+
+// ── cron / task targeting ───────────────────────────────────────────────────
+// Behaviour-identical port of assertSquadTargets in deploy.ts: a cron job's
+// sessionTarget and a task template's assigned_to may only name an agent the
+// squad itself declares.
+
+function collectAgentIds(manifest) {
+  const ids = new Set();
+  if (isObject(manifest) && Array.isArray(manifest.agents)) {
+    for (const a of manifest.agents) {
+      if (isObject(a) && typeof a.id === "string" && a.id.length > 0) ids.add(a.id);
+    }
+  }
+  return ids;
+}
+
+async function checkTargeting(bundleDir, agentIds) {
+  const errors = [];
+  const warnings = [];
+  const allowed = agentIds.size ? [...agentIds].join(", ") : "(none declared)";
+
+  const checkFile = async (relPath, arrayKey, idKey, targetKey, label) => {
+    const raw = await readFileOrNull(join(bundleDir, ...relPath.split("/")));
+    if (raw === null) return;
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      errors.push({ path: relPath, message: "is not valid JSON" });
+      return;
+    }
+    const list = isObject(parsed) ? parsed[arrayKey] : undefined;
+    if (!Array.isArray(list)) {
+      warnings.push({
+        path: relPath,
+        message: `has no \`${arrayKey}\` array — nothing will be registered from it`,
+      });
+      return;
+    }
+    list.forEach((item, i) => {
+      const itemId =
+        isObject(item) && typeof item[idKey] === "string" ? item[idKey] : `index ${i}`;
+      const target = isObject(item) ? item[targetKey] : undefined;
+      if (typeof target !== "string" || !agentIds.has(target)) {
+        errors.push({
+          path: relPath,
+          message:
+            `${label} "${itemId}" ${targetKey} ${JSON.stringify(target)} is not a ` +
+            `declared agent id (squad ${label}s may only target: ${allowed})`,
+        });
+      }
+    });
+  };
+
+  await checkFile("crons/jobs.json", "jobs", "id", "sessionTarget", "cron job");
+  await checkFile(
+    "tasks-config/templates.json",
+    "templates",
+    "id",
+    "assigned_to",
+    "task template",
+  );
+  return { errors, warnings };
+}
+
+// ── frontmatter sanity (warnings only) ──────────────────────────────────────
+
+async function checkFrontmatter(bundleDir) {
+  const warnings = [];
+
+  const squadMd = await readFileOrNull(join(bundleDir, "SQUAD.md"));
+  if (squadMd !== null) {
+    const fm = /^---\r?\n([\s\S]*?)\r?\n---/.exec(squadMd);
+    if (!fm) {
+      warnings.push({
+        path: "SQUAD.md",
+        message: "no YAML frontmatter block — the marketplace reads `tags` and `token_intensity` from it",
+      });
+    } else {
+      const block = fm[1];
+      if (!/^tags:\s*\[.*\]\s*$/m.test(block)) {
+        warnings.push({
+          path: "SQUAD.md",
+          message: "frontmatter has no `tags: [...]` line — the catalog card will show no tags",
+        });
+      }
+      if (!/^token_intensity:\s*(low|medium|high)\s*$/m.test(block)) {
+        warnings.push({
+          path: "SQUAD.md",
+          message: 'frontmatter has no `token_intensity: low|medium|high` — marketplace defaults it to "medium"',
+        });
+      }
+    }
+  }
+
+  const onboardMd = await readFileOrNull(join(bundleDir, "ONBOARD.md"));
+  if (onboardMd !== null && !/^---\r?\n[\s\S]*?\r?\n---/.test(onboardMd)) {
+    warnings.push({
+      path: "ONBOARD.md",
+      message: "no YAML frontmatter block — expected `required_tools`, `required_identities`, `estimated_setup_minutes`",
+    });
+  }
+  return warnings;
+}
+
+// ── per-bundle orchestration ────────────────────────────────────────────────
+
+async function readFileOrNull(path) {
+  try {
+    return await readFile(path, "utf8");
+  } catch {
+    return null;
+  }
+}
+
+async function validateBundle(bundleDir) {
+  const label = basename(bundleDir);
+  const errors = [];
+  const warnings = [];
+
+  // 1. manifest.json
+  let manifest;
+  const manifestRaw = await readFileOrNull(join(bundleDir, "manifest.json"));
+  if (manifestRaw === null) {
+    errors.push({ path: "manifest.json", message: "not found at the bundle root" });
+  } else {
+    try {
+      manifest = JSON.parse(manifestRaw);
+    } catch {
+      errors.push({ path: "manifest.json", message: "is not valid JSON" });
+    }
+    if (manifest !== undefined) {
+      for (const e of validateManifest(manifest)) errors.push(e);
+    }
+  }
+
+  // 2. referenced files exist, are regular files, no symlink/traversal.
+  const bundleRoot = await realpath(bundleDir).catch(() => bundleDir);
+  const refs = ["SQUAD.md", "ONBOARD.md"];
+  if (isObject(manifest)) {
+    if (isStringArray(manifest.skills)) refs.push(...manifest.skills);
+    if (Array.isArray(manifest.agents)) {
+      for (const a of manifest.agents) {
+        if (isObject(a) && typeof a.id === "string" && a.id.length > 0) {
+          refs.push(`agents/${a.id}/IDENTITY.md`, `agents/${a.id}/SOUL.md`);
+          if (isStringArray(a.skills)) refs.push(...a.skills);
+        }
+      }
+    }
+  }
+  for (const rel of [...new Set(refs)]) {
+    const problem = await checkReferencedFile(bundleDir, bundleRoot, rel);
+    if (problem) errors.push({ path: rel, message: problem });
+  }
+
+  // 3. cron / task targeting
+  const targeting = await checkTargeting(bundleDir, collectAgentIds(manifest));
+  errors.push(...targeting.errors);
+  warnings.push(...targeting.warnings);
+
+  // 4. frontmatter sanity
+  warnings.push(...(await checkFrontmatter(bundleDir)));
+
+  return { label, errors, warnings };
+}
+
+async function discoverBundles() {
+  const bundles = [];
+
+  const squadsDir = join(REPO_ROOT, "squads");
+  let squadEntries = null;
+  try {
+    squadEntries = await readdir(squadsDir, { withFileTypes: true });
+  } catch {
+    squadEntries = null;
+  }
+  if (squadEntries === null) {
+    console.log("note: no squads/ directory found — validating template/ only.\n");
+  } else {
+    for (const d of squadEntries) {
+      if (d.isDirectory()) bundles.push(join(squadsDir, d.name));
+    }
+  }
+
+  const templateDir = join(REPO_ROOT, "template");
+  try {
+    if ((await lstat(templateDir)).isDirectory()) bundles.push(templateDir);
+  } catch {
+    /* template/ is optional for discovery */
+  }
+
+  return bundles.sort();
+}
+
+async function main() {
+  const arg = process.argv[2];
+  const bundles = arg
+    ? [resolve(process.cwd(), arg)]
+    : await discoverBundles();
+
+  if (bundles.length === 0) {
+    console.log("No bundles to validate (no squads/* and no template/).");
+    process.exit(0);
+  }
+
+  console.log("Validating Agent Squad bundles…\n");
+  let invalid = 0;
+  for (const dir of bundles) {
+    const { label, errors, warnings } = await validateBundle(dir);
+    if (errors.length === 0) {
+      console.log(`✔ ${label}`);
+    } else {
+      invalid++;
+      console.log(`✖ ${label}`);
+      for (const e of errors) {
+        console.log(`    ${e.path ? `${e.path}  ` : ""}${e.message}`);
+      }
+    }
+    for (const w of warnings) {
+      console.log(`    ⚠ ${w.path ? `${w.path}  ` : ""}${w.message}`);
+    }
+  }
+
+  console.log("");
+  if (invalid > 0) {
+    console.log(`${invalid} of ${bundles.length} bundle(s) invalid.`);
+    process.exit(1);
+  }
+  console.log(`${bundles.length} bundle(s) checked — all valid.`);
+  process.exit(0);
+}
+
+main().catch((e) => {
+  console.error("validator crashed:", e);
+  process.exit(2);
+});

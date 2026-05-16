@@ -1,0 +1,19 @@
+{
+  "templates": [
+    {
+      "id": "example-manual-task",
+      "title": "Example manual task: {topic}",
+      "description": "TODO: the brief for this task. {topic} is a placeholder the co-founder fills in when dispatching. A template with no `recurrence` is a manual template — the co-founder dispatches it on demand.",
+      "assigned_to": "example-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "example-recurring-task",
+      "title": "Example recurring task",
+      "description": "TODO: the brief for this task. A template with `recurrence` (daily or weekly) and an optional `time` (\"HH:MM TZ\") is synthesized into a native cron at install — this one runs weekly at 09:00 PT.",
+      "assigned_to": "example-agent",
+      "recurrence": "weekly",
+      "time": "09:00 PT"
+    }
+  ]
+}

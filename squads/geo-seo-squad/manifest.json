@@ -1,0 +1,37 @@
+{
+  "name": "geo-seo-squad",
+  "version": "1.0.0",
+  "description": "GEO/LLM SEO squad — keeps your product visible in AI engine citations.",
+  "author": "pancake-official",
+  "license": "MIT",
+  "skills": ["skills/geo-llmseo-playbook.md"],
+  "agents": [
+    {
+      "id": "atlas",
+      "description": "GEO/SEO specialist — audits AI-engine citations and writes optimized blog posts.",
+      "model": "sonnet",
+      "heartbeat": "daily",
+      "skills": ["agents/atlas/skills/advanced-seo.md"]
+    }
+  ],
+  "required_identities": [
+    {
+      "site": "github.com",
+      "reason": "Atlas pushes drafted blog posts and llms.txt / schema changes to your content repo."
+    }
+  ],
+  "required_vault_secrets": [
+    {
+      "key": "team.target_domain",
+      "label": "Your product's domain (e.g. getpancake.ai)",
+      "type": "string"
+    },
+    {
+      "key": "team.target_keywords",
+      "label": "Top 5 keywords for AI engine citation (comma-separated)",
+      "type": "string"
+    }
+  ],
+  "required_tool_permissions": ["web_search", "web_fetch", "message", "browser_task"],
+  "min_pancake_version": "1.0.0"
+}

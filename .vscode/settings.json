@@ -1,0 +1,8 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["squads/**/manifest.json", "template/manifest.json"],
+      "url": "./manifest.schema.json"
+    }
+  ]
+}

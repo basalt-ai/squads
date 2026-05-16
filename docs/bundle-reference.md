@@ -1,0 +1,266 @@
+# Bundle reference — the Agent Squad contract
+
+This is the exact file contract for an Agent Squad bundle. It is the source of truth that
+[`manifest.schema.json`](../manifest.schema.json), [`scripts/validate.mjs`](../scripts/validate.mjs),
+the [`template/`](../template/) skeleton, and the marketplace's own ingest all agree on.
+
+If you haven't yet, read [`how-squads-work.md`](./how-squads-work.md) first for the concepts.
+The running example throughout is the official [`squads/geo-seo-squad/`](../squads/geo-seo-squad/)
+bundle.
+
+## What a bundle is
+
+A **bundle** is the unit the marketplace ingests — one squad, complete and self-contained.
+
+- In **this repo**, a bundle is a `squads/<squad-name>/` directory.
+- In a **self-hosted third-party repo**, the bundle is the **repo root itself**.
+
+The file contract below is identical in both cases. Only the location differs.
+
+## Directory layout
+
+Required (✔) and optional (·) members of a bundle:
+
+```
+manifest.json                  ✔  machine-readable contract (validated on ingest)
+SQUAD.md                       ✔  marketplace catalog card — frontmatter + Markdown body
+ONBOARD.md                     ✔  the onboarding script the co-founder runs after deploy
+MEMORY.md                      ·  squad-wide seed memory (used by an agent lacking its own)
+skills/<name>.md               ·  squad-wide skills — referenced by manifest.skills[]
+agents/<agent-id>/
+  IDENTITY.md                  ✔  per agent — name, role, scope
+  SOUL.md                      ✔  per agent — personality, principles, boundaries
+  MEMORY.md                    ·  per agent — seed memory (overrides the squad-wide one)
+  skills/<name>.md             ·  agent-specific skills — referenced by agents[].skills[]
+crons/jobs.json                ·  native OpenClaw cron jobs
+tasks-config/templates.json    ·  task templates the co-founder can dispatch
+```
+
+On ingest the marketplace **verifies every file the manifest references** — it must exist,
+be a regular file, not be a symlink, and resolve **inside the bundle root** (no `..`
+escape, no absolute path). The files always checked are `SQUAD.md`, `ONBOARD.md`, every
+`skills[]` path, and per agent `agents/<id>/IDENTITY.md`, `agents/<id>/SOUL.md`, and every
+`agents[].skills[]` path. `scripts/validate.mjs` performs the identical check.
+
+## `manifest.json` — the machine-readable contract
+
+The only file the marketplace fully parses and validates. JSON, no comments.
+
+**Required:** `name`, `version`, `description`, `author`, `agents`.
+
+| Field | Type | Req | Rules |
+|---|---|---|---|
+| `name` | string | ✔ | kebab-case `^[a-z0-9]+(?:-[a-z0-9]+)*$`, ≤ 64 chars. Globally unique — the marketplace catalog key. |
+| `version` | string | ✔ | semver `^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$` |
+| `description` | string | ✔ | non-empty, ≤ 200 chars |
+| `author` | string | ✔ | non-empty. Official squads: `pancake-official`. External: a GitHub user/org. |
+| `license` | string | · | any string when present |
+| `skills` | string[] | · | bundle-relative paths to squad-wide skill files (e.g. `skills/playbook.md`) |
+| `agents` | object[] | ✔ | non-empty array (see below) |
+| `required_identities` | object[] | · | each `{ site, reason }` — both non-empty. `site` is an eTLD+1, e.g. `github.com`. |
+| `required_vault_secrets` | object[] | · | each `{ key, label, type }` — `key`/`label` non-empty; `type` ∈ `string` \| `api_key` \| `token` |
+| `required_tool_permissions` | string[] | · | informational only — not enforced |
+| `min_pancake_version` | string | · | informational only |
+
+Each entry in **`agents[]`**:
+
+| Field | Type | Req | Rules |
+|---|---|---|---|
+| `id` | string | ✔ | kebab-case, **unique within the squad**. Becomes the OpenClaw sub-agent id. |
+| `description` | string | ✔ | non-empty |
+| `model` | string | · | `haiku` \| `sonnet` \| `opus` (default: pod default, `sonnet`) |
+| `heartbeat` | string | · | `15m` \| `30m` \| `2h` \| `daily` (default: pod default, `2h`) |
+| `skills` | string[] | · | bundle-relative paths to agent-specific skill files |
+
+Validation returns **all** problems found, not just the first — so a bad manifest can be
+fixed in one pass. The authoritative validator in production is
+`apps/marketplace/src/services/manifest.ts`; `manifest.schema.json` in this repo is its
+JSON Schema mirror, and `scripts/validate.mjs` is a behaviour-identical port. A bundle that
+passes `validate.mjs` passes marketplace ingestion.
+
+See [`squads/geo-seo-squad/manifest.json`](../squads/geo-seo-squad/manifest.json) for a
+complete real example.
+
+## `SQUAD.md` — the marketplace catalog card
+
+Markdown with a YAML frontmatter block, then a body.
+
+**Frontmatter** carries `name`, `version`, `description`, `author`, `tags: [a, b, c]`,
+`token_intensity: low|medium|high`, `agents: [{id, description}]`, and an optional
+`preview_image: <url>`.
+
+> **What the marketplace actually reads:** ingest parses only **`tags`** and
+> **`token_intensity`** from this frontmatter — everything else (name, version, …) comes
+> from `manifest.json`, so the rest of the frontmatter is catalog/display duplication. Keep
+> it consistent with `manifest.json` anyway. `token_intensity` defaults to `medium` if
+> absent; `tags` defaults to empty. Keep the `tags` and `token_intensity` lines plain — no
+> inline `#` comments, or the parser will miss them.
+
+The **body** renders as the squad's store detail page. The recommended sections: *What this
+squad does*, *What you'll need*, *What you get*, *How it works*.
+
+## `ONBOARD.md` — the onboarding script
+
+Markdown with frontmatter, then prose.
+
+**Frontmatter:** `required_tools: [...]`, `required_identities: [...]`,
+`estimated_setup_minutes: <n>`.
+
+**The body is a script the co-founder agent executes** after the mechanical deploy — it is
+*instructions, not documentation*. Write it in the imperative, addressed to the co-founder.
+It tells the co-founder:
+
+- what to ask the user;
+- which secrets to collect — always via `vault_request`, never in chat;
+- which identities to connect — via `browser_identity_add`, reusing an existing pod
+  identity when one matches;
+- where to save the answers — usually the agent's `MEMORY.md`;
+- what first task to create and dispatch.
+
+Keep the script short enough to complete within `estimated_setup_minutes`. A step may be
+tagged `dispatch: later` to defer its first task to the agent's heartbeat; otherwise the
+first task is dispatched immediately.
+
+## `IDENTITY.md` and `SOUL.md` — per agent
+
+Both are deployed verbatim into the agent's workspace at install. Together they define the
+agent.
+
+**`IDENTITY.md` — who the agent is.** Recommended sections (mirror
+[`agents/atlas/IDENTITY.md`](../squads/geo-seo-squad/agents/atlas/IDENTITY.md)):
+
+- A header block: **Name**, **Role**, **Scope**, **Emoji**, **Created** / **Created by**.
+- **What I Do** — the concrete, recurring responsibilities.
+- **What I Don't Do** — the edges of the lane; what it routes back to the co-founder.
+- **KPI / Goal** — the single outcome the agent exists to move.
+- **How To Reach Me** — the reporting line (the user never talks to it directly).
+- **Voice / Personality** — a pointer to `SOUL.md`.
+
+**`SOUL.md` — how the agent behaves.** Recommended sections (mirror
+[`agents/atlas/SOUL.md`](../squads/geo-seo-squad/agents/atlas/SOUL.md)):
+
+- An opening paragraph: a focused contributor reporting to the co-founder, not a generalist.
+- **Scope** — what it owns and explicitly does not own.
+- **Personality** — concrete behavioural traits.
+- **Operating Principles** — how it works day to day.
+- **Escalation Rules** — when to escalate vs decide alone.
+- **Boundaries (Inviolable)** — the *Never* / *Always* hard limits.
+- **Wake Protocol** — what it does at the start of every session.
+- **What Success Looks Like** — the bar.
+
+## `MEMORY.md` — seed memory
+
+A thin **index of pointers**, not a notebook. It is seeded into the agent's workspace at
+install and gives the agent its bearings: where its identity lives, its reporting line,
+which squad and skills it has, which vault keys it uses, where it files its outputs.
+
+- Keep every entry a one-line pointer. Detailed findings belong in the shared wiki.
+- A bundle may ship a squad-wide `MEMORY.md` (used by any agent without its own) and/or a
+  per-agent `agents/<id>/MEMORY.md`. **The agent-specific file overrides the squad-wide
+  one.** If neither exists, the pod's own memory template is used.
+
+See [`squads/geo-seo-squad/MEMORY.md`](../squads/geo-seo-squad/MEMORY.md).
+
+## Skills
+
+A skill is a procedure an agent can load — a method written as steps, not reference docs.
+Skill files are in **SKILL.md format**: a YAML frontmatter block with `name` and
+`description`, then a Markdown body.
+
+```markdown
+---
+name: my-skill
+description: One or two sentences on what the skill does and when to load it.
+---
+
+# My skill
+
+...the procedure...
+```
+
+Two levels:
+
+- **Squad-wide skills** — listed in the top-level `manifest.skills[]`, files under
+  `skills/<name>.md`. Copied into **every** agent of the squad at install.
+- **Agent-specific skills** — listed in an agent's `agents[].skills[]`, files under
+  `agents/<id>/skills/<name>.md`. Deployed only into that one agent.
+
+**Skill isolation:** at install, every referenced skill is deployed into each agent's *own*
+folder, `workspace/agents/<id>/skills/<name>/SKILL.md`, and the agent's skill allowlist is
+`["<agent-id>", "shared"]`. Squad agents never inherit the main co-founder's skills, and a
+squad-wide skill is *duplicated* into each agent — not shared by reference.
+
+## `crons/jobs.json` — native cron jobs
+
+Optional. Native OpenClaw cron jobs registered at install.
+
+```json
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "daily-citation-audit",
+      "name": "Daily GEO citation audit",
+      "enabled": true,
+      "schedule": { "kind": "cron", "expr": "0 18 * * *", "tz": "America/Los_Angeles" },
+      "sessionTarget": "atlas",
+      "payload": { "kind": "systemEvent", "text": "<instructions for the agent>" },
+      "failureAlert": false,
+      "state": {}
+    }
+  ]
+}
+```
+
+- **`sessionTarget` must be an agent id declared in `manifest.agents[]`.** Squad crons may
+  only target the squad's own agents — this is the *squad-only targeting* invariant, and it
+  is enforced at install (and by `validate.mjs`).
+- At install, job ids are namespaced `<squad-name>__<id>` so two squads cannot collide.
+- A cron run that intentionally produces no output must instruct the agent to reply with
+  the single literal token **`NO_REPLY`** — OpenClaw's silent-turn sentinel. Never write
+  "do not respond"; that trips a false-positive failure alert.
+
+## `tasks-config/templates.json` — task templates
+
+Optional. Task templates the co-founder can dispatch.
+
+```json
+{
+  "templates": [
+    {
+      "id": "blog-post",
+      "title": "Write blog post: {topic}",
+      "description": "<brief for the agent>",
+      "assigned_to": "atlas",
+      "trigger": "manual"
+    }
+  ]
+}
+```
+
+- **`assigned_to` must be an agent id in `manifest.agents[]`** — the same squad-only
+  targeting rule as crons.
+- A template with no `recurrence` is a **manual** template — the co-founder dispatches it
+  on demand. `{placeholders}` in the `title`/`description` are filled at dispatch time.
+- A template with **`recurrence`** (`daily` | `weekly`) and an optional **`time`**
+  (`"HH:MM TZ"`, e.g. `"09:00 PT"`) is synthesized into a native cron at install.
+
+## Naming conventions
+
+- **Squad name** — kebab-case, globally unique, ≤ 64 chars.
+- **Agent id** — kebab-case, unique within the squad. Becomes the OpenClaw sub-agent id.
+- **Skill files** — kebab-case `<name>.md`, in SKILL.md format.
+- **`version`** — semver. Bump it on every release; the marketplace keeps version history.
+
+## Validating
+
+Run the validator before publishing — it mirrors marketplace ingestion exactly:
+
+```sh
+node scripts/validate.mjs                      # every squads/* bundle and template/
+node scripts/validate.mjs squads/geo-seo-squad # one bundle
+```
+
+It exits non-zero on any error; warnings (e.g. a missing `token_intensity`) never fail the
+run. Next: [`authoring-a-squad.md`](./authoring-a-squad.md) and
+[`publishing.md`](./publishing.md).

@@ -1,0 +1,32 @@
+{
+  "name": "example-squad",
+  "version": "0.1.0",
+  "description": "TODO: one-line description of what this squad does — shown on the marketplace catalog card (max 200 characters).",
+  "author": "pancake-official",
+  "license": "MIT",
+  "skills": ["skills/example-playbook.md"],
+  "agents": [
+    {
+      "id": "example-agent",
+      "description": "TODO: one-line description of this agent's single, focused role.",
+      "model": "sonnet",
+      "heartbeat": "daily",
+      "skills": ["agents/example-agent/skills/example-agent-skill.md"]
+    }
+  ],
+  "required_identities": [
+    {
+      "site": "github.com",
+      "reason": "TODO: explain why the agent needs a connected github.com identity — or delete this entry if it needs none."
+    }
+  ],
+  "required_vault_secrets": [
+    {
+      "key": "team.example_setting",
+      "label": "TODO: human-readable prompt shown to the user during onboarding",
+      "type": "string"
+    }
+  ],
+  "required_tool_permissions": ["web_search", "web_fetch", "message"],
+  "min_pancake_version": "1.0.0"
+}
