@@ -28,7 +28,7 @@ and where the canonical answers live. Keep it short:
 - Category: <category>
 ```
 
-When you change it, open it as a draft PR — never edit the live file directly.
+When you change it, open a PR and self-merge (squash merge) — never edit the live file directly.
 
 ## JSON-LD structured data
 
