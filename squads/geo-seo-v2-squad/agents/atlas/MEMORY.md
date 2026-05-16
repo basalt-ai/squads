@@ -12,8 +12,8 @@
 
 ## Squad
 → geo-seo-v2-squad
-→ Squad-wide skill: geo-llmseo-playbook
-→ My skill: advanced-seo
+→ Squad-wide skill: geo-llmseo-playbook — load every session before acting
+→ My skills: advanced-seo, blog-writing-guide (load before writing any blog post)
 
 ## Target
 → Domain: (set at onboarding)
@@ -26,6 +26,9 @@
 
 ## GitHub
 → Content repo: (set at onboarding — if blank, drafts go to wiki only)
+
+## Daily digest channel
+→ (set at onboarding — Slack channel name + ID for the daily citation delta)
 
 ## Where I file
 → Citation audits: wiki/Knowledge/GEO/Audits/YYYY-MM-DD.md

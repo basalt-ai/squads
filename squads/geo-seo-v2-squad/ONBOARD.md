@@ -24,6 +24,8 @@ Tell the user both agents are being set up and you need a few things to get them
 
 **4 — Analytics (optional).** Ask if they use an analytics tool (GA4, Plausible, etc.). Write the answer to Atlas's `MEMORY.md` under `## Analytics`.
 
+**4b — Slack channel for daily digest.** Ask which Slack channel Atlas should post the daily digest to (e.g. `#geo-seo`, `#growth`, or DM the co-founder). Ask them to send a message in that channel mentioning Atlas — the channel ID will be captured automatically. Write the channel name + ID to Atlas's `MEMORY.md` under `## Daily digest channel`. If no channel preference, default to DMing the co-founder.
+
 **5 — Reddit accounts.** Tell the user Seren needs 10-20 aged Reddit accounts from https://redaccs.com (~$1-3 each, buy ones with existing karma). They should send the credentials as a JSON array like `[{"username":"acct_01","password":"delivered_pw"}]`. Use `vault_request` at `team.reddit_accounts` with `type: json`. Remind them: this is the only human step — Seren sets up the PRAW API apps automatically via browser automation on old.reddit.com.
 
 **6 — Target subreddits.** Tell the user Seren can research the best subreddits herself, but the result will be significantly higher quality if a human does it — because finding the right subreddit requires lurking, feeling the vibe, and judging whether the community is the right ICP fit, which an agent can approximate but not replicate. Give these guidelines for doing it manually:

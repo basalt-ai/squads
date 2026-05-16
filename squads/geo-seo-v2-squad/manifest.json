@@ -10,11 +10,12 @@
   "agents": [
     {
       "id": "atlas",
-      "description": "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt engineering, draft PRs.",
+      "description": "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt engineering. Self-merges blog and technical GEO PRs.",
       "model": "sonnet",
       "heartbeat": "daily",
       "skills": [
-        "agents/atlas/skills/advanced-seo.md"
+        "agents/atlas/skills/advanced-seo.md",
+        "agents/atlas/skills/blog-writing-guide.md"
       ]
     },
     {
