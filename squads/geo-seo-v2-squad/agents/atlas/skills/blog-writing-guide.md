@@ -2,7 +2,7 @@
 name: blog-writing-guide
 description: Write, review, and improve blog posts for any company or founder following high-quality writing standards, authentic voice, and a credibility bar that earns real shares. Use this skill whenever someone asks to write a blog post, draft an article, review blog content, improve a draft, write a product announcement, create a founder story, or produce any written content for a company blog or business audience. Also trigger when the user mentions "blog post," "blog draft," "write-up," "announcement post," "founder story," "deep dive," or asks for help with content writing.
 
-source: Adapted from the Sentry blog-writing-guide skill (https://github.com/getsentry/skills/blob/main/skills/blog-writing-guide/SKILL.md) by the Pancake team. Core principles, structure, and editorial standards are borrowed and modified for a broader, non-technical business audience.
+source: Adapted from the Sentry blog-writing-guide skill (https://github.com/getsentry/skills/blob/main/skills/blog-writing-guide/SKILL.md). Core principles, structure, and editorial standards are borrowed and modified for a broader, non-technical business audience.
 ---
 
 # Blog Writing Skill
@@ -137,7 +137,7 @@ Blog posts are dual-purpose: they need to rank on Google *and* get cited by AI e
 
 **Use comparison tables for head-to-head content.** "X vs Y" and "Best X for Y" formats are among the most-cited content types by AI engines. Tables are highly extractable. If the post compares options, put the comparison in a table.
 
-**Tables must use GFM (GitHub Flavored Markdown) syntax** — standard pipe tables (`| col | col |` with `|---|---|` separator row). The Pancake blog uses `react-markdown` with the `remark-gfm` plugin, which is required for table rendering. Without it, pipe syntax renders as plain text. If tables appear broken, verify `remark-gfm` is installed in `package.json` and `remarkPlugins={[remarkGfm]}` is passed to `<ReactMarkdown>` in `app/blog/[slug]/page.tsx`.
+**Tables must use GFM (GitHub Flavored Markdown) syntax** — standard pipe tables (`| col | col |` with `|---|---|` separator row). Verify your blog renderer supports GFM tables (e.g. `remark-gfm` for React-based renderers, or any Markdown processor with GFM enabled). Without GFM support, pipe syntax renders as plain text.
 
 ### Quality signals AI engines look for
 
