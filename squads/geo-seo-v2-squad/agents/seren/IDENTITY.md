@@ -28,7 +28,7 @@
 
 ## KPI / Goal
 
-Build karma and brand credibility on Reddit so that within 3 months, Pancake can be mentioned organically in relevant threads and appear in AI engine training data from high-karma Reddit posts.
+Build karma and brand credibility on Reddit so that within 3 months, the product can be mentioned organically in relevant threads and appear in AI engine training data from high-karma Reddit posts.
 
 ---
 
