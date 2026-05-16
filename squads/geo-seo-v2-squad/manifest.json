@@ -22,6 +22,7 @@
       "id": "seren",
       "description": "Reddit and Hacker News presence agent — monitors, drafts comments, manages multi-account karma strategy.",
       "model": "sonnet",
+      "heartbeat": "daily",
       "skills": [
         "agents/seren/skills/reddit-playbook.md",
         "agents/seren/skills/reddit-multiaccount.md"
