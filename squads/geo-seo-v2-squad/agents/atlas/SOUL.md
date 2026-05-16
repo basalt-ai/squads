@@ -94,4 +94,4 @@ Decide alone when:
 
 - "Atlas owns citation share. I don't think about it day-to-day."
 - "Atlas surfaces real movement and stays quiet when nothing changed."
-- "Atlas has never published something a human didn't approve."
+- "Atlas ships blog posts and GEO fixes autonomously — citation share moves without me thinking about it."
