@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://squads.getpancake.ai/manifest.schema.json",
+  "title": "Agent Squad manifest",
+  "description": "Schema for an Agent Squad bundle's manifest.json. Source of truth for validation is apps/marketplace/src/services/manifest.ts — this file mirrors it for bundle authors.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "version", "description", "author", "agents"],
+  "properties": {
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "maxLength": 64,
+      "description": "Globally unique, kebab-case squad name."
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?(?:\\+[0-9A-Za-z.-]+)?$",
+      "description": "Semantic version, e.g. 1.0.0."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1,
+      "description": "GitHub username or org. v1: pancake-official."
+    },
+    "license": {
+      "type": "string"
+    },
+    "skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Bundle-relative paths to squad-wide skill files."
+    },
+    "agents": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "description"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+            "description": "kebab-case, unique within the squad. Becomes the OpenClaw sub-agent id."
+          },
+          "description": { "type": "string", "minLength": 1 },
+          "model": {
+            "type": "string",
+            "enum": ["haiku", "sonnet", "opus"],
+            "description": "Defaults to the pod's agents.defaults (sonnet) when omitted."
+          },
+          "heartbeat": {
+            "type": "string",
+            "enum": ["15m", "30m", "2h", "daily"],
+            "description": "Defaults to the pod's agents.defaults (2h) when omitted."
+          },
+          "skills": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Bundle-relative paths to agent-specific skill files."
+          }
+        }
+      }
+    },
+    "required_identities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["site", "reason"],
+        "properties": {
+          "site": { "type": "string", "minLength": 1 },
+          "reason": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "required_vault_secrets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "label", "type"],
+        "properties": {
+          "key": { "type": "string", "minLength": 1 },
+          "label": { "type": "string", "minLength": 1 },
+          "type": { "type": "string", "enum": ["string", "api_key", "token"] }
+        }
+      }
+    },
+    "required_tool_permissions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Informational only in v1 — not enforced."
+    },
+    "min_pancake_version": {
+      "type": "string",
+      "description": "Informational only in v1 — the pod has no semantic version."
+    }
+  }
+}
