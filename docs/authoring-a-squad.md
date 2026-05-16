@@ -87,6 +87,12 @@ The contract tells you what is *valid*. This tells you what is *good*.
   make an agent do two unrelated things, that's two agents (or the second thing belongs to
   the co-founder). Atlas does GEO/SEO and nothing else.
 
+- **Prefer fewer agents.** Sub-agents report to the co-founder, never to each other — they
+  don't share context. If agent B needs data agent A produced, the co-founder has to relay
+  it, which is slow and lossy. Only split work across two agents when it is genuinely
+  distinct — different cadence, different skills, different identities, or work that would
+  bloat a single agent's `MEMORY.md` and lane. When in doubt, one agent.
+
 - **`ONBOARD.md` is a runnable script, not a README.** Write it in the imperative, to the
   co-founder: "Ask the user X. Store it with `vault_request` at key Y. Write it to the
   agent's `MEMORY.md`." It must finish within `estimated_setup_minutes` — if it can't,
@@ -95,6 +101,15 @@ The contract tells you what is *valid*. This tells you what is *good*.
 - **Collect secrets only via `vault_request`.** Never have the co-founder ask for a secret
   in plain chat. Route even non-sensitive setup values through the vault when they're
   declared in `required_vault_secrets`.
+
+- **Heartbeat first, cron only when timing matters.** A heartbeat (`15m` | `30m` | `2h` |
+  `daily`) is a state-driven trigger — the agent wakes on its pulse and decides what to do
+  by consulting its identity, memory, and inbox. A cron is clock-driven: it fires at an
+  exact time with a hard-coded `payload.text` that overrides that judgment with a specific
+  instruction. Reach for a cron only when the time itself matters to someone outside the
+  agent — an 18:00 PT end-of-day report, a Monday-morning digest. If you'd be happy with
+  the work happening anytime in a window, raise the heartbeat. If a cron's `payload.text`
+  just restates `IDENTITY.md`, delete it.
 
 - **Crons stay quiet unless something changed.** A scheduled run that has nothing to report
   must reply with the single literal token `NO_REPLY`. A chatty cron that posts "nothing
