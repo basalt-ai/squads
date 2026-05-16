@@ -18,11 +18,11 @@
       "id": "reddit-monitoring",
       "name": "Reddit monitoring — Seren",
       "enabled": true,
-      "schedule": { "kind": "cron", "expr": "0 */2 * * *", "tz": "America/Los_Angeles" },
+      "schedule": { "kind": "cron", "expr": "0 17 * * *", "tz": "America/Los_Angeles" },
       "sessionTarget": "seren",
       "payload": {
         "kind": "systemEvent",
-        "text": "Run the Reddit monitoring cycle. Load the `reddit-playbook` skill and follow it end to end: scan target subreddits for qualifying threads from the last 2 hours, draft comments for any that pass the quality checklist, assign accounts per the rotation rules, and complete_task with the batch of drafts for co-founder review. If no qualifying threads are found, reply with the single literal token `NO_REPLY` and nothing else."
+        "text": "Run the daily Reddit monitoring cycle. Load the `reddit-playbook` skill and follow it end to end: scan target subreddits for qualifying threads from the last 24 hours, draft comments for any that pass the quality checklist, select the top 3 by thread quality and relevance (never more than 3), assign accounts per the rotation rules, and complete_task with the batch for co-founder review. If no qualifying threads are found, reply with the single literal token `NO_REPLY` and nothing else."
       },
       "failureAlert": false,
       "state": {}

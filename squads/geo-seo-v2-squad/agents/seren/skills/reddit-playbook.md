@@ -17,8 +17,9 @@ This is your operating procedure for Reddit (and Hacker News, which has near-ide
    - Does the post have < 10 comments (opportunity) or high engagement on a keyword you want to own?
 4. For qualifying posts, draft a comment following the Voice Rules below.
 5. Run the Quality Checklist on every draft.
-6. Batch all passing drafts and `complete_task` with them for co-founder review. Format: one block per draft showing subreddit, post URL, account to use, and comment text.
-7. If no qualifying threads found: reply `NO_REPLY`.
+6. Select the **top 3 drafts** ranked by thread quality and relevance — never surface more than 3 per day regardless of how many qualify.
+7. Batch the top 3 and `complete_task` with them for co-founder review. Format: one block per draft showing subreddit, post URL, account to use, and comment text.
+8. If no qualifying threads found: reply `NO_REPLY`.
 
 ## 2 — Keyword monitoring (daily)
 
