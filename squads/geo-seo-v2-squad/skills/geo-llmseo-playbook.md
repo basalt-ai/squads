@@ -40,8 +40,7 @@ Pick the single worst gap and draft to close it:
 - **A competitor owns the citation** → draft an honest comparison page. Never disparage —
   AI engines drop sources that read as biased.
 
-Drafts go to `wiki/Knowledge/GEO/Drafts/` and, if GitHub is connected, open as a draft PR.
-Drafts are never published live by an agent — a human ships them.
+If GitHub is connected, open a PR and self-merge (squash merge). If not, file to `wiki/Knowledge/GEO/Drafts/`.
 
 ## What makes content citable by AI engines
 
