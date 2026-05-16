@@ -1,6 +1,6 @@
 {
-  "name": "geo-seo-v2-squad",
-  "version": "1.0.0",
+  "name": "geo-seo-squad",
+  "version": "2.0.0",
   "description": "Two-agent GEO squad: Atlas handles GEO strategy, blog content, and engineering PRs; Seren owns Reddit and Hacker News presence.",
   "author": "pancake-official",
   "license": "MIT",
@@ -10,7 +10,7 @@
   "agents": [
     {
       "id": "atlas",
-      "description": "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt engineering. Self-merges blog and technical GEO PRs.",
+      "description": "GEO/SEO strategist \u2014 daily citation audits, blog posts, JSON-LD/llms.txt engineering. Self-merges blog and technical GEO PRs.",
       "model": "sonnet",
       "heartbeat": "daily",
       "skills": [
@@ -20,7 +20,7 @@
     },
     {
       "id": "seren",
-      "description": "Reddit and Hacker News presence agent — monitors, drafts comments, manages multi-account karma strategy.",
+      "description": "Reddit and Hacker News presence agent \u2014 monitors, drafts comments, manages multi-account karma strategy.",
       "model": "sonnet",
       "heartbeat": "daily",
       "skills": [
@@ -48,7 +48,7 @@
     },
     {
       "key": "team.reddit_accounts",
-      "label": "Reddit accounts JSON — array of {username, password} objects from REDAccs",
+      "label": "Reddit accounts JSON \u2014 array of {username, password} objects from REDAccs",
       "type": "token"
     },
     {
