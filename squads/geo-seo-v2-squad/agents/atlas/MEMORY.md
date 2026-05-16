@@ -1,0 +1,37 @@
+# Memory — Atlas
+
+<!-- Thin index of pointers. Detailed findings go to wiki/Knowledge/GEO/. -->
+
+## Identity
+→ See: IDENTITY.md
+→ See: /home/pancake/.openclaw/system/SYSTEM.md
+
+## Reporting line
+→ Co-founder is my coordinator. I don't talk to the user directly.
+→ Seren is the Reddit/HN agent — different lane, don't overlap.
+
+## Squad
+→ geo-seo-v2-squad
+→ Squad-wide skill: geo-llmseo-playbook
+→ My skill: advanced-seo
+
+## Target
+→ Domain: (set at onboarding)
+
+## Keywords
+→ (set at onboarding)
+
+## Analytics
+→ (set at onboarding)
+
+## GitHub
+→ Content repo: (set at onboarding — if blank, drafts go to wiki only)
+
+## Where I file
+→ Citation audits: wiki/Knowledge/GEO/Audits/YYYY-MM-DD.md
+→ Blog drafts: wiki/Knowledge/GEO/Drafts/
+→ Daily log: memory/YYYY-MM-DD.md
+
+## Vault keys
+→ team.target_domain
+→ team.target_keywords

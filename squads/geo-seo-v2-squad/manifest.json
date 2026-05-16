@@ -1,0 +1,68 @@
+{
+  "name": "geo-seo-v2-squad",
+  "version": "1.0.0",
+  "description": "Two-agent GEO squad: Atlas handles GEO strategy, blog content, and engineering PRs; Seren owns Reddit and Hacker News presence.",
+  "author": "pancake-official",
+  "license": "MIT",
+  "skills": [
+    "skills/geo-llmseo-playbook.md"
+  ],
+  "agents": [
+    {
+      "id": "atlas",
+      "description": "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt engineering, draft PRs.",
+      "model": "sonnet",
+      "heartbeat": "daily",
+      "skills": [
+        "agents/atlas/skills/advanced-seo.md"
+      ]
+    },
+    {
+      "id": "seren",
+      "description": "Reddit and Hacker News presence agent — monitors, drafts comments, manages multi-account karma strategy.",
+      "model": "sonnet",
+      "heartbeat": "2h",
+      "skills": [
+        "agents/seren/skills/reddit-playbook.md",
+        "agents/seren/skills/reddit-multiaccount.md"
+      ]
+    }
+  ],
+  "required_identities": [
+    {
+      "site": "github.com",
+      "reason": "Atlas pushes drafted blog posts and llms.txt / schema changes to your content repo."
+    }
+  ],
+  "required_vault_secrets": [
+    {
+      "key": "team.target_domain",
+      "label": "Your product's domain (e.g. getpancake.ai)",
+      "type": "string"
+    },
+    {
+      "key": "team.target_keywords",
+      "label": "Top 5 keywords for AI engine citation (comma-separated)",
+      "type": "string"
+    },
+    {
+      "key": "team.reddit_accounts",
+      "label": "Reddit accounts JSON — array of {username, password} objects from REDAccs",
+      "type": "token"
+    },
+    {
+      "key": "team.reddit_target_subreddits",
+      "label": "Target subreddits (comma-separated, no r/ prefix, e.g. Entrepreneurs,startups)",
+      "type": "string"
+    }
+  ],
+  "required_tool_permissions": [
+    "web_search",
+    "web_fetch",
+    "message",
+    "browser_task",
+    "browser_open",
+    "browser_action"
+  ],
+  "min_pancake_version": "1.0.0"
+}
