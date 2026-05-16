@@ -37,4 +37,6 @@ Deploys two focused agents that grow your product's AI-engine visibility from tw
 
 ## How it works
 
+> **Risk notice — Reddit multi-account.** Seren's multi-account rotation strategy may violate Reddit's Terms of Service. Account bans are a real risk over time. The detection-avoidance section in `reddit-multiaccount.md` is clearly marked optional — skip it and use a single account if you prefer a safe, ToS-compliant setup. You accept this risk when you install the squad.
+
 Atlas runs once a day at 6 PM PT. Seren runs once a day at 5 PM PT, surfaces max 3 comment drafts for your sign-off, and goes back to sleep. Both agents file their work to the shared wiki and stay quiet when there's nothing new to report.
