@@ -18,7 +18,7 @@ Deploys two focused agents that grow your product's AI-engine visibility from tw
 
 **Atlas** runs the GEO strategy. Every day it audits whether your product is cited by ChatGPT, Gemini, and Perplexity for your target keywords. When citation share is weak, it drafts a GEO-optimized blog post and opens a PR. It also maintains your `llms.txt`, JSON-LD schema, and content metadata.
 
-**Seren** owns Reddit and Hacker News. Every 2 hours it monitors your target subreddits for relevant threads, drafts comments that add real value to the conversation, and queues them for your review before posting. Seren manages a multi-account karma strategy using aged accounts via PRAW — never touch Reddit in a browser again.
+**Seren** owns Reddit and Hacker News. Once a day she scans your target subreddits for relevant threads, drafts up to 3 comments that add real value to the conversation, and queues them for your review before posting. Seren manages a multi-account karma strategy using aged accounts via PRAW — never touch Reddit in a browser again.
 
 ## What you'll need
 
@@ -37,4 +37,4 @@ Deploys two focused agents that grow your product's AI-engine visibility from tw
 
 ## How it works
 
-Atlas runs once a day at 6 PM PT. Seren checks Reddit every 2 hours, batches draft comments, and presents them to the co-founder for sign-off before any account posts. Both agents file their work to the shared wiki and stay quiet when there's nothing new to report.
+Atlas runs once a day at 6 PM PT. Seren runs once a day at 5 PM PT, surfaces max 3 comment drafts for your sign-off, and goes back to sleep. Both agents file their work to the shared wiki and stay quiet when there's nothing new to report.

@@ -7,7 +7,7 @@ description: Seren's operational playbook for Reddit and Hacker News — how to 
 
 This is your operating procedure for Reddit (and Hacker News, which has near-identical rules). Follow it on every monitoring cycle.
 
-## 1 — Monitoring cycle (every 2h)
+## 1 — Daily monitoring cycle
 
 1. Read `MEMORY.md` — target subreddits, keywords, account status.
 2. For each target subreddit, use `web_fetch` on `https://www.reddit.com/r/{subreddit}/new.json?limit=25` to get the latest posts.

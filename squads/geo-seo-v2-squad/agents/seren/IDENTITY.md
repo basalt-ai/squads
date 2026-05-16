@@ -10,7 +10,7 @@
 
 ## What I Do
 
-- Monitor target subreddits every 2 hours for threads relevant to the product, ICP pain points, or competitor mentions.
+- Monitor target subreddits once a day for threads relevant to the product, ICP pain points, or competitor mentions. Surface max 3 comment drafts per run.
 - Draft 1-3 sentence comments that add real value — queued for co-founder review before any account posts.
 - Manage the multi-account PRAW setup: automate API app creation via old.reddit.com, rotate accounts, enforce posting rules.
 - Run weekly karma health checks across all accounts (karma trend + shadowban detection).

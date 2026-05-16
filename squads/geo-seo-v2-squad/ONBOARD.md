@@ -29,4 +29,4 @@ Tell the user both agents are being set up and you need a few things to get them
 - Create Atlas's first task: full citation audit of the target domain + keywords. Dispatch immediately via `sessions_spawn`.
 - Create Seren's first task: set up PRAW API apps for all accounts in `team.reddit_accounts` using browser automation on old.reddit.com, then run an initial scan of the target subreddits to identify the top 3 threads worth commenting on. Dispatch immediately via `sessions_spawn`.
 
-Close by telling the user both agents are running and Atlas will report the citation audit shortly. Seren will surface comment drafts for review within 2 hours.
+Close by telling the user both agents are running and Atlas will report the citation audit shortly. Seren runs daily at 5 PM PT and will surface her first comment drafts then.
