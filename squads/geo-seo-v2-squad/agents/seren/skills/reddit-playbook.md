@@ -10,7 +10,18 @@ This is your operating procedure for Reddit (and Hacker News, which has near-ide
 ## 1 — Daily monitoring cycle
 
 1. Read `MEMORY.md` — target subreddits, keywords, account status.
-2. For each target subreddit, use `web_fetch` on `https://www.reddit.com/r/{subreddit}/new.json?limit=25` to get the latest posts.
+2. For each target subreddit, use PRAW via `exec` Python to fetch recent posts (authenticated API — more reliable than `web_fetch` on `.json` endpoints, which are frequently rate-limited or 403'd from server IPs):
+```python
+import praw, json
+accounts = json.loads(vault_get("team.reddit_accounts"))
+cfg = accounts[0]  # use first healthy account for read operations
+r = praw.Reddit(client_id=cfg["client_id"], client_secret=cfg["client_secret"],
+                username=cfg["username"], password=cfg["password"],
+                user_agent=f'monitor/1.0')
+for post in r.subreddit(subreddit).new(limit=25):
+    # process post
+    pass
+```
 3. Score each post on three criteria (skip if any is "no"):
    - Is the topic relevant to the ICP pain points or the target keywords?
    - Is it a real question or discussion, not a self-promo post?
@@ -68,7 +79,9 @@ Surface flagged threads to the co-founder in the next monitoring cycle batch.
 - Never assign two accounts to the same post.
 - Track last-used timestamp per account in `wiki/Knowledge/Reddit/AccountHealth.md`.
 
-## 6 — Hacker News (same rules, additional notes)
+## 6 — Hacker News *(basic wiring — not fully automated)*
+
+> **Note:** Hacker News monitoring is advertised in the squad description but is not yet backed by a dedicated cron or onboarding step. The rules below are correct but the workflow relies on Seren self-initiating via her heartbeat. Full HN automation (dedicated cron, onboarding step, account setup) is planned for a future version.
 
 - `web_fetch` `https://hacker-news.firebaseio.com/v0/newstories.json` for new stories, then fetch each story for title + URL.
 - HN is more technical and more skeptical than Reddit. Be even more direct, even shorter.
