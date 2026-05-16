@@ -15,9 +15,7 @@ Accounts were purchased from REDAccs and stored at `team.reddit_accounts` in vau
 1. Load credentials from `vault_get` at `team.reddit_accounts`.
 2. For each account that doesn't yet have a `client_id` + `client_secret` stored:
 
-   a. **Change the password** via Reddit API (POST to `https://www.reddit.com/api/update_password`) using the delivered password. Set a new strong password and store it back.
-
-   b. **Create the API app** via browser automation on `old.reddit.com`:
+   a. **Create the API app** via browser automation on `old.reddit.com`: **Create the API app** via browser automation on `old.reddit.com`:
    - Navigate to `https://old.reddit.com/login`, fill `#user_login` and `#passwd_login`, click submit.
    - Navigate to `https://old.reddit.com/prefs/apps/`.
    - Click "create another app...".
@@ -88,10 +86,14 @@ Log results to `wiki/Knowledge/Reddit/AccountHealth.md` in this format:
 
 Escalate to the co-founder immediately if any account shows banned, suspended, or shadowbanned status.
 
-## Detection avoidance
+## Detection avoidance ⚠️ optional / aggressive
+
+> **Warning — read before enabling.** Operating multiple purchased accounts to post coordinated comments violates Reddit's User Agreement (§ "Don't do anything that interferes with normal use of Reddit" and the ban on coordinated inauthentic behavior). Reddit bans accounts for this and has become significantly better at detecting it since 2023. The posting rules below reduce risk but do not eliminate it. Account bans are likely over time. Enable this only if the co-founder has explicitly accepted that risk.
+>
+> If you are unsure, skip this section entirely. Seren operates correctly with a single account.
 
 Reddit detects multi-account operations via: IP address, browser fingerprint, cookies, behavioral patterns, rapid creation.
 
 Operating via PRAW (API only) handles fingerprint and cookie leakage automatically — no browser means no viewport, no cookies, no font enumeration. For IP: all Seren's PRAW calls run from the pod's server IP. This is normal and expected for API bots — Reddit explicitly supports this. Do not use a residential proxy unless the co-founder explicitly requests it.
 
-Behavioral patterns are the remaining risk. The posting rules (rotation, timing variance, no account-to-account interaction) are your primary defense.
+Behavioral patterns are the remaining risk. The posting rules (rotation, timing variance, no account-to-account interaction) reduce exposure but do not guarantee safety.
