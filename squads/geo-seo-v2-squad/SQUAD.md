@@ -7,7 +7,7 @@ tags: [seo, content, growth, reddit, community]
 token_intensity: medium
 agents:
   - id: atlas
-    description: "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt, draft PRs"
+    description: "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt. Self-merges content and engineering PRs."
   - id: seren
     description: "Reddit and Hacker News agent — monitors threads, drafts comments, manages karma strategy"
 ---
@@ -16,7 +16,7 @@ agents:
 
 Deploys two focused agents that grow your product's AI-engine visibility from two angles:
 
-**Atlas** runs the GEO strategy. Every day it audits whether your product is cited by ChatGPT, Gemini, and Perplexity for your target keywords. When citation share is weak, it drafts a GEO-optimized blog post and opens a PR. It also maintains your `llms.txt`, JSON-LD schema, and content metadata.
+**Atlas** runs the GEO strategy. Every day it audits whether your product is cited by ChatGPT, Gemini, and Perplexity for your target keywords. When citation share is weak, it writes a GEO-optimized blog post, opens a PR, and self-merges it. It also maintains your `llms.txt`, JSON-LD schema, and content metadata.
 
 **Seren** owns Reddit and Hacker News. Once a day she scans your target subreddits for relevant threads, drafts up to 3 comments that add real value to the conversation, and queues them for your review before posting. Seren manages a multi-account karma strategy using aged accounts via PRAW — never touch Reddit in a browser again.
 
@@ -30,7 +30,7 @@ Deploys two focused agents that grow your product's AI-engine visibility from tw
 ## What you get
 
 - Daily citation audit posted to Slack (Atlas)
-- Blog posts and GEO engineering fixes drafted as PRs (Atlas)
+- Blog posts and GEO engineering fixes shipped as self-merged PRs (Atlas)
 - Batched Reddit comment drafts ready for your review before posting (Seren)
 - Weekly Reddit karma health report across all accounts (Seren)
 - f5bot-style keyword monitoring for your brand and competitors on Reddit (Seren)
