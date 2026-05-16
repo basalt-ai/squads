@@ -17,13 +17,22 @@ Tell the user both agents are being set up and you need a few things to get them
 
 **2 — Target keywords.** Ask for 3-5 keywords or questions buyers might ask an AI engine (e.g. "AI co-founder", "autonomous growth agent"). Store the comma-separated list with `vault_request` at `team.target_keywords`. Also write them to Atlas's `MEMORY.md` under `## Keywords`.
 
-**3 — GitHub for Atlas (optional).** Ask if they publish blog posts from a GitHub repo. If yes, connect a GitHub identity via `browser_identity_add` for `github.com` — check first if one already exists on the pod and reuse it. If no repo, note in Atlas's `MEMORY.md` that drafts go to `wiki/Knowledge/GEO/Drafts/` only.
+**3 — Blog / content system for Atlas.** Ask how they publish content today — GitHub repo, Webflow, Framer, WordPress, Notion, or something else. This determines how Atlas delivers drafts:
+- **GitHub repo**: connect a GitHub identity via `browser_identity_add` for `github.com` (check if one already exists on the pod and reuse it). Atlas will open draft PRs. Store the repo name in Atlas's `MEMORY.md` under `## Content repo`.
+- **No repo / other CMS**: Atlas files drafts to `wiki/Knowledge/GEO/Drafts/` and the co-founder copies them to the CMS manually. Note this in Atlas's `MEMORY.md`.
+- **They're not sure or don't have one yet**: suggest they set up a GitHub-backed blog (easiest for Atlas to push to) but don't block onboarding on it — default to wiki drafts and they can reconnect later.
 
 **4 — Analytics (optional).** Ask if they use an analytics tool (GA4, Plausible, etc.). Write the answer to Atlas's `MEMORY.md` under `## Analytics`.
 
 **5 — Reddit accounts.** Tell the user Seren needs 10-20 aged Reddit accounts from https://redaccs.com (~$1-3 each, buy ones with existing karma). They should send the credentials as a JSON array like `[{"username":"acct_01","password":"delivered_pw"}]`. Use `vault_request` at `team.reddit_accounts` with `type: json`. Remind them: this is the only human step — Seren sets up the PRAW API apps automatically via browser automation on old.reddit.com.
 
-**6 — Target subreddits.** Ask which subreddits to monitor (e.g. `Entrepreneurs`, `startups`, `SaaS`, `AItools`). Store comma-separated with `vault_request` at `team.reddit_target_subreddits`. Also write them to Seren's `MEMORY.md` under `## Target Subreddits`.
+**6 — Target subreddits.** Tell the user Seren can research the best subreddits herself, but the result will be significantly higher quality if a human does it — because finding the right subreddit requires lurking, feeling the vibe, and judging whether the community is the right ICP fit, which an agent can approximate but not replicate. Give these guidelines for doing it manually:
+- Type your core keywords into Reddit's search (e.g. "AI co-founder", "solopreneur", "autonomous company") and look at which subreddits come up
+- Check which subreddits appear when you prompt ChatGPT/Gemini like a buyer would — if a subreddit is cited by AI, it's worth targeting
+- Lurk for 10 minutes in each candidate: is this your ICP? Are they anti-AI or pro-AI? Are they asking questions your product answers?
+- Aim for 3-5 subreddits max. Better to go deep in 3 than be mediocre in 10.
+
+If they want Seren to do it: acknowledge it'll be a best-effort approximation, then dispatch a task to Seren to research via web_search and present a ranked shortlist for the human to validate. Either way, store the final agreed list with `vault_request` at `team.reddit_target_subreddits` and write it to Seren's `MEMORY.md` under `## Target Subreddits`.
 
 **7 — First tasks.** When all of the above is done:
 - Create Atlas's first task: full citation audit of the target domain + keywords. Dispatch immediately via `sessions_spawn`.
