@@ -2,32 +2,6 @@
   "version": 1,
   "jobs": [
     {
-      "id": "daily-citation-audit",
-      "name": "Daily GEO citation audit — Atlas",
-      "enabled": true,
-      "schedule": { "kind": "cron", "expr": "0 18 * * *", "tz": "America/Los_Angeles" },
-      "sessionTarget": "atlas",
-      "payload": {
-        "kind": "systemEvent",
-        "text": "Run Atlas's daily GEO audit and execution cycle. Follow every step in order. (1) Read MEMORY.md — target domain, keywords, content repo status. (2) Read wiki/Company/COMPANY.md — product context, ICP, positioning. These two reads happen every single wake. (3) Self-audit: call list_events({ caller_id: 'atlas', since: '<24h ago ISO>' }). Did yesterday's completed task produce a shipped artifact? If not, today's first task MUST ship something concrete before anything else. (4) Check task queue: call list_tasks({ caller_id: 'atlas' }). For each todo task: update_task_status to in_progress, execute it. For each in_progress task: call update_task as a heartbeat ping. (5) Run the GEO audit: load the geo-llmseo-playbook skill, read target domain + keywords from MEMORY.md, query ChatGPT / Gemini / Perplexity for each keyword (via web_search), score citation share, file the full table to wiki/Knowledge/GEO/Audits/YYYY-MM-DD.md, update wiki/Knowledge/GEO/citation-share.md with the new delta. (6) Check AI engine citations: run web_search queries like 'best AI co-founder tool' and 'Pancake AI co-founder' (adapt to actual target keywords). Record sources cited and what they say. (7) Identify the 3 highest-value tasks from the audit — gaps in citation share, missing content, extractability fixes, technical GEO changes. create_task for each (assigned_to: 'atlas', priority: urgent/today/later based on impact). (8) Pick the top task and execute it NOW — don't queue and sleep. For blog posts: load the blog-writing-guide skill and follow it fully before writing a word. Write the .mdx file, generate a cover image, open a PR to the content repo, and self-merge (squash merge). Blog posts do not need human review. For technical GEO (llms.txt, JSON-LD, sitemap): open and self-merge. (9) complete_task with the deliverable (PR link, wiki path, etc.). If blocked: fail_task with failure_reason immediately — never sit on a blocker. (10) Pre-commit: before going idle, create_task for the next highest-value item with priority 'today'. Waking to a pre-committed task beats waking to a blank slate. (11) Post daily digest to Slack: three sections only — citation delta (overall share + biggest mover), shipped today (what Atlas executed with links), tomorrow's plan (top queued task). If nothing moved, one line saying so. Never pad. If the audit cannot run (no domain or keywords set), reply with the single literal token NO_REPLY and nothing else."
-      },
-      "failureAlert": false,
-      "state": {}
-    },
-    {
-      "id": "reddit-monitoring",
-      "name": "Reddit monitoring — Seren",
-      "enabled": true,
-      "schedule": { "kind": "cron", "expr": "0 17 * * *", "tz": "America/Los_Angeles" },
-      "sessionTarget": "seren",
-      "payload": {
-        "kind": "systemEvent",
-        "text": "Run the daily Reddit monitoring cycle. Load the `reddit-playbook` skill and follow it end to end: scan target subreddits for qualifying threads from the last 24 hours, draft comments for any that pass the quality checklist, select the top 3 by thread quality and relevance (never more than 3), assign accounts per the rotation rules, and complete_task with the batch for co-founder review. If no qualifying threads are found, reply with the single literal token `NO_REPLY` and nothing else."
-      },
-      "failureAlert": false,
-      "state": {}
-    },
-    {
       "id": "reddit-health-check",
       "name": "Weekly Reddit account health check — Seren",
       "enabled": true,
