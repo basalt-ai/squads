@@ -24,7 +24,7 @@ This is your operating procedure for Reddit (and Hacker News, which has near-ide
 ## 2 — Keyword monitoring (daily)
 
 Use `web_search` with `site:reddit.com` for each target keyword and competitor name. Flag any thread from the last 24h where:
-- Someone is asking for a product like Pancake.
+- Someone is asking for a product like the one you represent.
 - A competitor is being discussed positively.
 - The brand is mentioned (positive or negative).
 
