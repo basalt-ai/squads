@@ -1,6 +1,6 @@
 ---
 name: blog-writing-guide
-description: Write, review, and improve blog posts for any company or founder following high-quality writing standards, authentic voice, and a credibility bar that earns real shares. Use this skill whenever someone asks to write a blog post, draft an article, review blog content, improve a draft, write a product announcement, create a founder story, or produce any written content for a company blog or business audience. Also trigger when the user mentions "blog post," "blog draft," "write-up," "announcement post," "founder story," "deep dive," or asks for help with content writing.
+description: Write and review GEO-optimized blog posts — answer-first structure, credibility-first sourcing, FAQPage JSON-LD, and a quality bar that earns real shares and AI citations.
 
 source: Adapted from the Sentry blog-writing-guide skill (https://github.com/getsentry/skills/blob/main/skills/blog-writing-guide/SKILL.md). Core principles, structure, and editorial standards are borrowed and modified for a broader, non-technical business audience.
 ---
