@@ -1,6 +1,6 @@
 ---
 name: geo-llmseo-playbook
-description: The geo-seo-squad's shared playbook — how to run a daily GEO/LLM-SEO citation audit, score the result, and decide what content to draft. Used by every agent in the squad.
+description: The geo-seo-squad v2 shared playbook — how to run a daily GEO/LLM-SEO citation audit, score the result, and decide what content to draft. Used by every agent in the squad.
 ---
 
 # GEO / LLM-SEO playbook
