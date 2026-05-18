@@ -32,7 +32,7 @@ secrets), a `SQUAD.md` catalog card, an `ONBOARD.md` onboarding script, and per 
 - To **author** a new squad, use the `create-squad` skill.
 - To **check or fix** a squad, use the `validate-squad` skill.
 - To validate directly: `node scripts/validate.mjs` (add a bundle path to scope it).
-- [`squads/geo-seo-squad/`](./squads/geo-seo-squad/) is the **reference example** — keep new
-  squads consistent with it. Treat it as read-only unless explicitly asked to change it.
+- Model new squads on [`template/`](./template/) (the skeleton) and the contract in
+  [`docs/bundle-reference.md`](./docs/bundle-reference.md).
 
 Any change to a squad bundle must keep `node scripts/validate.mjs` green — CI enforces it.

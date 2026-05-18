@@ -9,8 +9,7 @@ Read these first — this guide assumes them:
 - [`how-squads-work.md`](./how-squads-work.md) — the concepts and the install lifecycle.
 - [`bundle-reference.md`](./bundle-reference.md) — the exact file contract.
 
-You build against [`squads/geo-seo-squad/`](../squads/geo-seo-squad/), the worked example.
-There is a full file-by-file walkthrough of it at the end of this guide.
+You build by copying [`template/`](../template/), the complete, valid skeleton bundle.
 
 ## Fast path — the `create-squad` skill
 
@@ -85,7 +84,7 @@ The contract tells you what is *valid*. This tells you what is *good*.
 - **One agent, one lane.** A squad agent is a focused specialist that reports to the
   co-founder — not a generalist. Give it one role with clear edges. If you're tempted to
   make an agent do two unrelated things, that's two agents (or the second thing belongs to
-  the co-founder). Atlas does GEO/SEO and nothing else.
+  the co-founder).
 
 - **`ONBOARD.md` is a runnable script, not a README.** Write it in the imperative, to the
   co-founder: "Ask the user X. Store it with `vault_request` at key Y. Write it to the
@@ -108,46 +107,5 @@ The contract tells you what is *valid*. This tells you what is *good*.
 
 - **Strip every TODO.** The template is full of `<!-- TODO -->` comments and placeholder
   text. None of it should survive into a published bundle.
-
-## Walkthrough — `geo-seo-squad`, file by file
-
-[`squads/geo-seo-squad/`](../squads/geo-seo-squad/) is the official reference squad: one
-agent, **Atlas**, a daily GEO/LLM-SEO specialist. Read it alongside this list.
-
-- **[`manifest.json`](../squads/geo-seo-squad/manifest.json)** — one agent (`atlas`, `sonnet`,
-  `daily` heartbeat). Declares a squad-wide skill, one required `github.com` identity (with
-  a reason), and two `required_vault_secrets` (the target domain and keywords).
-
-- **[`SQUAD.md`](../squads/geo-seo-squad/SQUAD.md)** — frontmatter with `tags: [seo, content,
-  growth]` and `token_intensity: medium`; body with *What this squad does / What you'll
-  need / What you get / How it works*.
-
-- **[`ONBOARD.md`](../squads/geo-seo-squad/ONBOARD.md)** — a four-step script: collect the
-  target domain, collect the keywords, optionally connect GitHub, ask about analytics —
-  then create and immediately dispatch Atlas's first citation audit. `estimated_setup_minutes: 8`.
-
-- **[`MEMORY.md`](../squads/geo-seo-squad/MEMORY.md)** — a thin index: identity pointers,
-  reporting line, squad and skills, where Atlas files its work, the vault keys it uses.
-
-- **[`agents/atlas/IDENTITY.md`](../squads/geo-seo-squad/agents/atlas/IDENTITY.md)** — Name,
-  Role, Scope, Emoji; *What I Do / What I Don't Do*; the KPI (citation share); the
-  reporting line.
-
-- **[`agents/atlas/SOUL.md`](../squads/geo-seo-squad/agents/atlas/SOUL.md)** — Scope,
-  Personality, Operating Principles, Escalation Rules, inviolable Boundaries, Wake Protocol,
-  What Success Looks Like.
-
-- **[`skills/geo-llmseo-playbook.md`](../squads/geo-seo-squad/skills/geo-llmseo-playbook.md)** —
-  the squad-wide playbook: how to run the daily citation audit end to end.
-
-- **[`agents/atlas/skills/advanced-seo.md`](../squads/geo-seo-squad/agents/atlas/skills/advanced-seo.md)** —
-  Atlas-specific deep technique: `llms.txt`, JSON-LD schema, comparison pages.
-
-- **[`crons/jobs.json`](../squads/geo-seo-squad/crons/jobs.json)** — one job, the daily
-  citation audit at 6 PM Pacific, `sessionTarget: atlas`, with the `NO_REPLY` instruction
-  for an empty run.
-
-- **[`tasks-config/templates.json`](../squads/geo-seo-squad/tasks-config/templates.json)** —
-  two manual templates (`blog-post`, `citation-gap-fix`), both `assigned_to: atlas`.
 
 When your squad is valid and reviewed, publish it: [`publishing.md`](./publishing.md).

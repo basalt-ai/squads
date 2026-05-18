@@ -43,7 +43,7 @@ The exact file contract is in [`docs/bundle-reference.md`](./docs/bundle-referen
 
 ```sh
 node scripts/validate.mjs                      # every squads/* bundle and template/
-node scripts/validate.mjs squads/geo-seo-squad # one bundle
+node scripts/validate.mjs squads/<bundle-name> # one bundle
 ```
 
 Zero dependencies — just Node. It mirrors marketplace ingestion exactly, so a bundle that
@@ -73,8 +73,7 @@ squads/                          ← this repo
 ├── docs/                         how-squads-work, bundle-reference, authoring, publishing
 ├── scripts/validate.mjs          zero-dependency validator
 ├── template/                     a complete, valid skeleton bundle
-└── squads/
-    └── geo-seo-squad/             the official GEO/SEO squad (the reference example)
+└── squads/                       official squad bundles, one directory each
 ```
 
 ## License
