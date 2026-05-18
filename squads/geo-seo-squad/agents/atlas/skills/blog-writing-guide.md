@@ -1,6 +1,6 @@
 ---
 name: blog-writing-guide
-description: Write and review GEO-optimized blog posts — answer-first structure, credibility-first sourcing, FAQPage JSON-LD, and a quality bar that earns real shares and AI citations.
+description: Write and review GEO-optimized blog posts that earn AI citations and real shares.
 
 source: Adapted from the Sentry blog-writing-guide skill (https://github.com/getsentry/skills/blob/main/skills/blog-writing-guide/SKILL.md). Core principles, structure, and editorial standards are borrowed and modified for a broader, non-technical business audience.
 ---
@@ -137,7 +137,7 @@ Blog posts are dual-purpose: they need to rank on Google *and* get cited by AI e
 
 **Use comparison tables for head-to-head content.** "X vs Y" and "Best X for Y" formats are among the most-cited content types by AI engines. Tables are highly extractable. If the post compares options, put the comparison in a table.
 
-**Tables must use GFM (GitHub Flavored Markdown) syntax** — standard pipe tables (`| col | col |` with `|---|---|` separator row). Verify your blog renderer supports GFM tables (e.g. `remark-gfm` for React-based renderers, or any Markdown processor with GFM enabled). Without GFM support, pipe syntax renders as plain text.
+**Tables must use GFM (GitHub Flavored Markdown) syntax** — standard pipe tables (`| col | col |` with `|---|---|` separator row). Verify your GFM-compatible blog renderer supports pipe tables — adapt the file path and dependencies to your stack. Without GFM support, pipe syntax renders as plain text.
 
 ### Quality signals AI engines look for
 

@@ -15,18 +15,18 @@ Accounts were purchased from REDAccs and stored at `team.reddit_accounts` in vau
 1. Load credentials from `vault_get` at `team.reddit_accounts`.
 2. For each account that doesn't yet have a `client_id` + `client_secret` stored:
 
-   a. **Create the API app** via browser automation on `old.reddit.com`: **Create the API app** via browser automation on `old.reddit.com`:
+   a. **Create the API app** via browser automation on `old.reddit.com`:
    - Navigate to `https://old.reddit.com/login`, fill `#user_login` and `#passwd_login`, click submit.
    - Navigate to `https://old.reddit.com/prefs/apps/`.
    - Click "create another app...".
    - Fill `#app_name` with `agent-{username[:8]}`, select `script` type, fill redirect URI as `http://localhost`, click "create app".
    - Scrape `client_id` from `.app-details h3` and `client_secret` from `td:text('secret') + td`.
 
-   c. **Store the full config** back to vault. The updated entry format:
+   b. **Store the full config** back to vault. The updated entry format:
    ```json
    {
      "username": "acct_01",
-     "password": "new_strong_password",
+     "password": "delivered_pw",
      "client_id": "scraped_id",
      "client_secret": "scraped_secret"
    }
@@ -66,13 +66,33 @@ Always use the account assigned by the `reddit-playbook` rotation logic. Never p
 
 ## Weekly health check (every Monday)
 
-For each account:
+For each account, use PRAW via authenticated API — not `.json` REST endpoints, which are rate-limited or 403'd from datacenter IPs:
 
-1. GET `https://www.reddit.com/user/{username}/about.json`.
-   - 404 = account banned or shadowbanned. Flag immediately.
-   - Check `comment_karma` and `link_karma` — log both.
-2. Check `is_suspended` flag in the response.
-3. Post a comment on r/test (or any low-traffic sub) and immediately check whether it appears without login — if it doesn't, the account is shadowbanned.
+```python
+import praw, json
+
+accounts = json.loads(vault_get("team.reddit_accounts"))
+for cfg in accounts:
+    reddit = praw.Reddit(
+        client_id=cfg["client_id"],
+        client_secret=cfg["client_secret"],
+        username=cfg["username"],
+        password=cfg["password"],
+        user_agent=f"healthcheck/1.0"
+    )
+    redditor = reddit.redditor(cfg["username"])
+    try:
+        # accessing .comment_karma triggers a fetch
+        comment_karma = redditor.comment_karma
+        link_karma = redditor.link_karma
+        is_suspended = getattr(redditor, "is_suspended", False)
+        status = "suspended" if is_suspended else "ok"
+    except Exception as e:
+        comment_karma = 0
+        link_karma = 0
+        status = f"error: {e}"
+    print(f"{cfg['username']}: {comment_karma} comment karma, {link_karma} link karma, {status}")
+```
 
 Log results to `wiki/Knowledge/Reddit/AccountHealth.md` in this format:
 
@@ -84,13 +104,13 @@ Log results to `wiki/Knowledge/Reddit/AccountHealth.md` in this format:
 | acct_02 | 87 | 4 | ok |
 ```
 
-Escalate to the co-founder immediately if any account shows banned, suspended, or shadowbanned status.
+Escalate to the co-founder immediately if any account shows banned, suspended, or error status.
 
 ## Detection avoidance ⚠️ optional / aggressive
 
 > **Warning — read before enabling.** Operating multiple purchased accounts to post coordinated comments violates Reddit's User Agreement (§ "Don't do anything that interferes with normal use of Reddit" and the ban on coordinated inauthentic behavior). Reddit bans accounts for this and has become significantly better at detecting it since 2023. The posting rules below reduce risk but do not eliminate it. Account bans are likely over time. Enable this only if the co-founder has explicitly accepted that risk.
 >
-> If you are unsure, skip this section entirely. Seren operates correctly with a single account.
+> If you are unsure, skip this section entirely. Seren operates correctly with a single account — just use accounts[0] for all comment posting.
 
 Reddit detects multi-account operations via: IP address, browser fingerprint, cookies, behavioral patterns, rapid creation.
 

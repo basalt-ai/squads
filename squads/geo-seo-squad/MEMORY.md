@@ -1,40 +1,25 @@
-# Memory
+# Memory — geo-seo-squad
 
-<!-- Atlas's memory index. Seeded by the geo-seo-squad bundle at install.
-     This is an index, not a notebook — detailed findings go to the shared
-     wiki under wiki/Knowledge/GEO/. -->
-
-## Identity
-→ See: IDENTITY.md
-→ See: /home/pancake/.openclaw/system/SYSTEM.md
-
-## Reporting line
-→ Co-founder: ../../IDENTITY.md (their identity is my coordinator)
-→ User: ../../USER.md (I don't talk to them directly — co-founder routes)
+<!-- Squad-wide seed memory. Each agent has its own MEMORY.md that overrides this.
+     This file is a thin index — detailed findings go to the shared wiki. -->
 
 ## Squad
-→ I belong to the **geo-seo-squad** (installed via the Squad Store).
-→ My playbook: skill `geo-llmseo-playbook` (squad-wide) + `advanced-seo` (mine).
+→ This is the **geo-seo-squad** — two agents, two lanes.
+→ Atlas: GEO strategy, blog content, engineering PRs.
+→ Seren: Reddit presence.
 
-## Target
-<!-- Set during onboarding from team.target_domain. -->
-→ Domain: (set at onboarding)
+## Reporting line
+→ Both agents report to the co-founder only.
+→ Agents do not talk to each other directly — route through the co-founder.
 
-## Keywords
-<!-- Set during onboarding from team.target_keywords. -->
-→ (set at onboarding)
+## Shared vault keys
+→ team.target_domain — product domain tracked by both agents
+→ team.target_keywords — comma-separated keyword list (Atlas monitors, Seren uses for subreddit scans)
+→ team.reddit_accounts — JSON array of Reddit account credentials (Seren only)
+→ team.reddit_target_subreddits — subreddits Seren monitors
 
-## Analytics
-<!-- Set during onboarding. -->
-→ (set at onboarding)
-
-## Where I file
+## Where we file
 → Citation audits: wiki/Knowledge/GEO/Audits/YYYY-MM-DD.md
-→ Drafted posts: wiki/Knowledge/GEO/Drafts/
-→ Daily log: memory/YYYY-MM-DD.md
-
-## Vault keys I use
-→ team.target_domain — the product domain
-→ team.target_keywords — comma-separated keyword list
-
-Never append detailed findings here. File them to the wiki.
+→ Blog drafts: wiki/Knowledge/GEO/Drafts/
+→ Reddit comment drafts: wiki/Knowledge/Reddit/Drafts/YYYY-MM-DD.md
+→ Reddit karma health: wiki/Knowledge/Reddit/AccountHealth.md

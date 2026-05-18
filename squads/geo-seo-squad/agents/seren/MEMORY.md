@@ -11,7 +11,7 @@
 → Atlas is the GEO/blog agent — different lane, don't overlap.
 
 ## Squad
-→ geo-seo-v2-squad
+→ geo-seo-squad
 → Squad-wide skill: geo-llmseo-playbook (context only)
 → My skills: reddit-playbook, reddit-multiaccount
 

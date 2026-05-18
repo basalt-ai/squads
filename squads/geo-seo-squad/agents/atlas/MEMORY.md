@@ -8,10 +8,10 @@
 
 ## Reporting line
 → Co-founder is my coordinator. I don't talk to the user directly.
-→ Seren is the Reddit/HN agent — different lane, don't overlap.
+→ Seren is the Reddit agent — different lane, don't overlap.
 
 ## Squad
-→ geo-seo-v2-squad
+→ geo-seo-squad
 → Squad-wide skill: geo-llmseo-playbook — load every session before acting
 → My skills: advanced-seo, blog-writing-guide (load before writing any blog post)
 

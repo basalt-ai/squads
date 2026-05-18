@@ -1,42 +1,42 @@
 ---
 name: geo-seo-squad
-version: 1.0.0
-description: "GEO/LLM SEO squad — keeps your product visible in AI engine citations"
+version: 2.0.0
+description: "Two-agent GEO squad: Atlas owns GEO strategy and blog engineering, Seren owns Reddit presence"
 author: pancake-official
-tags: [seo, content, growth]
-token_intensity: medium
+tags: [seo, content, growth, reddit, community]
+token_intensity: high
 agents:
   - id: atlas
-    description: "GEO/SEO specialist — audits citations, writes blog posts"
-preview_image: https://squads.getpancake.ai/squads/geo-seo-squad/preview.png
+    description: "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt. Self-merges content and engineering PRs."
+  - id: seren
+    description: "Reddit agent — monitors threads, drafts comments, manages karma strategy"
 ---
 
 ## What this squad does
 
-Deploys **Atlas**, a daily GEO/LLM SEO agent that audits AI engine citations (ChatGPT,
-Gemini, Perplexity) and writes optimized blog posts to improve your product's citation
-share. GEO — Generative Engine Optimization — is SEO for the era where buyers ask an AI
-assistant instead of a search box. Atlas keeps your product in the answer.
+Deploys two focused agents that grow your product's AI-engine visibility from two angles:
+
+**Atlas** runs the GEO strategy. Every day it audits whether your product is cited by ChatGPT, Gemini, and Perplexity for your target keywords. When citation share is weak, it writes a GEO-optimized blog post, opens a PR, and self-merges it. It also maintains your `llms.txt`, JSON-LD schema, and content metadata.
+
+**Seren** owns Reddit. Once a day she scans your target subreddits for relevant threads, drafts up to 3 comments that add real value to the conversation, and queues them for your review before posting. Seren manages a multi-account karma strategy using aged accounts via PRAW — never touch Reddit in a browser again.
 
 ## What you'll need
 
-- A blog or content hub (optional but recommended)
+- A GitHub repo for your content/blog (optional but recommended for Atlas)
 - Your top 5 target keywords
-- GitHub access for content publishing (optional)
+- 10-20 aged Reddit accounts from REDAccs (~$1-3 each) — Seren sets up the PRAW API apps automatically
+- Your target subreddits (e.g. r/Entrepreneurs, r/startups, r/SaaS)
 
 ## What you get
 
-- Daily citation audit → posted to your Slack channel
-- Blog posts drafted and ready to publish
-- `llms.txt`, JSON-LD schema, and comparison pages maintained automatically
+- Daily citation audit posted to Slack (Atlas)
+- Blog posts and GEO engineering fixes shipped as self-merged PRs (Atlas)
+- Batched Reddit comment drafts ready for your review before posting (Seren)
+- Weekly Reddit karma health report across all accounts (Seren)
+- Keyword monitoring for your brand and competitors on Reddit (Seren)
 
 ## How it works
 
-Atlas runs once a day. Each run it queries the major AI engines for your target keywords,
-records whether your product was cited, files the findings to the shared wiki, and posts a
-short delta to Slack — what moved, what slipped, what to do about it. When citation share
-on a keyword is weak, Atlas drafts a GEO-optimized blog post to close the gap and (if you
-connected GitHub) opens it as a draft for your review.
+> **Risk notice — Reddit multi-account.** Seren's multi-account rotation strategy may violate Reddit's Terms of Service. Account bans are a real risk over time. The detection-avoidance section in `reddit-multiaccount.md` is clearly marked optional — skip it and use a single account if you prefer a safe, ToS-compliant setup. You accept this risk when you install the squad.
 
-You can also hand Atlas a one-off post on demand — just ask the co-founder to have Atlas
-write about a topic.
+Both agents run once a day on their respective heartbeats. Atlas audits, writes, and ships. Seren monitors, drafts, and waits for your sign-off. Both agents file their work to the shared wiki and stay quiet when there's nothing new to report.

@@ -1,11 +1,11 @@
 ---
 name: reddit-playbook
-description: Seren's operational playbook for Reddit and Hacker News — how to monitor subreddits, identify high-value threads, draft comments, and manage the karma strategy. Load this on every Reddit monitoring run.
+description: Seren's operational playbook for Reddit — how to monitor subreddits, identify high-value threads, draft comments, and manage the karma strategy. Load this on every Reddit monitoring run.
 ---
 
 # Reddit playbook — Seren
 
-This is your operating procedure for Reddit (and Hacker News, which has near-identical rules). Follow it on every monitoring cycle.
+This is your operating procedure for Reddit. Follow it on every monitoring cycle.
 
 ## 1 — Daily monitoring cycle
 
@@ -79,11 +79,6 @@ Surface flagged threads to the co-founder in the next monitoring cycle batch.
 - Never assign two accounts to the same post.
 - Track last-used timestamp per account in `wiki/Knowledge/Reddit/AccountHealth.md`.
 
-## 6 — Hacker News *(basic wiring — not fully automated)*
+## 6 — Hacker News
 
-> **Note:** Hacker News monitoring is advertised in the squad description but is not yet backed by a dedicated cron or onboarding step. The rules below are correct but the workflow relies on Seren self-initiating via her heartbeat. Full HN automation (dedicated cron, onboarding step, account setup) is planned for a future version.
-
-- `web_fetch` `https://hacker-news.firebaseio.com/v0/newstories.json` for new stories, then fetch each story for title + URL.
-- HN is more technical and more skeptical than Reddit. Be even more direct, even shorter.
-- No self-promotion on HN ever, unless it is a Show HN post by the user themselves.
-- Use a single account for HN — multi-account on HN is too risky given the small community.
+Hacker News monitoring is not included in this version of the squad. The single-account comment strategy and audience targeting required for HN is planned for a future version.

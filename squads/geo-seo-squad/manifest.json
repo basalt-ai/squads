@@ -1,17 +1,32 @@
 {
   "name": "geo-seo-squad",
-  "version": "1.0.0",
-  "description": "GEO/LLM SEO squad — keeps your product visible in AI engine citations.",
+  "version": "2.0.0",
+  "description": "Two-agent GEO squad: Atlas handles GEO strategy, blog content, and engineering PRs; Seren owns Reddit presence.",
   "author": "pancake-official",
   "license": "MIT",
-  "skills": ["skills/geo-llmseo-playbook.md"],
+  "skills": [
+    "skills/geo-llmseo-playbook.md"
+  ],
   "agents": [
     {
       "id": "atlas",
-      "description": "GEO/SEO specialist — audits AI-engine citations and writes optimized blog posts.",
+      "description": "GEO/SEO strategist \u2014 daily citation audits, blog posts, JSON-LD/llms.txt engineering. Self-merges blog and technical GEO PRs.",
       "model": "sonnet",
       "heartbeat": "daily",
-      "skills": ["agents/atlas/skills/advanced-seo.md"]
+      "skills": [
+        "agents/atlas/skills/advanced-seo.md",
+        "agents/atlas/skills/blog-writing-guide.md"
+      ]
+    },
+    {
+      "id": "seren",
+      "description": "Reddit presence agent \u2014 monitors subreddits, drafts comments, manages multi-account karma strategy.",
+      "model": "sonnet",
+      "heartbeat": "daily",
+      "skills": [
+        "agents/seren/skills/reddit-playbook.md",
+        "agents/seren/skills/reddit-multiaccount.md"
+      ]
     }
   ],
   "required_identities": [
@@ -30,8 +45,25 @@
       "key": "team.target_keywords",
       "label": "Top 5 keywords for AI engine citation (comma-separated)",
       "type": "string"
+    },
+    {
+      "key": "team.reddit_accounts",
+      "label": "Reddit accounts JSON \u2014 array of {username, password} objects from REDAccs",
+      "type": "token"
+    },
+    {
+      "key": "team.reddit_target_subreddits",
+      "label": "Target subreddits (comma-separated, no r/ prefix, e.g. Entrepreneurs,startups)",
+      "type": "string"
     }
   ],
-  "required_tool_permissions": ["web_search", "web_fetch", "message", "browser_task"],
+  "required_tool_permissions": [
+    "web_search",
+    "web_fetch",
+    "message",
+    "browser_task",
+    "browser_open",
+    "browser_action"
+  ],
   "min_pancake_version": "1.0.0"
 }

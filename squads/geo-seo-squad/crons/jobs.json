@@ -2,16 +2,16 @@
   "version": 1,
   "jobs": [
     {
-      "id": "daily-citation-audit",
-      "name": "Daily GEO citation audit",
+      "id": "reddit-health-check",
+      "name": "Weekly Reddit account health check — Seren",
       "enabled": true,
-      "schedule": { "kind": "cron", "expr": "0 18 * * *", "tz": "America/Los_Angeles" },
-      "sessionTarget": "atlas",
+      "schedule": { "kind": "cron", "expr": "0 10 * * 1", "tz": "America/Los_Angeles" },
+      "sessionTarget": "seren",
       "payload": {
         "kind": "systemEvent",
-        "text": "Run the daily GEO citation audit. Load the `geo-llmseo-playbook` skill and follow it end to end: read the target domain and keywords from MEMORY.md (## Target, ## Keywords), query ChatGPT / Gemini / Perplexity for each keyword, score citation share, file the full table to wiki/Knowledge/GEO/Audits/YYYY-MM-DD.md, update wiki/Knowledge/GEO/citation-share.md, then post a three-line delta to Slack. If citation share moved on no keyword and nothing else changed, post a single line saying so. If the audit cannot run at all (no domain or keywords set), reply with the single literal token `NO_REPLY` and nothing else — that is OpenClaw's silent-turn sentinel."
+        "text": "Run the weekly Reddit account health check. Load the `reddit-multiaccount` skill. For each account in team.reddit_accounts: check karma trend and shadowban status per the health check procedure. Log results to wiki/Knowledge/Reddit/AccountHealth.md. If all accounts are healthy and karma is trending up, reply with the single literal token `NO_REPLY`. If any account is banned, suspended, or shadowbanned, post a Slack alert to the co-founder immediately with the account name and status."
       },
-      "failureAlert": false,
+      "failureAlert": true,
       "state": {}
     }
   ]

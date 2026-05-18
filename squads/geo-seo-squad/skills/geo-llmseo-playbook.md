@@ -1,6 +1,6 @@
 ---
 name: geo-llmseo-playbook
-description: The geo-seo-squad's shared playbook — how to run a daily GEO/LLM-SEO citation audit, score the result, and decide what content to draft. Used by every agent in the squad.
+description: The geo-seo-squad v2 shared playbook — how to run a daily GEO/LLM-SEO citation audit, score the result, and decide what content to draft. Used by every agent in the squad.
 ---
 
 # GEO / LLM-SEO playbook
@@ -40,8 +40,7 @@ Pick the single worst gap and draft to close it:
 - **A competitor owns the citation** → draft an honest comparison page. Never disparage —
   AI engines drop sources that read as biased.
 
-Drafts go to `wiki/Knowledge/GEO/Drafts/` and, if GitHub is connected, open as a draft PR.
-Drafts are never published live by an agent — a human ships them.
+If GitHub is connected, open a PR and self-merge (squash merge). If not, file to `wiki/Knowledge/GEO/Drafts/`.
 
 ## What makes content citable by AI engines
 
@@ -52,8 +51,28 @@ Drafts are never published live by an agent — a human ships them.
 - **Fresh.** A visible "last updated" date. Stale pages lose citations.
 - **Machine-readable.** `llms.txt` at the domain root, JSON-LD schema on every page.
 
+## Task system
+
+All work runs through the task system — `create_task`, `complete_task`, `fail_task`. Never
+track work in STATE.md or comments.
+
+- On every audit: identify the 3 highest-value tasks and `create_task` for each
+  (`assigned_to: atlas`, priority: `urgent` / `today` / `later` based on citation gap severity).
+- Pick the top task and execute it immediately in the same session — don't queue and sleep.
+- `complete_task` with the deliverable (PR link, wiki draft path, etc.).
+- Before going idle: confirm a next task exists in the queue.
+
+## Daily digest (post to Slack after every audit run)
+
+Three sections, tight:
+1. *Citation delta* — overall share + change, biggest mover.
+2. *Shipped today* — what Atlas executed (PR opened, draft filed, fix deployed).
+3. *Tomorrow's plan* — top task queued for next run.
+
+If nothing moved and nothing shipped: one line saying so. Never pad.
+
 ## Cadence
 
-The daily audit is a cron (`6 PM Pacific`). One-off posts arrive as dispatched tasks. Do
-not self-initiate large content pushes — surface the recommendation in the daily delta and
-let the co-founder dispatch the work.
+The daily audit runs on Atlas's daily heartbeat. One-off posts arrive as dispatched tasks.
+Default is to execute — don't ask the co-founder for permission to draft content or open
+a PR. Ship it, report back via `complete_task`.
