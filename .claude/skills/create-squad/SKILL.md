@@ -15,8 +15,8 @@ Before writing anything, read, in this order:
 1. [`docs/bundle-reference.md`](../../../docs/bundle-reference.md) — the exact file contract.
 2. [`docs/authoring-a-squad.md`](../../../docs/authoring-a-squad.md) — the build process and
    authoring guidance.
-3. The worked example [`squads/geo-seo-squad/`](../../../squads/geo-seo-squad/) — every file.
-   Your output should be consistent with it.
+3. The skeleton bundle [`template/`](../../../template/) — every file. Your output mirrors
+   its structure.
 
 Do not invent the contract from memory — read these files.
 

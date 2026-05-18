@@ -5,8 +5,7 @@ This is the exact file contract for an Agent Squad bundle. It is the source of t
 the [`template/`](../template/) skeleton, and the marketplace's own ingest all agree on.
 
 If you haven't yet, read [`how-squads-work.md`](./how-squads-work.md) first for the concepts.
-The running example throughout is the official [`squads/geo-seo-squad/`](../squads/geo-seo-squad/)
-bundle.
+The examples below point at [`template/`](../template/), the complete, valid skeleton bundle.
 
 ## What a bundle is
 
@@ -78,8 +77,7 @@ fixed in one pass. The authoritative validator in production is
 JSON Schema mirror, and `scripts/validate.mjs` is a behaviour-identical port. A bundle that
 passes `validate.mjs` passes marketplace ingestion.
 
-See [`squads/geo-seo-squad/manifest.json`](../squads/geo-seo-squad/manifest.json) for a
-complete real example.
+See [`template/manifest.json`](../template/manifest.json) for the complete file structure.
 
 ## `SQUAD.md` — the marketplace catalog card
 
@@ -127,7 +125,7 @@ Both are deployed verbatim into the agent's workspace at install. Together they 
 agent.
 
 **`IDENTITY.md` — who the agent is.** Recommended sections (mirror
-[`agents/atlas/IDENTITY.md`](../squads/geo-seo-squad/agents/atlas/IDENTITY.md)):
+[`template/agents/example-agent/IDENTITY.md`](../template/agents/example-agent/IDENTITY.md)):
 
 - A header block: **Name**, **Role**, **Scope**, **Emoji**, **Created** / **Created by**.
 - **What I Do** — the concrete, recurring responsibilities.
@@ -137,7 +135,7 @@ agent.
 - **Voice / Personality** — a pointer to `SOUL.md`.
 
 **`SOUL.md` — how the agent behaves.** Recommended sections (mirror
-[`agents/atlas/SOUL.md`](../squads/geo-seo-squad/agents/atlas/SOUL.md)):
+[`template/agents/example-agent/SOUL.md`](../template/agents/example-agent/SOUL.md)):
 
 - An opening paragraph: a focused contributor reporting to the co-founder, not a generalist.
 - **Scope** — what it owns and explicitly does not own.
@@ -159,7 +157,7 @@ which squad and skills it has, which vault keys it uses, where it files its outp
   per-agent `agents/<id>/MEMORY.md`. **The agent-specific file overrides the squad-wide
   one.** If neither exists, the pod's own memory template is used.
 
-See [`squads/geo-seo-squad/MEMORY.md`](../squads/geo-seo-squad/MEMORY.md).
+See [`template/MEMORY.md`](../template/MEMORY.md).
 
 ## Skills
 
@@ -258,7 +256,7 @@ Run the validator before publishing — it mirrors marketplace ingestion exactly
 
 ```sh
 node scripts/validate.mjs                      # every squads/* bundle and template/
-node scripts/validate.mjs squads/geo-seo-squad # one bundle
+node scripts/validate.mjs squads/<bundle-name> # one bundle
 ```
 
 It exits non-zero on any error; warnings (e.g. a missing `token_intensity`) never fail the
