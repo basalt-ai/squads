@@ -1,0 +1,55 @@
+{
+  "name": "outreach-squad",
+  "version": "0.1.0",
+  "description": "Daily outbound engine: finds leads, runs sequences, handles replies, and posts a digest every day. Simple mode by default, upgrades to Advanced when signals stack.",
+  "author": "pancake-official",
+  "license": "MIT",
+  "skills": [
+    "skills/simple-outreach.md",
+    "skills/advanced-outreach.md"
+  ],
+  "agents": [
+    {
+      "id": "outreach-agent",
+      "description": "Runs the full outbound loop daily: finds 1-3 leads, advances active sequences, handles replies, and posts a digest. Decides simple vs. advanced mode autonomously based on company stage.",
+      "model": "sonnet",
+      "heartbeat": "daily",
+      "skills": []
+    }
+  ],
+  "required_identities": [
+    {
+      "site": "linkedin.com",
+      "reason": "Finds leads via LinkedIn search, sends connection requests, sends and reads DMs as the user."
+    }
+  ],
+  "required_vault_secrets": [
+    {
+      "key": "team.heyreach_api_key",
+      "label": "Heyreach API key (optional — needed for automated LinkedIn sequences)",
+      "type": "api_key"
+    },
+    {
+      "key": "team.lemlist_api_key",
+      "label": "Lemlist API key (optional — needed for automated email sequences or LinkedIn if not using Heyreach)",
+      "type": "api_key"
+    },
+    {
+      "key": "team.fullenrich_api_key",
+      "label": "FullEnrich API key (optional — needed for email enrichment in Advanced mode)",
+      "type": "api_key"
+    },
+    {
+      "key": "team.jungler_api_key",
+      "label": "Jungler API key (optional — needed to extract post likers/commenters in Advanced mode). Get 10% off: https://www.jungler.ai/?via=francois",
+      "type": "api_key"
+    },
+    {
+      "key": "team.crunchbase_api_key",
+      "label": "Crunchbase API key (optional — needed for funding/firmographic signals in Advanced mode)",
+      "type": "api_key"
+    }
+  ],
+  "required_tool_permissions": ["web_search", "web_fetch", "browser", "message"],
+  "min_pancake_version": "1.0.0"
+}

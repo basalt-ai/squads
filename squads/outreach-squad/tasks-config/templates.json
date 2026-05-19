@@ -1,0 +1,39 @@
+{
+  "templates": [
+    {
+      "id": "find-leads",
+      "title": "Find leads: {topic_or_signal}",
+      "description": "Find 4 leads matching the ICP using the provided signal or topic. Draft a personalized connection request for each, referencing the signal. Post the list + drafts to the digest channel for review.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "update-icp",
+      "title": "Update ICP: {new_criteria}",
+      "description": "Update the ICP definition in MEMORY.md with the provided criteria. Review the current active pipeline and flag any leads that no longer match the new ICP. Post a summary to the digest channel.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "write-sequence-variant",
+      "title": "Write new message variant: {angle}",
+      "description": "Write a new A/B variant for the opening DM using the provided angle. Replace the current losing variant in the active A/B test. Log the new test in MEMORY.md.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "weekly-learning",
+      "title": "Weekly outreach review",
+      "description": "Pull the last 7 days of pipeline data from MEMORY.md. Write the weekly learning: what worked, what didn't, one hypothesis for next week. Post to digest channel. Log in MEMORY.md under Weekly Learnings.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "extract-post-engagers",
+      "title": "Extract post engagers: {post_url}",
+      "description": "Use Jungler to extract everyone who liked or commented on the provided post URL. Filter by ICP criteria. Score using signal stacking. Add qualified leads to the pipeline with the post engagement as Signal. Post results to digest channel.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    }
+  ]
+}
