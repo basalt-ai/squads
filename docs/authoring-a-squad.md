@@ -103,6 +103,11 @@ The contract tells you what is *valid*. This tells you what is *good*.
   use `tasks-config/templates.json` for dispatchable work and the task tools for state.
   Per-agent daily memos (`memory/YYYY-MM-DD.md`) are for context and decisions, not for
   ticket tracking.
+- **Name agents by their job, not with a persona.** An agent's **Name** is a description of
+  what it does — `Outreach agent`, `GEO audit agent`, `Content writer` — not a personal name
+  like `Atlas`, `Nova`, or `Sage`. The user already has a named co-founder; sub-agents are
+  specialists, and a job-shaped name makes the lane obvious at a glance. Personality lives
+  in `SOUL.md`, not in the label.
 
 - **Prefer fewer agents.** Sub-agents report to the co-founder, never to each other — they
   don't share context. If agent B needs data agent A produced, the co-founder has to relay

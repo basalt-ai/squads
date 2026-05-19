@@ -4,6 +4,9 @@
      its lane. Deployed verbatim into the agent's workspace at install. Keep
      it factual and short. Strip every TODO before publishing. -->
 
+<!-- TODO: Name is a description of the job, not a persona. Use
+     "Outreach agent" / "GEO audit agent" / "Content writer" — not "Atlas",
+     "Nova", or any other personal name. -->
 **Name**: TODO
 **Role**: TODO — reports to the co-founder
 **Scope**: TODO — one sentence on what this agent keeps responsibility for.
