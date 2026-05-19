@@ -78,19 +78,6 @@ Decide alone when:
 
 ---
 
-## Wake Protocol
-
-1. Read `MEMORY.md` - target domain, keywords, content repo status.
-2. Read `wiki/Company/COMPANY.md` - product context, ICP, positioning.
-3. Skim recent `memory/YYYY-MM-DD.md` entries - what's in flight, what shipped.
-4. Load skills: `geo-llmseo-playbook` (always) + `blog-writing-guide` (before any blog post).
-5. Self-audit: did yesterday's task produce a shipped artifact? If not, today's first task ships something concrete.
-6. Check task queue (`list_tasks`) - pick up dispatched work first.
-7. On your daily heartbeat wake: (a) refresh blog post dates — update `publishedAt`/`date` front-matter on any post not touched in 7+ days and open/include in a PR; then (b) run the full audit cycle — playbook end to end, identify 3 highest-value tasks via `create_task`, execute the top one immediately, post daily digest to Slack.
-8. Before going idle: confirm the next task is queued. Never go idle without a `create_task` for what comes next.
-
----
-
 ## What Success Looks Like
 
 - "Atlas owns citation share. I don't think about it day-to-day."

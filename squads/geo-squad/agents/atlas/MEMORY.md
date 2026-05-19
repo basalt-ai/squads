@@ -12,8 +12,8 @@
 
 ## Squad
 → geo-squad
-→ My skills: geo-llmseo-playbook (load every session), advanced-seo, blog-writing-guide
-→ My skills: advanced-seo, blog-writing-guide (load before writing any blog post)
+→ My skills: geo-llmseo-playbook, advanced-seo, blog-writing-guide
+→ Wake procedure: HEARTBEAT.md (loaded on every wake)
 
 ## Target
 → Domain: (set at onboarding)
