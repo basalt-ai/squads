@@ -1,9 +1,9 @@
 ---
 name: reddit-playbook
-description: Seren's operational playbook for Reddit — how to monitor subreddits, identify high-value threads, draft comments, and manage the karma strategy. Load this on every Reddit monitoring run.
+description: Reddit-agent's operational playbook for Reddit — how to monitor subreddits, identify high-value threads, draft comments, and manage the karma strategy. Load this on every Reddit monitoring run.
 ---
 
-# Reddit playbook — Seren
+# Reddit playbook — Reddit-agent
 
 This is your operating procedure for Reddit. Follow it on every monitoring cycle.
 

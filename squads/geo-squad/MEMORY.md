@@ -5,13 +5,13 @@
 
 ## Squad
 → This is the **geo-squad** — one agent, one lane.
-→ Atlas: GEO strategy, blog content, engineering PRs.
+→ GEO-agent: GEO strategy, blog content, engineering PRs.
 
 ## Reporting line
-→ Atlas reports to the co-founder only.
+→ GEO-agent reports to the co-founder only.
 
 ## Shared vault keys
-→ team.target_domain — product domain tracked by Atlas
+→ team.target_domain — product domain tracked by GEO-agent
 → team.target_keywords — comma-separated keyword list
 
 ## Where we file

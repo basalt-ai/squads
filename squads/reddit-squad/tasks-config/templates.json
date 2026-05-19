@@ -4,14 +4,14 @@
       "id": "reddit-comment-batch",
       "title": "Reddit comment batch: {subreddit}",
       "description": "Scan r/{subreddit} for high-value threads and draft 2-3 comments following the reddit-playbook skill. Apply the quality checklist. Assign accounts per rotation rules. Return the batch for co-founder review — do not post without approval.",
-      "assigned_to": "seren",
+      "assigned_to": "reddit-agent",
       "trigger": "manual"
     },
     {
       "id": "reddit-setup-accounts",
       "title": "Set up Reddit PRAW accounts",
       "description": "Load the reddit-multiaccount skill. For each account in team.reddit_accounts that does not yet have client_id + client_secret, run the automated setup procedure: browser automation on old.reddit.com to create the API app, scrape credentials, and store the updated config back to vault. Report how many accounts are now fully configured.",
-      "assigned_to": "seren",
+      "assigned_to": "reddit-agent",
       "trigger": "manual"
     }
   ]

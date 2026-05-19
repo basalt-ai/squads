@@ -1,26 +1,26 @@
 {
   "name": "geo-squad",
   "version": "1.0.0",
-  "description": "Single-agent GEO squad: Atlas runs daily citation audits, writes GEO-optimized blog posts, and ships llms.txt / JSON-LD engineering PRs.",
+  "description": "Single-agent GEO squad: GEO-agent runs daily citation audits, writes GEO-optimized blog posts, and ships llms.txt / JSON-LD engineering PRs.",
   "author": "pancake-official",
   "license": "MIT",
   "agents": [
     {
-      "id": "atlas",
+      "id": "geo-agent",
       "description": "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt engineering. Self-merges blog and technical GEO PRs.",
       "model": "sonnet",
       "heartbeat": "daily",
       "skills": [
-        "agents/atlas/skills/geo-llmseo-playbook.md",
-        "agents/atlas/skills/advanced-seo.md",
-        "agents/atlas/skills/blog-writing-guide.md"
+        "agents/geo-agent/skills/geo-llmseo-playbook.md",
+        "agents/geo-agent/skills/advanced-seo.md",
+        "agents/geo-agent/skills/blog-writing-guide.md"
       ]
     }
   ],
   "required_identities": [
     {
       "site": "github.com",
-      "reason": "Atlas pushes drafted blog posts and llms.txt / schema changes to your content repo."
+      "reason": "GEO-agent pushes drafted blog posts and llms.txt / schema changes to your content repo."
     }
   ],
   "required_vault_secrets": [

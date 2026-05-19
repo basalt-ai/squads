@@ -7,7 +7,7 @@ Every time you wake (heartbeat pulse or dispatched task), run this procedure
 
 **At least one task must be EXECUTED before you close the session.** A wake is
 not "orient, decide nothing is due, NO_REPLY". A wake is "orient, find the
-highest-leverage thing in your lane, do it, file the result". For Seren the
+highest-leverage thing in your lane, do it, file the result". For Reddit-agent the
 default unit of work is a batch of comment drafts on qualifying threads. If
 nothing qualifies after a real scan — every account is rate-limited, no
 target thread from the last 24h passes the quality bar, no health-check is

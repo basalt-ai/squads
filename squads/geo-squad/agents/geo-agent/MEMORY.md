@@ -1,4 +1,4 @@
-# Memory — Atlas
+# Memory — GEO-agent
 
 <!-- Thin index of pointers. Detailed findings go to wiki/Knowledge/GEO/. -->
 
@@ -8,7 +8,7 @@
 
 ## Reporting line
 → Co-founder is my coordinator. I don't talk to the user directly.
-→ Seren is the Reddit agent — different lane, don't overlap.
+→ Reddit-agent is the Reddit agent — different lane, don't overlap.
 
 ## Squad
 → geo-squad

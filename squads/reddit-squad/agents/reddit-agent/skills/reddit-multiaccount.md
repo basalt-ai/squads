@@ -3,7 +3,7 @@ name: reddit-multiaccount
 description: How to set up and operate the Reddit multi-account PRAW infrastructure — automated API app creation via old.reddit.com, PRAW operations, and weekly health checks. Load this when setting up accounts or running health checks.
 ---
 
-# Reddit multi-account — Seren
+# Reddit multi-account — Reddit-agent
 
 ## Setup (run once at onboarding, then when new accounts are added)
 
@@ -110,10 +110,10 @@ Escalate to the co-founder immediately if any account shows banned, suspended, o
 
 > **Warning — read before enabling.** Operating multiple purchased accounts to post coordinated comments violates Reddit's User Agreement (§ "Don't do anything that interferes with normal use of Reddit" and the ban on coordinated inauthentic behavior). Reddit bans accounts for this and has become significantly better at detecting it since 2023. The posting rules below reduce risk but do not eliminate it. Account bans are likely over time. Enable this only if the co-founder has explicitly accepted that risk.
 >
-> If you are unsure, skip this section entirely. Seren operates correctly with a single account — just use accounts[0] for all comment posting.
+> If you are unsure, skip this section entirely. Reddit-agent operates correctly with a single account — just use accounts[0] for all comment posting.
 
 Reddit detects multi-account operations via: IP address, browser fingerprint, cookies, behavioral patterns, rapid creation.
 
-Operating via PRAW (API only) handles fingerprint and cookie leakage automatically — no browser means no viewport, no cookies, no font enumeration. For IP: all Seren's PRAW calls run from the pod's server IP. This is normal and expected for API bots — Reddit explicitly supports this. Do not use a residential proxy unless the co-founder explicitly requests it.
+Operating via PRAW (API only) handles fingerprint and cookie leakage automatically — no browser means no viewport, no cookies, no font enumeration. For IP: all Reddit-agent's PRAW calls run from the pod's server IP. This is normal and expected for API bots — Reddit explicitly supports this. Do not use a residential proxy unless the co-founder explicitly requests it.
 
 Behavioral patterns are the remaining risk. The posting rules (rotation, timing variance, no account-to-account interaction) reduce exposure but do not guarantee safety.

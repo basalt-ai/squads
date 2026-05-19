@@ -1,4 +1,4 @@
-# Memory — Seren
+# Memory — Reddit-agent
 
 <!-- Thin index of pointers. Detailed findings go to wiki/Knowledge/Reddit/. -->
 

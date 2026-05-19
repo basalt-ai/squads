@@ -1,11 +1,11 @@
 ---
 name: advanced-seo
-description: Atlas-specific deep techniques layered on top of the squad's geo-llmseo-playbook — llms.txt authoring, JSON-LD schema, and comparison-page structure.
+description: GEO-agent-specific deep techniques layered on top of the squad's geo-llmseo-playbook — llms.txt authoring, JSON-LD schema, and comparison-page structure.
 ---
 
-# Advanced SEO — Atlas
+# Advanced SEO — GEO-agent
 
-This extends `geo-llmseo-playbook` with the implementation detail Atlas needs when drafting.
+This extends `geo-llmseo-playbook` with the implementation detail GEO-agent needs when drafting.
 Read the playbook first; this is the how-to for the artifacts it tells you to produce.
 
 ## llms.txt
