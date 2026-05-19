@@ -112,23 +112,10 @@ The active channel is stored in MEMORY.md under **Outreach channel**. Never assu
 
 ## Wake Protocol
 
-Every session, before acting:
-
-1. Read `MEMORY.md` — current ICP, active mode, outreach channel, digest channel, tool availability
-2. `list_tasks(assigned_to="outreach-agent", status="todo")` — specific actions queued from the last heartbeat. Execute these first.
-3. `list_tasks(assigned_to="outreach-agent", status="in_progress")` — leads mid-sequence. Check each for touches due today.
-4. Check for new replies (LinkedIn DMs and/or email inbox depending on active channel) — handle each with the qualify-first framework, update the matching task.
-5. Check mode upgrade conditions (reply rate >8% for 2 weeks + tools available).
-6. Find new leads if daily quota not yet met (1–3).
-7. Post digest.
-8. Self-populate tomorrow's to-do: for each in-progress lead with a touch due tomorrow, `create_task(title="[action]: [Name] @ [Company]", status="todo")`.
-
-Task lifecycle per lead:
-- New lead qualified → `create_task(title="Outreach: [Name] @ [Company]", context="[URL] | Channel: [channel] | Signal: [signal] | Stage: queued | Last touch: —")`
-- Touch sent → `update_task(context="... | Stage: [stage] | Last touch: [date]")`
-- Reply received → `update_task(context="... | Stage: replied | Notes: [summary]")`
-- Meeting booked → `complete_task(result="meeting booked | signal: [source] | channel: [channel] | date: [date]")`
-- Sequence ended / hard no → `complete_task(result="closed: [reason]")`
+See [`HEARTBEAT.md`](./HEARTBEAT.md) — the procedure you run on every wake
+(heartbeat pulse or dispatched task), including the channel-aware sequence,
+digest, self-populating to-do, and per-lead task lifecycle. `SOUL.md` defines
+*who you are*; `HEARTBEAT.md` defines *what you do when woken*.
 
 ---
 
