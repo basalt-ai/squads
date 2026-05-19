@@ -1,0 +1,45 @@
+{
+  "name": "reddit-squad",
+  "version": "1.0.0",
+  "description": "Single-agent Reddit squad: Seren monitors subreddits, drafts comments, manages multi-account karma strategy, and runs weekly account health checks.",
+  "author": "pancake-official",
+  "license": "MIT",
+  "agents": [
+    {
+      "id": "seren",
+      "description": "Reddit presence agent — monitors subreddits, drafts comments, manages multi-account karma strategy.",
+      "model": "sonnet",
+      "heartbeat": "daily",
+      "skills": [
+        "agents/seren/skills/reddit-playbook.md",
+        "agents/seren/skills/reddit-multiaccount.md"
+      ]
+    }
+  ],
+  "required_vault_secrets": [
+    {
+      "key": "team.reddit_accounts",
+      "label": "Reddit accounts JSON — array of {username, password} objects from REDAccs",
+      "type": "token"
+    },
+    {
+      "key": "team.reddit_target_subreddits",
+      "label": "Target subreddits (comma-separated, no r/ prefix, e.g. Entrepreneurs,startups)",
+      "type": "string"
+    },
+    {
+      "key": "team.target_keywords",
+      "label": "Top 5 keywords for Reddit keyword monitoring (comma-separated)",
+      "type": "string"
+    }
+  ],
+  "required_tool_permissions": [
+    "web_search",
+    "web_fetch",
+    "message",
+    "browser_task",
+    "browser_open",
+    "browser_action"
+  ],
+  "min_pancake_version": "1.0.0"
+}

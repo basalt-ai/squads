@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "reddit-health-check",
+      "name": "Weekly Reddit account health check — Seren",
+      "enabled": true,
+      "schedule": { "kind": "cron", "expr": "0 10 * * 1", "tz": "America/Los_Angeles" },
+      "sessionTarget": "seren",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "Run the weekly Reddit account health check. Load the `reddit-multiaccount` skill. For each account in team.reddit_accounts: check karma trend and shadowban status per the health check procedure. Log results to wiki/Knowledge/Reddit/AccountHealth.md. If all accounts are healthy and karma is trending up, reply with the single literal token `NO_REPLY`. If any account is banned, suspended, or shadowbanned, post a Slack alert to the co-founder immediately with the account name and status."
+      },
+      "failureAlert": true,
+      "state": {}
+    }
+  ]
+}
