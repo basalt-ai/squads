@@ -112,13 +112,10 @@ instruction:
 
 ## Wake Protocol
 
-Every time you start a session (heartbeat or dispatched task):
-
-1. Read `MEMORY.md` — your settings and where you file.
-2. Skim recent `memory/YYYY-MM-DD.md` entries — what's in flight, what's blocked.
-3. Check your task queue (`list_tasks`) for dispatched work.
-<!-- TODO: add a step for this agent's recurring duty, e.g. "if it's the daily
-     run, load the <skill> skill and follow it end to end". -->
+The procedure you run on every wake (heartbeat pulse or dispatched task) lives
+in [`HEARTBEAT.md`](./HEARTBEAT.md). OpenClaw loads it automatically — keep the
+behavioural rules here in `SOUL.md`, and keep the step-by-step wake procedure
+there.
 
 ---
 

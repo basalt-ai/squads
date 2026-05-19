@@ -29,6 +29,7 @@ skills/<name>.md               ·  squad-wide skills — referenced by manifest.
 agents/<agent-id>/
   IDENTITY.md                  ✔  per agent — name, role, scope
   SOUL.md                      ✔  per agent — personality, principles, boundaries
+  HEARTBEAT.md                 ·  per agent — the procedure run on every wake
   MEMORY.md                    ·  per agent — seed memory (overrides the squad-wide one)
   skills/<name>.md             ·  agent-specific skills — referenced by agents[].skills[]
 crons/jobs.json                ·  native OpenClaw cron jobs
@@ -143,8 +144,49 @@ agent.
 - **Operating Principles** — how it works day to day.
 - **Escalation Rules** — when to escalate vs decide alone.
 - **Boundaries (Inviolable)** — the *Never* / *Always* hard limits.
-- **Wake Protocol** — what it does at the start of every session.
 - **What Success Looks Like** — the bar.
+
+The step-by-step wake procedure lives in [`HEARTBEAT.md`](#heartbeatmd--the-wake-procedure),
+not in `SOUL.md` — keep behavioural rules here and the procedure there.
+
+## `HEARTBEAT.md` — the wake procedure
+
+Optional, per agent. OpenClaw loads `agents/<id>/HEARTBEAT.md` on **every wake**
+— both heartbeat pulses and dispatched tasks — before the agent starts work.
+This is the right home for the recurring procedure the agent runs each tick:
+what to read, what to decide, what to file. Keeping it out of `SOUL.md` is the
+convention because:
+
+- **`SOUL.md` is about behaviour** — personality, principles, escalation rules.
+  It should not also carry the step-by-step procedure.
+- **`MEMORY.md` is an index of pointers**, not a script. Burying wake steps
+  there hides them and bloats memory.
+- **Authors can iterate on the wake procedure without touching `SOUL.md`**,
+  which keeps personality/principles stable across releases.
+
+Write it in the imperative, addressed to the agent. A solid structure
+(mirrored in [`template/agents/example-agent/HEARTBEAT.md`](../template/agents/example-agent/HEARTBEAT.md)):
+
+1. **The non-negotiable** — *at least one task must be EXECUTED before the
+   session closes.* A wake is "orient, find the highest-leverage action in
+   the lane, do it, file the result" — not "orient and NO_REPLY". `NO_REPLY`
+   is only acceptable when nothing is actionable, and the reason must be
+   logged to `memory/YYYY-MM-DD.md` first.
+2. **Orient** — read `MEMORY.md`, skim recent daily logs, `list_tasks`.
+3. **Decide what this wake is for** — dispatched task, recurring duty, draft
+   to advance, or genuinely nothing (with a logged reason).
+4. **Recurring duty** — the agent's specific heartbeat work and its cadence.
+5. **Execute** — actually produce the artifact; don't just plan.
+6. **Digest** — before closing the session, append a one-paragraph digest to
+   `memory/YYYY-MM-DD.md`: *what you did, what changed, what's still open,
+   and the single first move for the next wake.* The digest is for
+   future-you; only escalate to the co-founder when there is material news.
+   A wake without a digest is an unfinished wake.
+7. **Close the loop** — `complete_task` / `fail_task`, surface blockers.
+
+If the file is absent, the pod's default wake template is used. The validator
+does not enforce `HEARTBEAT.md` (like `MEMORY.md`, it is convention-based and
+not referenced from `manifest.json`).
 
 ## `MEMORY.md` — seed memory
 

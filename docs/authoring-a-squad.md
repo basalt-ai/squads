@@ -40,13 +40,20 @@ and `heartbeat`. Declare `skills`, `required_identities`, and `required_vault_se
 delete any optional section the squad does not use. Full field rules:
 [`bundle-reference.md`](./bundle-reference.md#manifestjson--the-machine-readable-contract).
 
-### 3. Write each agent's `IDENTITY.md` and `SOUL.md`
+### 3. Write each agent's `IDENTITY.md`, `SOUL.md`, and `HEARTBEAT.md`
 
 For every agent in `manifest.agents[]` there must be `agents/<id>/IDENTITY.md` and
 `agents/<id>/SOUL.md`. `IDENTITY.md` is who the agent is; `SOUL.md` is how it behaves.
 Follow the section structure in
-[`bundle-reference.md`](./bundle-reference.md#identitymd-and-soulmd--per-agent). Optionally
-add a per-agent `agents/<id>/MEMORY.md`.
+[`bundle-reference.md`](./bundle-reference.md#identitymd-and-soulmd--per-agent).
+
+For every agent that does recurring work on its heartbeat (most of them), write
+`agents/<id>/HEARTBEAT.md` — the imperative, step-by-step procedure the agent runs on
+every wake. OpenClaw loads it automatically. Keep it out of `SOUL.md` (which is for
+behavioural rules) and out of `MEMORY.md` (which is an index of pointers). See
+[`bundle-reference.md`](./bundle-reference.md#heartbeatmd--the-wake-procedure).
+
+Optionally add a per-agent `agents/<id>/MEMORY.md`.
 
 ### 4. Write the skills
 
@@ -139,6 +146,12 @@ The contract tells you what is *valid*. This tells you what is *good*.
 
 - **`MEMORY.md` is an index, not a notebook.** One-line pointers only. Detailed, growing
   findings go to the shared wiki — never appended to `MEMORY.md`.
+
+- **Wake procedure goes in `HEARTBEAT.md`, not `SOUL.md` or `MEMORY.md`.** OpenClaw loads
+  `HEARTBEAT.md` on every wake. Authors who bury wake steps in `SOUL.md`'s personality
+  section or in `MEMORY.md` pointers end up with a procedure that's hard to find and hard
+  to evolve. Keep `SOUL.md` for behaviour, `MEMORY.md` for pointers, and `HEARTBEAT.md`
+  for the script.
 
 - **Crons and tasks target only this squad's agents.** `sessionTarget` and `assigned_to`
   must name an agent in your own `manifest.agents[]`. The validator enforces this.
