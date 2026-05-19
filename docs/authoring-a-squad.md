@@ -86,6 +86,23 @@ The contract tells you what is *valid*. This tells you what is *good*.
   make an agent do two unrelated things, that's two agents (or the second thing belongs to
   the co-founder).
 
+- **Default to autonomous execution.** A squad agent should do the work end to end and
+  report back with a digest — not pause mid-task to ask the user "is this OK?". The user
+  is a busy board member; their attention is the scarce resource, not the agent's tokens.
+  Write `SOUL.md` so the agent escalates only in the narrow cases that genuinely need a
+  human: out-of-scope work, hard blockers, irreversible/external commitments, or
+  user-facing decisions. Everything else, the agent decides and ships. If you find
+  yourself writing "ask the co-founder before X" for a reversible in-scope action,
+  delete it.
+
+- **Track work in the tasks system, not in markdown.** Pancake's tasks plugin is the
+  shared SQLite store the co-founder and every sub-agent read and write through
+  `list_tasks`, `update_task`, `complete_task`, `fail_task` — that's the single source
+  of truth for queued / in-flight / blocked / done across the pod. Don't design a squad
+  that maintains parallel to-do lists, kanban tables, or status trackers in `.md` files;
+  use `tasks-config/templates.json` for dispatchable work and the task tools for state.
+  Per-agent daily memos (`memory/YYYY-MM-DD.md`) are for context and decisions, not for
+  ticket tracking.
 - **Name agents by their job, not with a persona.** An agent's **Name** is a description of
   what it does — `Outreach agent`, `GEO audit agent`, `Content writer` — not a personal name
   like `Atlas`, `Nova`, or `Sage`. The user already has a named co-founder; sub-agents are
