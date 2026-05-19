@@ -1,4 +1,4 @@
-# MEMORY.md — outreach-agent (Rex)
+# MEMORY.md — outreach-agent
 *Thin index of pointers. Detailed findings go to the wiki, never appended here.*
 
 ## Identity
