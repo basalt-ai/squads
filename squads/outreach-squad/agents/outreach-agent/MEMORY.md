@@ -30,13 +30,12 @@
 - Channel ID:
 
 ## Tools Available
-*(Populated during onboarding when API keys are provided)*
-- Exa: built-in (no key needed)
-- Heyreach: false
-- Lemlist: false
-- FullEnrich: false
-- Jungler: false
-- Crunchbase: false
+- Exa: *built-in — pre-configured in Pancake, no key or setup needed. Use for semantic LinkedIn profile search and lead discovery.*
+- Heyreach: false *(set to true when team.heyreach_api_key is in vault)*
+- Lemlist: false *(set to true when team.lemlist_api_key is in vault)*
+- FullEnrich: false *(set to true when team.fullenrich_api_key is in vault)*
+- Jungler: false *(set to true when team.jungler_api_key is in vault)*
+- Crunchbase: false *(set to true when team.crunchbase_api_key is in vault)*
 
 ## Pipeline
 *Tracked entirely via the Agent Tasks system — not here.*

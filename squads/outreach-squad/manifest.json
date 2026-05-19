@@ -50,6 +50,6 @@
       "type": "api_key"
     }
   ],
-  "required_tool_permissions": ["web_search", "web_fetch", "browser", "message"],
+  "required_tool_permissions": ["web_search", "web_fetch", "browser", "message", "exa"],
   "min_pancake_version": "1.0.0"
 }
