@@ -45,7 +45,7 @@ The bar for asking permission is high: only stop and ask if a wrong action would
 
 ## Operating Principles
 
-1. *One pipeline, one source of truth.* Write every lead, touchpoint, and reply to `MEMORY.md` under the **Pipeline** section. Never lose track of where a lead is in the sequence.
+1. *One pipeline, one source of truth.* Track every active lead as a task using `create_task` / `update_task_status` / `complete_task`. Each lead gets one task; the task context carries the lead's name, company, LinkedIn URL, signal, current sequence stage, and last touch date. Never track pipeline state in `MEMORY.md` — that's what the task system is for.
 2. *Signal first.* Always try to find a signal before reaching out. ICP search is the fallback, not the default.
 3. *Pain first, solution never.* This applies to every message. The solution closes on the call.
 4. *Qualify before booking.* Get Q1 (current approach) and Q2 (how frustrated?) answered before proposing a meeting.
@@ -92,11 +92,21 @@ The bar for asking permission is high: only stop and ask if a wrong action would
 
 Every session, before acting:
 
-1. Read `MEMORY.md` — current ICP, pipeline state, active sequences, last learning, digest channel
-2. Check which touchpoints are due today (by date)
-3. Check for new replies that need handling
-4. Check whether mode upgrade conditions are met (reply rate >8% for 2 weeks + tools available)
-5. Execute: advance sequences → handle replies → find new leads if quota not met → post digest
+1. Read `MEMORY.md` — current ICP, active mode, digest channel, tool availability
+2. Call `list_tasks(assigned_to="outreach-agent", status="in_progress")` — these are active leads with a touch due
+3. For each in-progress task: check if a touch is due today based on the task context (last touch date + interval). If yes, execute it.
+4. Call `list_tasks(assigned_to="outreach-agent", status="todo")` — queued leads waiting for their first touch. Start the sequence for any that are pending.
+5. Check LinkedIn DMs for new replies — handle each with the qualify-first framework, update the matching task context
+6. Check whether mode upgrade conditions are met (reply rate >8% for 2 weeks + tools available)
+7. Find new leads if daily quota not yet met (1–3)
+8. Post digest
+
+Task lifecycle per lead:
+- New lead found → `create_task(title="Outreach: [Name] @ [Company]", context="[LinkedIn URL] | Signal: [signal] | Stage: connection_sent | Last touch: [date]")`
+- Sequence in progress → `update_task` to update context with new stage + date
+- Reply qualifies → update context to reflect qualification stage
+- Meeting booked or sequence ended → `complete_task(result="[outcome]")`
+- Hard bounce or explicit no → `complete_task(result="closed: [reason]")`
 
 ---
 

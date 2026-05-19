@@ -47,11 +47,11 @@ Use Exa for semantic LinkedIn search with the ICP criteria (role + industry + co
 Before adding to the pipeline, verify:
 - Role matches ICP exactly
 - Company size/stage within range
-- Not already in pipeline (deduplicate by LinkedIn URL)
+- Not already in pipeline (deduplicate: call `list_tasks(assigned_to="outreach-agent")` and check for matching LinkedIn URL in task context)
 - Not on the anti-ICP list
 - Not already a customer
 
-Write every qualified lead to MEMORY.md pipeline immediately.
+Once qualified: `create_task(title="Outreach: [Name] @ [Company]", assigned_to="outreach-agent", context="LinkedIn: [URL] | Signal: [signal] | Stage: queued | Last touch: —", priority="today")`
 
 ---
 
@@ -62,12 +62,14 @@ Minimum 4 touchpoints, maximum 5. Run each touch on its scheduled day — do not
 **Touch 1 — Connection request** (Day 1):
 Send with no message attached. No message = better acceptance rate. Just the request.
 If the tool (Heyreach/Lemlist) is available, load the request there. Otherwise use the browser (LinkedIn identity) directly.
+After sending: `update_task(context="... | Stage: connection_sent | Last touch: [date]")`
 
 **Touch 2 — First DM after acceptance** (Day 2–3 after acceptance):
 Open with curiosity and the signal. No pitch. No bullet points. No formatting.
 > Hi [Name], noticed [signal]. Usually that means [pain] — is that the case for you?
 
 Adapt the signal reference to what you actually found. Generic openers perform badly.
+After sending: `update_task(context="... | Stage: dm_1_sent | Last touch: [date]")`
 
 **Touch 3 — Follow-up #1** (Day 5–7 after Touch 2, if no reply):
 New angle — insight, observation, or question. Can be as simple as:
@@ -83,7 +85,7 @@ Short. Genuine. Different angle again.
 Low pressure. Keeps the door open.
 > Last ping, I promise. If [pain] ever becomes a priority, happy to connect then. Good luck with what you're building.
 
-After the breakup, move the lead to "closed — no reply" in MEMORY.md. Never contact again from the same campaign.
+After the breakup: `complete_task(result="closed: no reply after full sequence")`. Never contact again from the same campaign.
 
 ---
 
@@ -115,7 +117,7 @@ Meeting comes after Q2 confirms the pain.
 - Built internal tools → "Makes sense. Do you feel any bottleneck around [core pain]?"
 - Not ICP → "Appreciate the honesty. Not the right fit right now — good luck!"
 
-When a reply leads to a meeting: update MEMORY.md, log the signal source that produced it.
+When a reply leads to a meeting: `complete_task(result="meeting booked | signal: [source] | date: [date]")`. The signal source is logged in the result for KPI tracking.
 
 ---
 

@@ -39,13 +39,10 @@
 - Crunchbase: false
 
 ## Pipeline
-*(Updated after every action — one line per lead)*
-Format: `[Name] | [Company] | [Stage] | [Last touch date] | [Signal] | [Notes]`
-
-<!-- Example:
-- Sarah Chen | Acme Corp | connection_sent | 2026-05-19 | hired new VP Sales | —
-- Mark Dupont | Beta Inc | dm_1_sent | 2026-05-20 | liked competitor post | replied with question
--->
+*Tracked entirely via the Agent Tasks system — not here.*
+Use `list_tasks(assigned_to="outreach-agent")` to see active leads and their sequence state.
+Task title format: `Outreach: [Name] @ [Company]`
+Task context carries: LinkedIn URL, signal, current stage, last touch date, notes.
 
 ## Active A/B Test
 *(One test at a time)*
@@ -59,6 +56,7 @@ Format: `[Name] | [Company] | [Stage] | [Last touch date] | [Signal] | [Notes]`
 <!-- Format: Week of YYYY-MM-DD | What worked | What didn't | Hypothesis -->
 
 ## KPI Tracking
+*(Updated weekly — computed from completed tasks)*
 - LinkedIn connection acceptance rate (last 20):
 - Reply rate (last 20):
 - Meetings booked this month:
