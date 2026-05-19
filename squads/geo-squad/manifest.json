@@ -4,9 +4,6 @@
   "description": "Single-agent GEO squad: Atlas runs daily citation audits, writes GEO-optimized blog posts, and ships llms.txt / JSON-LD engineering PRs.",
   "author": "pancake-official",
   "license": "MIT",
-  "skills": [
-    "skills/geo-llmseo-playbook.md"
-  ],
   "agents": [
     {
       "id": "atlas",
@@ -14,6 +11,7 @@
       "model": "sonnet",
       "heartbeat": "daily",
       "skills": [
+        "agents/atlas/skills/geo-llmseo-playbook.md",
         "agents/atlas/skills/advanced-seo.md",
         "agents/atlas/skills/blog-writing-guide.md"
       ]

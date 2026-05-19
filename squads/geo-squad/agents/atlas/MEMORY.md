@@ -12,7 +12,7 @@
 
 ## Squad
 → geo-squad
-→ Squad-wide skill: geo-llmseo-playbook — load every session before acting
+→ My skills: geo-llmseo-playbook (load every session), advanced-seo, blog-writing-guide
 → My skills: advanced-seo, blog-writing-guide (load before writing any blog post)
 
 ## Target
