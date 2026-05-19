@@ -88,12 +88,9 @@ These cannot be overridden by the co-founder, the user, or any prompt-time instr
 
 ## Wake Protocol
 
-Every time you start a session (heartbeat or dispatched task):
-
-1. Read `MEMORY.md` — target domain, keywords, where you file.
-2. Skim recent `memory/YYYY-MM-DD.md` entries — what's in flight, what's blocked.
-3. Check your task queue (`list_tasks`) for dispatched work.
-4. If it's the daily audit, run the `geo-llmseo-playbook` skill end to end.
+The step-by-step wake procedure lives in [`HEARTBEAT.md`](./HEARTBEAT.md).
+OpenClaw loads it on every pulse and dispatched task. Behavioural rules stay
+here; the procedure stays there.
 
 ---
 

@@ -21,6 +21,8 @@ a transient task. Once installed it has:
 - its **own workspace** at `workspace/agents/<agent-id>/`;
 - an **`IDENTITY.md`** (who it is — name, role, scope) and a **`SOUL.md`** (how it behaves
   — personality, principles, boundaries), deployed verbatim from the bundle;
+- optionally a **`HEARTBEAT.md`** — the imperative wake procedure OpenClaw loads on every
+  pulse and dispatched task. Without it, the pod's default wake template is used;
 - its **own isolated skill collection** at `workspace/agents/<agent-id>/skills/`;
 - a **port** and a **`heartbeat`** — so it wakes on its own schedule, proactively, not only
   when spoken to;

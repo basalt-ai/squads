@@ -39,7 +39,10 @@ Ask the user what they want, and don't scaffold until you have answers for all o
 Copy [`template/`](../../../template/) to `squads/<name>/`, then fill every file:
 
 - `manifest.json` — all the answers from Step 2; delete optional sections the squad doesn't use.
-- `agents/<id>/IDENTITY.md` and `SOUL.md` for every agent; add `agents/<id>/MEMORY.md` if useful.
+- `agents/<id>/IDENTITY.md`, `SOUL.md`, and `HEARTBEAT.md` for every agent; add
+  `agents/<id>/MEMORY.md` if useful. `HEARTBEAT.md` is the imperative wake procedure
+  OpenClaw loads on every pulse — keep it out of `SOUL.md` (behaviour) and `MEMORY.md`
+  (pointer index).
 - Every skill file referenced by the manifest, in SKILL.md format (frontmatter `name` +
   `description`, then a procedure written as steps).
 - `SQUAD.md` (catalog card) and `ONBOARD.md` (the onboarding script).
@@ -59,6 +62,13 @@ Copy [`template/`](../../../template/) to `squads/<name>/`, then fill every file
   `vault_request`, connect identities via `browser_identity_add`, save answers to the agent's
   `MEMORY.md`, and create + dispatch a first task. It must fit `estimated_setup_minutes`.
 - `MEMORY.md` is a **thin index of pointers**, never a notebook.
+- `HEARTBEAT.md` is the **imperative wake procedure** OpenClaw loads on every pulse —
+  not behaviour (that's `SOUL.md`), not pointers (that's `MEMORY.md`). It must require
+  the agent to **execute at least one task before closing the session** (no
+  orient-and-bail), and to write a **digest** to `memory/YYYY-MM-DD.md` before ending
+  the turn — what was done, what changed, what's still open, the next wake's first
+  move. `NO_REPLY` is only acceptable when nothing is actionable, with the reason
+  logged first.
 - Crons and task templates target **only this squad's own agents**.
 - A cron run with nothing to report must reply with the single literal token `NO_REPLY`.
 
