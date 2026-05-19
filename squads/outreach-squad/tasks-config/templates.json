@@ -1,37 +1,86 @@
 {
   "templates": [
     {
+      "id": "daily-digest",
+      "title": "Post daily outreach digest",
+      "description": "Compile and post the daily outreach digest to the configured digest channel. Include: actions taken today, pipeline status (X leads active, X in sequence), reply rate this week, active A/B test status, and one note on what you're learning. Always post even if nothing happened.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
       "id": "find-leads",
       "title": "Find leads: {topic_or_signal}",
-      "description": "Find 4 leads matching the ICP using the provided signal or topic. Draft a personalized connection request for each, referencing the signal. Post the list + drafts to the digest channel for review.",
+      "description": "Find 1-4 leads matching the ICP using the provided signal or topic. Check for duplicates against the active task pipeline first. For each qualified lead: create a task via create_task, draft a personalized first touch referencing the signal, and include the lead details in the daily digest.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "enrich-leads",
+      "title": "Enrich leads: {lead_names_or_task_ids}",
+      "description": "Find email addresses for the specified leads using FullEnrich (if key in vault) or Hunter.io. Update each lead's task context with the enriched email. Flag any leads where enrichment failed. Required before sending email sequences.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "send-linkedin-connection",
+      "title": "Send LinkedIn connection: {name} @ {company}",
+      "description": "Send a LinkedIn connection request to the specified lead (no message attached — better acceptance rate). Use Heyreach or Lemlist if available in vault; otherwise open LinkedIn via browser identity and send manually. Update the lead's task context: Stage: connection_sent | Last touch: [today].",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "send-linkedin-dm",
+      "title": "Send LinkedIn DM: {name} @ {company} — {touch_number}",
+      "description": "Send the specified LinkedIn DM touch to the lead. Load the current stage from the lead's task context to determine which message in the sequence to send. No bullet points, no formatting, under 5 lines, pain-first opener. Update task context after sending: Stage: dm_[N]_sent | Last touch: [today].",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "send-email",
+      "title": "Send email: {name} @ {company} — {touch_number}",
+      "description": "Send the specified email touch to the lead using the pod's email address or the configured sending domain. Subject line: curiosity or specificity, never salesy. Pain-first body. Update task context after sending: Stage: email_[N]_sent | Last touch: [today]. Max 10 emails/day total.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "handle-reply",
+      "title": "Handle reply: {name} @ {company}",
+      "description": "Draft and send a reply to the inbound message from the specified lead. Apply the qualify-first framework: start with their point, stay curious, never pitch, max 40 words, end with a question or calendar link. Update the lead's task context with the reply summary and new qualification stage.",
+      "assigned_to": "outreach-agent",
+      "trigger": "manual"
+    },
+    {
+      "id": "advance-sequence",
+      "title": "Advance sequence: {name} @ {company}",
+      "description": "Check the current stage for the specified lead (from their task context) and send the next due touch in the sequence. Determine the correct channel (LinkedIn or email) from the task context. Update task context after sending.",
       "assigned_to": "outreach-agent",
       "trigger": "manual"
     },
     {
       "id": "update-icp",
       "title": "Update ICP: {new_criteria}",
-      "description": "Update the ICP definition in MEMORY.md with the provided criteria. Review the current active pipeline and flag any leads that no longer match the new ICP. Post a summary to the digest channel.",
+      "description": "Update the ICP definition in MEMORY.md with the provided criteria. Review the current active pipeline (list_tasks) and flag any in-progress leads that no longer match. Post a summary to the digest channel.",
       "assigned_to": "outreach-agent",
       "trigger": "manual"
     },
     {
       "id": "write-sequence-variant",
       "title": "Write new message variant: {angle}",
-      "description": "Write a new A/B variant for the opening DM using the provided angle. Replace the current losing variant in the active A/B test. Log the new test in MEMORY.md.",
+      "description": "Write a new A/B variant for the opening touch using the provided angle. Replace the current losing variant in the active A/B test. Log the new test in MEMORY.md under Active A/B Test.",
       "assigned_to": "outreach-agent",
       "trigger": "manual"
     },
     {
       "id": "weekly-learning",
       "title": "Weekly outreach review",
-      "description": "Pull the last 7 days of pipeline data from MEMORY.md. Write the weekly learning: what worked, what didn't, one hypothesis for next week. Post to digest channel. Log in MEMORY.md under Weekly Learnings.",
+      "description": "Compute last 7 days of pipeline performance from completed and in-progress tasks. Write the weekly learning: what worked, what didn't, one hypothesis for next week. Post to digest channel. Log in MEMORY.md under Weekly Learnings.",
       "assigned_to": "outreach-agent",
       "trigger": "manual"
     },
     {
       "id": "extract-post-engagers",
       "title": "Extract post engagers: {post_url}",
-      "description": "Use Jungler to extract everyone who liked or commented on the provided post URL. Filter by ICP criteria. Score using signal stacking. Add qualified leads to the pipeline with the post engagement as Signal. Post results to digest channel.",
+      "description": "Use Jungler (requires API key in vault) to extract everyone who liked or commented on the provided post. Filter by ICP criteria (role, company size). Score using signal stacking. Create tasks for qualified leads via create_task. Post results to digest channel.",
       "assigned_to": "outreach-agent",
       "trigger": "manual"
     }
