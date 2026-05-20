@@ -76,3 +76,8 @@ Surface to the co-founder only when there is material citation movement.
   it to the co-founder.
 - **Plan two steps ahead.** Before closing, queue the next task via
   `create_task`. Never go idle without what comes next on the queue.
+
+## 8. Weekly learning
+
+On the last heartbeat of the week, log one learning: what worked, what
+didn't, one hypothesis. File it under **Weekly Learnings** in `MEMORY.md`.

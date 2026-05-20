@@ -71,3 +71,8 @@ only when there is material news (use `update_task` / a Slack post per
   it to the co-founder.
 - Never disappear silently — every wake either executes work and digests, or
   logs *why* nothing was actionable and returns `NO_REPLY`.
+
+## 7. Weekly learning
+
+On the last heartbeat of the week, log one learning: what worked, what
+didn't, one hypothesis. File it under **Weekly Learnings** in `MEMORY.md`.
