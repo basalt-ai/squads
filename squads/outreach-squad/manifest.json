@@ -23,7 +23,7 @@
       "reason": "Finds leads via LinkedIn search, sends connection requests, sends and reads DMs as the user."
     }
   ],
-  "required_vault_secrets": [
+  "optional_vault_secrets": [
     {
       "key": "team.heyreach_api_key",
       "label": "Heyreach API key (optional — needed for automated LinkedIn sequences)",
@@ -51,5 +51,14 @@
     }
   ],
   "required_tool_permissions": ["web_search", "web_fetch", "browser", "message", "exa"],
+  "crons": [
+    {
+      "id": "daily-heartbeat",
+      "description": "Daily outbound loop: find leads, advance sequences, handle replies, post digest.",
+      "schedule": "daily",
+      "assigned_to": "outreach-agent",
+      "task": "Run the full daily outbound loop: find 1–3 leads, advance all active sequences, handle any inbound replies, post the digest. See HEARTBEAT.md for the full procedure."
+    }
+  ],
   "min_pancake_version": "1.0.0"
 }
