@@ -202,10 +202,9 @@ async function checkReferencedFile(bundleDir, bundleRoot, rel) {
   return null;
 }
 
-// ── cron / task targeting ───────────────────────────────────────────────────
+// ── cron targeting ──────────────────────────────────────────────────────────
 // Behaviour-identical port of assertSquadTargets in deploy.ts: a cron job's
-// sessionTarget and a task template's assigned_to may only name an agent the
-// squad itself declares.
+// sessionTarget may only name an agent the squad itself declares.
 
 function collectAgentIds(manifest) {
   const ids = new Set();
@@ -256,13 +255,6 @@ async function checkTargeting(bundleDir, agentIds) {
   };
 
   await checkFile("crons/jobs.json", "jobs", "id", "sessionTarget", "cron job");
-  await checkFile(
-    "tasks-config/templates.json",
-    "templates",
-    "id",
-    "assigned_to",
-    "task template",
-  );
   return { errors, warnings };
 }
 

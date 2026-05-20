@@ -40,8 +40,7 @@ your-squad-repo/
 ├── MEMORY.md
 ├── agents/<agent-id>/IDENTITY.md, SOUL.md, skills/...
 ├── skills/...
-├── crons/jobs.json
-└── tasks-config/templates.json
+└── crons/jobs.json
 ```
 
 There is **no `squads/` directory** in a self-hosted repo — that nesting is specific to

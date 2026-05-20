@@ -69,11 +69,11 @@ plus a body describing what the squad does, what the user needs, and what they g
 
 `ONBOARD.md` is a **script the co-founder executes** — see the guidance below.
 
-### 6. Optionally add `crons/`, `tasks-config/`, `MEMORY.md`
+### 6. Optionally add `crons/`, `MEMORY.md`
 
-Add `crons/jobs.json` for scheduled work, `tasks-config/templates.json` for dispatchable
-task templates, and a squad-wide `MEMORY.md` for seed memory. All optional — delete the
-template's copies if unused.
+Add `crons/jobs.json` for scheduled work and a squad-wide `MEMORY.md` for seed memory.
+All optional — delete the template's copies if unused. There are no per-bundle task
+templates; ad-hoc work is dispatched at runtime via the tasks plugin (`create_task`).
 
 ### 7. Validate
 
@@ -107,9 +107,9 @@ The contract tells you what is *valid*. This tells you what is *good*.
   `list_tasks`, `update_task`, `complete_task`, `fail_task` — that's the single source
   of truth for queued / in-flight / blocked / done across the pod. Don't design a squad
   that maintains parallel to-do lists, kanban tables, or status trackers in `.md` files;
-  use `tasks-config/templates.json` for dispatchable work and the task tools for state.
-  Per-agent daily memos (`memory/YYYY-MM-DD.md`) are for context and decisions, not for
-  ticket tracking.
+  the agent's recurring duty lives in `HEARTBEAT.md`, dispatchable work is created at
+  runtime with `create_task`, and the task tools own state. Per-agent daily memos
+  (`memory/YYYY-MM-DD.md`) are for context and decisions, not for ticket tracking.
 - **Name agents by their job, not with a persona.** An agent's **Name** is a description of
   what it does — `Outreach agent`, `GEO audit agent`, `Content writer` — not a personal name
   like `Atlas`, `Nova`, or `Sage`. The user already has a named co-founder; sub-agents are
@@ -153,8 +153,8 @@ The contract tells you what is *valid*. This tells you what is *good*.
   to evolve. Keep `SOUL.md` for behaviour, `MEMORY.md` for pointers, and `HEARTBEAT.md`
   for the script.
 
-- **Crons and tasks target only this squad's agents.** `sessionTarget` and `assigned_to`
-  must name an agent in your own `manifest.agents[]`. The validator enforces this.
+- **Crons target only this squad's agents.** A cron's `sessionTarget` must name an
+  agent in your own `manifest.agents[]`. The validator enforces this.
 
 - **Strip every TODO.** The template is full of `<!-- TODO -->` comments and placeholder
   text. None of it should survive into a published bundle.

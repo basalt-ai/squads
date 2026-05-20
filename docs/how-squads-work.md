@@ -8,7 +8,7 @@ step-by-step build).
 
 An **Agent Squad** is an installable bundle that, in one command from a Pancake user,
 deploys one or more **proactive sub-agents** into a Pancake pod — their identity,
-personality, skills, crons, seed memory, and task templates — with no manual file editing.
+personality, skills, crons, and seed memory — with no manual file editing.
 
 A Pancake pod has one main **co-founder** agent. A squad adds specialists *under* it. The
 user asks the co-founder (in Slack) to install a squad; the co-founder does the rest.
@@ -45,7 +45,7 @@ A squad travels through two separate pieces of infrastructure:
 2. **The in-pod `squad-store` plugin** — the **installer**. Running inside a Pancake pod, it
    pulls a marketplace-verified bundle, re-validates it defensively, and performs the
    mechanical deploy: creating agents, wiring `openclaw.json`, deploying skills, merging
-   crons, seeding memory, storing task templates.
+   crons, and seeding memory.
 
 **This repo feeds the marketplace.** It is not the marketplace and it is not the installer
 — it is the *source of bundles* the marketplace seeds its catalog from, plus the public
@@ -64,8 +64,7 @@ When a user asks the co-founder to install a squad, four things happen:
    `.tar.gz`, extracts it, re-validates the manifest, and for each agent: creates
    `workspace/agents/<id>/` (with `IDENTITY.md` + `SOUL.md` from the bundle), adds an
    `agents.list` entry to `openclaw.json` (port, model, heartbeat), deploys the agent's
-   skills into its own skills folder, merges the bundle's crons, seeds memory, and stores
-   the task templates.
+   skills into its own skills folder, merges the bundle's crons, and seeds memory.
 
 3. **Onboarding.** The co-founder runs the bundle's [`ONBOARD.md`](./bundle-reference.md#onboardmd)
    **as a script** — not as documentation. `ONBOARD.md` tells the co-founder what to ask the
@@ -91,9 +90,9 @@ this repo checks them too.
   the squad — not shared by reference. Each agent gets its own copy under
   `workspace/agents/<id>/skills/`.
 
-- **Squad-only targeting.** A squad's crons and task templates may target **only the agents
-  that the squad itself declares** in `manifest.agents[]`. A cron cannot target the
-  co-founder or another squad's agent.
+- **Squad-only targeting.** A squad's crons may target **only the agents that the squad
+  itself declares** in `manifest.agents[]`. A cron cannot target the co-founder or
+  another squad's agent.
 
 ## Where this repo sits
 
