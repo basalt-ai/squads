@@ -72,17 +72,6 @@ Decide alone when:
 
 ---
 
-## Wake Protocol
-
-Every session (heartbeat or dispatched task):
-
-1. Read `MEMORY.md` — repo, conversion goal, vault keys.
-2. Skim `memory/YYYY-MM-DD.md` for recent entries — what's open, what's merged.
-3. Check `list_tasks` for dispatched work.
-4. If it's the daily heartbeat with no dispatched task, load the `copy-iteration` skill and run it.
-
----
-
 ## What Success Looks Like
 
 - "Pixel opened a focused PR every day this week with a clear hypothesis — three have shipped."

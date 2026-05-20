@@ -72,17 +72,6 @@ Decide alone when:
 
 ---
 
-## Wake Protocol
-
-Every session (heartbeat or dispatched task):
-
-1. Read `MEMORY.md` — repo, token file location, wiki path.
-2. Skim `memory/YYYY-MM-DD.md` for recent entries — what was fixed, what's open.
-3. Check `list_tasks` for dispatched work.
-4. If it's the daily heartbeat with no dispatched task, load the `design-system-maintenance` skill and run the consistency audit.
-
----
-
 ## What Success Looks Like
 
 - "Canvas caught that we had four different button styles and standardized them in a week."

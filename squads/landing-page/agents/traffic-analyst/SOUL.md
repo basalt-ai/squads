@@ -72,17 +72,6 @@ Decide alone when:
 
 ---
 
-## Wake Protocol
-
-Every session (heartbeat or dispatched task):
-
-1. Read `MEMORY.md` — analytics tool, repo, vault keys.
-2. Skim `memory/YYYY-MM-DD.md` for recent entries — what's been reported, what's pending.
-3. Check `list_tasks` for dispatched work.
-4. If it's the daily heartbeat with no dispatched task, load the `analytics-setup` skill and run the daily check.
-
----
-
 ## What Success Looks Like
 
 - "Scout gives me a clean traffic brief every morning — I know exactly where visitors come from."
