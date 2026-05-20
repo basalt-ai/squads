@@ -31,7 +31,6 @@ Ask the user what they want, and don't scaffold until you have answers for all o
 - **Required identities** — external sites the squad needs connected, each with a reason.
 - **Required vault secrets** — each `{ key, label, type }`.
 - **Crons** — any scheduled jobs, and what each one does.
-- **Task templates** — manual and/or recurring tasks the co-founder can dispatch.
 - **Catalog metadata** — `tags` and `token_intensity` (`low`/`medium`/`high`).
 
 ## Step 3 — Scaffold
@@ -46,8 +45,8 @@ Copy [`template/`](../../../template/) to `squads/<name>/`, then fill every file
 - Every skill file referenced by the manifest, in SKILL.md format (frontmatter `name` +
   `description`, then a procedure written as steps).
 - `SQUAD.md` (catalog card) and `ONBOARD.md` (the onboarding script).
-- Add or delete the optional `crons/jobs.json`, `tasks-config/templates.json`, and squad-wide
-  `MEMORY.md` depending on Step 2.
+- Add or delete the optional `crons/jobs.json` and squad-wide `MEMORY.md` depending on
+  Step 2.
 - **Strip every `<!-- TODO -->` comment and placeholder** the template ships with.
 
 > If this repo has no `squads/` directory — i.e. it is a third-party self-host repo — scaffold
@@ -69,7 +68,7 @@ Copy [`template/`](../../../template/) to `squads/<name>/`, then fill every file
   the turn — what was done, what changed, what's still open, the next wake's first
   move. `NO_REPLY` is only acceptable when nothing is actionable, with the reason
   logged first.
-- Crons and task templates target **only this squad's own agents**.
+- Crons target **only this squad's own agents**.
 - A cron run with nothing to report must reply with the single literal token `NO_REPLY`.
 
 ## Step 5 — Validate

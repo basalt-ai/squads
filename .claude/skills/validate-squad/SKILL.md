@@ -29,9 +29,8 @@ The validator's checks fall into four groups:
 - **Referenced-file errors** — a file the manifest points to (`SQUAD.md`, `ONBOARD.md`, a
   skill, an agent's `IDENTITY.md`/`SOUL.md`) is missing, is a symlink, is not a regular
   file, or resolves outside the bundle root.
-- **Targeting errors** (`crons/jobs.json`, `tasks-config/templates.json`) — a cron's
-  `sessionTarget` or a template's `assigned_to` names an agent the squad does not declare.
-  Squad crons and tasks may target only the squad's own agents.
+- **Targeting errors** (`crons/jobs.json`) — a cron's `sessionTarget` names an agent the
+  squad does not declare. Squad crons may target only the squad's own agents.
 - **Frontmatter warnings** — `SQUAD.md` is missing `tags` / `token_intensity`, or
   `ONBOARD.md` has no frontmatter block. These do not fail the run, but advise the user to
   fix them so the catalog card renders correctly.

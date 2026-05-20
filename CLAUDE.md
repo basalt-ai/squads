@@ -24,7 +24,7 @@ A bundle is a directory with a `manifest.json` (the validated machine contract: 
 `version`, `description`, `author`, `agents[]`, plus optional skills, identities, and vault
 secrets), a `SQUAD.md` catalog card, an `ONBOARD.md` onboarding script, and per agent an
 `agents/<id>/IDENTITY.md` and `SOUL.md`. Optionally it carries `MEMORY.md` seed memory,
-`skills/` files, `crons/jobs.json`, and `tasks-config/templates.json`. Full detail is in
+`skills/` files, and `crons/jobs.json`. Full detail is in
 [`docs/bundle-reference.md`](./docs/bundle-reference.md).
 
 ## Working in this repo

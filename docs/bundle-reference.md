@@ -33,7 +33,6 @@ agents/<agent-id>/
   MEMORY.md                    ·  per agent — seed memory (overrides the squad-wide one)
   skills/<name>.md             ·  agent-specific skills — referenced by agents[].skills[]
 crons/jobs.json                ·  native OpenClaw cron jobs
-tasks-config/templates.json    ·  task templates the co-founder can dispatch
 ```
 
 On ingest the marketplace **verifies every file the manifest references** — it must exist,
@@ -260,30 +259,11 @@ Optional. Native OpenClaw cron jobs registered at install.
   the single literal token **`NO_REPLY`** — OpenClaw's silent-turn sentinel. Never write
   "do not respond"; that trips a false-positive failure alert.
 
-## `tasks-config/templates.json` — task templates
+## Dispatchable work
 
-Optional. Task templates the co-founder can dispatch.
-
-```json
-{
-  "templates": [
-    {
-      "id": "blog-post",
-      "title": "Write blog post: {topic}",
-      "description": "<brief for the agent>",
-      "assigned_to": "atlas",
-      "trigger": "manual"
-    }
-  ]
-}
-```
-
-- **`assigned_to` must be an agent id in `manifest.agents[]`** — the same squad-only
-  targeting rule as crons.
-- A template with no `recurrence` is a **manual** template — the co-founder dispatches it
-  on demand. `{placeholders}` in the `title`/`description` are filled at dispatch time.
-- A template with **`recurrence`** (`daily` | `weekly`) and an optional **`time`**
-  (`"HH:MM TZ"`, e.g. `"09:00 PT"`) is synthesized into a native cron at install.
+Squads do not ship task templates. The agent's recurring wake procedure lives in
+`HEARTBEAT.md`, and ad-hoc work is dispatched by the co-founder at runtime via the
+tasks plugin (`create_task`) — there is no per-bundle template file.
 
 ## Naming conventions
 

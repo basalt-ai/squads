@@ -26,9 +26,9 @@ squad.
 ## How squads work
 
 An Agent Squad installs proactive specialist sub-agents — their identity, skills, crons,
-seed memory, and task templates — under a pod's main co-founder agent, with no manual file
-editing. Start with [`docs/how-squads-work.md`](./docs/how-squads-work.md) for the concepts
-and the install lifecycle.
+and seed memory — under a pod's main co-founder agent, with no manual file editing. Start
+with [`docs/how-squads-work.md`](./docs/how-squads-work.md) for the concepts and the
+install lifecycle.
 
 ## Build your own
 
