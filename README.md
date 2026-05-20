@@ -20,7 +20,8 @@ squad.
 
 | Squad | What it does | Agents |
 |---|---|---|
-| [`geo-seo-squad`](./squads/geo-seo-squad/) | GEO / LLM SEO — keeps your product visible in AI-engine citations (ChatGPT, Gemini, Perplexity). | `atlas` |
+| [`geo-squad`](./squads/geo-squad/) | GEO / LLM SEO — daily citation audits, blog posts, and GEO engineering PRs (self-merging). | `geo-agent` |
+| [`reddit-squad`](./squads/reddit-squad/) | Reddit growth — monitors subreddits, drafts replies, and ships founder-voice posts. | `reddit-agent` |
 
 ## How squads work
 
