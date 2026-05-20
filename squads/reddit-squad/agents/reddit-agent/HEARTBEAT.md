@@ -71,3 +71,8 @@ Before you end the turn, write a one-paragraph digest of this wake to
   with the reason, log it, surface it to the co-founder immediately.
 - Never disappear silently — every wake either drafts work and digests, or
   logs *why* nothing was actionable and returns `NO_REPLY`.
+
+## 7. Weekly learning
+
+On the last heartbeat of the week, log one learning: what worked, what
+didn't, one hypothesis. File it under **Weekly Learnings** in `MEMORY.md`.

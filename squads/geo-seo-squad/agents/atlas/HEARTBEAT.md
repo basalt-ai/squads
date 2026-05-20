@@ -65,3 +65,8 @@ review).
 - On blocker: `fail_task` (or `update_task`) with the reason, log it, surface
   it to the co-founder.
 - Never publish live or merge a PR — drafts only. A human ships.
+
+## 7. Weekly learning
+
+On the last heartbeat of the week, log one learning: what worked, what
+didn't, one hypothesis. File it under **Weekly Learnings** in `MEMORY.md`.
