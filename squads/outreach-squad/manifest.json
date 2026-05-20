@@ -17,39 +17,6 @@
       "skills": []
     }
   ],
-  "required_identities": [
-    {
-      "site": "linkedin.com",
-      "reason": "Finds leads via LinkedIn search, sends connection requests, sends and reads DMs as the user."
-    }
-  ],
-  "optional_vault_secrets": [
-    {
-      "key": "team.heyreach_api_key",
-      "label": "Heyreach API key (optional \u2014 needed for automated LinkedIn sequences)",
-      "type": "api_key"
-    },
-    {
-      "key": "team.lemlist_api_key",
-      "label": "Lemlist API key (optional \u2014 needed for automated email sequences or LinkedIn if not using Heyreach)",
-      "type": "api_key"
-    },
-    {
-      "key": "team.fullenrich_api_key",
-      "label": "FullEnrich API key (optional \u2014 needed for email enrichment in Advanced mode)",
-      "type": "api_key"
-    },
-    {
-      "key": "team.jungler_api_key",
-      "label": "Jungler API key (optional \u2014 needed to extract post likers/commenters in Advanced mode). Get 10% off: https://www.jungler.ai/?via=francois",
-      "type": "api_key"
-    },
-    {
-      "key": "team.crunchbase_api_key",
-      "label": "Crunchbase API key (optional \u2014 needed for funding/firmographic signals in Advanced mode)",
-      "type": "api_key"
-    }
-  ],
   "required_tool_permissions": [
     "web_search",
     "web_fetch",

@@ -38,10 +38,27 @@
 - Crunchbase: false *(set to true when team.crunchbase_api_key is in vault)*
 
 ## Pipeline
-*Tracked entirely via the Agent Tasks system — not here.*
-Use `list_tasks(assigned_to="outreach-agent")` to see active leads and their sequence state.
-Task title format: `Outreach: [Name] @ [Company]`
-Task context carries: LinkedIn URL, signal, current stage, last touch date, notes.
+*The pipeline is the source of truth for who's been contacted, what stage they're at, and what's due. Maintained inline here — read it at the start of every heartbeat, update it after every action.*
+
+### Active leads
+<!-- One row per lead currently in a sequence. Drop the row when the lead closes (move to Closed below).
+Columns: Name | Company | LinkedIn URL | Channel (linkedin/email/both) | Signal | Stage | Last touch (YYYY-MM-DD) | Next touch due (YYYY-MM-DD) | Notes -->
+
+| Name | Company | LinkedIn | Channel | Signal | Stage | Last touch | Next due | Notes |
+|------|---------|----------|---------|--------|-------|------------|----------|-------|
+
+### Closed leads
+<!-- Append-only log. One row per closed lead. Result is one of: meeting_booked, no_reply, not_a_fit, hard_no.
+Columns: Name | Company | Result | Date closed | Signal source -->
+
+| Name | Company | Result | Date closed | Signal source |
+|------|---------|--------|-------------|---------------|
+
+### Stage vocabulary
+`queued` → `connection_sent` → `dm_1_sent` → `dm_2_sent` → `dm_3_sent` → `breakup_sent`
+Email parallel: `email_1_sent`, `email_2_sent`, `email_3_sent`
+Advanced extras: `voice_note_sent`, `cold_call_drafted`, `whatsapp_sent`
+Reply states: `replied`, `qualifying`, `meeting_booked`
 
 ## Active A/B Test
 *(One test at a time)*
@@ -55,7 +72,7 @@ Task context carries: LinkedIn URL, signal, current stage, last touch date, note
 <!-- Format: Week of YYYY-MM-DD | What worked | What didn't | Hypothesis -->
 
 ## KPI Tracking
-*(Updated weekly — computed from completed tasks)*
+*(Updated weekly — computed from the Closed leads table above)*
 - LinkedIn connection acceptance rate (last 20):
 - Reply rate (last 20):
 - Meetings booked this month:

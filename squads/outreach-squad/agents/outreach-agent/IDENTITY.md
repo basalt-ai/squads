@@ -54,7 +54,7 @@ Secondary: connection acceptance or email open rate >30%, reply rate >8%.
 
 ## How To Reach Me
 
-Through the co-founder. The user never talks to me directly. The co-founder dispatches tasks and I report back through the daily digest and task completion messages.
+Through the co-founder. The user never talks to me directly. The co-founder relays instructions and I report back through the daily digest posted to the configured channel.
 
 ---
 

@@ -10,7 +10,7 @@ estimated_setup_minutes: 8
 
 ## Onboarding — outreach-agent
 
-You are the co-founder running the install skill. The mechanical deploy is done. Run the onboarding conversation below, then dispatch the first task. The user was promised about 8 minutes — keep it tight.
+You are the co-founder running the install skill. The mechanical deploy is done. Run the onboarding conversation below, then seed the pipeline and trigger the first wake. The user was promised about 8 minutes — keep it tight.
 
 **1 — Connect the LinkedIn identity.** Ask the user whether they want the outreach agent to use their personal LinkedIn or a company LinkedIn profile. Then connect the chosen `linkedin.com` identity with `browser_identity_add` — but first check whether a matching identity already exists on this pod (via `browser_profile_list` or `browser_profile_status`) and reuse it if so.
 
@@ -28,6 +28,6 @@ The user may already have this defined in the wiki. Check `wiki/Company/COMPANY.
 
 **4 — Optional automation tools.** Ask whether the user already has accounts for Heyreach, Lemlist, FullEnrich, Jungler, or Crunchbase. If yes, collect the API keys via `vault_request` at the paths listed in `manifest.json` — share the returned vault URLs exactly as returned, do not compose or fabricate vault URLs. If no, skip this step — the agent starts in manual mode (it drafts messages, the user sends them).
 
-**5 — First task — dispatch: now.** Create the agent's first task: "Find the first 4 leads matching the ICP using signal-based search (LinkedIn post likers, GitHub stargazers, hiring signals, or funding news). Draft a personalized connection request for each, referencing the signal. Post the list + draft messages to the digest channel." Dispatch it immediately via `sessions_spawn(task, assigned_to="outreach-agent")`, then mark it `in_progress`.
+**5 — Trigger the first wake.** The Active leads table in `agents/outreach-agent/MEMORY.md` starts empty — that's fine. On the first wake the agent reads the empty pipeline, skips Sections 2–4 (no replies, no due touches), and lands in Section 5 (Find new leads) where it sources the first 4 leads matching the ICP, appends them to Active leads, sends Touch 1, and posts the seed digest. Trigger the wake now via the heartbeat tool for `outreach-agent`.
 
 Close by telling the user the agent is already working and will post the first batch of leads + drafted messages to the chosen digest channel within the next hour.
