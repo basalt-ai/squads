@@ -8,8 +8,10 @@ Orientation for a Claude Code session opened in this repo.
 that deploy proactive sub-agents into a Pancake pod. It holds Pancake's official squads,
 the source the Pancake marketplace seeds from, and the public contract for squad authors.
 
-There is **no application code** here — no `package.json`, no build. The only script is the
-zero-dependency validator.
+There is **no application code** here — no `package.json`, no build. Just two
+zero-dependency Node scripts: `scripts/validate.mjs` (mirrors marketplace ingestion) and
+`scripts/test-validator.mjs` (self-tests for the validator, run by CI to catch
+regressions in the validator itself).
 
 ## How the repo is organized
 

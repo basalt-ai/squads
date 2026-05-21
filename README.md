@@ -13,6 +13,7 @@ squad.
 - **`template/`** — a complete, valid skeleton bundle to copy from.
 - **`docs/`** — the full contract and authoring guides.
 - **`scripts/validate.mjs`** — a zero-dependency validator that mirrors marketplace ingestion.
+- **`scripts/test-validator.mjs`** — self-tests for the validator: builds known-bad bundles in a temp dir and asserts each is rejected with the expected error. CI runs it alongside the validator so a weakened check turns red.
 - **`manifest.schema.json`** + **`agent.schema.json`** — JSON Schemas for editor validation of `manifest.json` and per-agent `agent.json`.
 - **`.claude/skills/`** — Claude Code skills to author and validate squads.
 
@@ -49,7 +50,9 @@ node scripts/validate.mjs squads/<bundle-name> # one bundle
 ```
 
 Zero dependencies — just Node. It mirrors marketplace ingestion exactly, so a bundle that
-passes here passes ingestion. CI runs it on every push and pull request.
+passes here passes ingestion. CI runs it on every push and pull request, alongside
+`node scripts/test-validator.mjs` which self-tests the validator against negative
+fixtures (forbidden files, wrong heartbeat shape, etc.) — both must pass for a merge.
 
 ## Publish
 
