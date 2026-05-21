@@ -88,7 +88,7 @@ for the canonical upstream spec.
 | `id` | string | ✔ | kebab-case. Must match the directory name `agents/<id>/` and the entry in `manifest.json#/agents`. |
 | `description` | string | ✔ | non-empty one-liner — what this agent owns. |
 | `model` | string | · | enum `haiku` \| `sonnet` \| `opus`. Defaults to the pod's `agents.defaults.model` (`sonnet`) when omitted. |
-| `heartbeat` | string | · | enum `15m` \| `30m` \| `2h` \| `daily`. Defaults to the pod default (`2h`) when omitted. When set, `agents/<id>/HEARTBEAT.md` must exist. |
+| `heartbeat` | object | · | `{ "every": "15m" \| "30m" \| "2h" \| "daily" }`. Object shape mirrors OpenClaw's `agents.list[].heartbeat`. Defaults to the pod default (`{ every: "2h" }`) when omitted. When set, `agents/<id>/HEARTBEAT.md` must exist. |
 | `skills` | string[] | · | bundle-relative paths to this agent's skill files. |
 | `contextInjection` | string | · | enum `always` \| `continuation-skip` \| `never`. Pod default applies when omitted. |
 | `bootstrapMaxChars` | integer | · | positive. OpenClaw bootstrap budget; pod default applies when omitted. |

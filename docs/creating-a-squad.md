@@ -108,7 +108,7 @@ For every id in `manifest.agents`, create `agents/<id>/agent.json`:
   "id": "your-agent-id",
   "description": "One line on what this agent owns.",
   "model": "sonnet",
-  "heartbeat": "daily",
+  "heartbeat": { "every": "daily" },
   "skills": ["agents/your-agent-id/skills/your-skill.md"]
 }
 ```
@@ -204,7 +204,7 @@ Every field accepted in `agents/<id>/agent.json`:
 | `id` | string | ✔ | kebab-case. Must match the directory name and the `manifest.agents` entry. |
 | `description` | string | ✔ | Non-empty. One-line role description. |
 | `model` | string | · | Enum: `haiku` \| `sonnet` \| `opus`. Defaults to the pod default (`sonnet`). |
-| `heartbeat` | string | · | Enum: `15m` \| `30m` \| `2h` \| `daily`. Defaults to the pod default (`2h`). When set, `agents/<id>/HEARTBEAT.md` must exist. |
+| `heartbeat` | object | · | `{ "every": "15m" \| "30m" \| "2h" \| "daily" }`. Object shape mirrors OpenClaw's `agents.list[].heartbeat`. Defaults to the pod default (`{ every: "2h" }`). When set, `agents/<id>/HEARTBEAT.md` must exist. |
 | `skills` | string[] | · | Bundle-relative paths to this agent's skill files. |
 | `contextInjection` | string | · | Enum: `always` \| `continuation-skip` \| `never`. Pod default applies when omitted. |
 | `bootstrapMaxChars` | integer | · | Positive integer. OpenClaw bootstrap budget. |

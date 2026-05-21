@@ -25,10 +25,10 @@ Do not invent the contract from memory — read these files.
 Ask the user what they want, and don't scaffold until you have answers for all of it:
 
 - **The squad** — its purpose, and a kebab-case `name` (globally unique, ≤ 64 chars).
-- **Each agent** — `id` (kebab-case), role / `description`, `model` (`haiku`/`sonnet`/`opus`),
-  `heartbeat` (`15m`/`30m`/`2h`/`daily`). Keep each agent single-lane and focused. Both
-  `model` and `heartbeat` are strict string enums — the values above are the only ones
-  accepted.
+- **Each agent** — `id` (kebab-case), role / `description`, `model` (`haiku`/`sonnet`/`opus`,
+  string enum), `heartbeat` (object `{ "every": "15m"|"30m"|"2h"|"daily" }`, the
+  OpenClaw-runtime shape). Keep each agent single-lane and focused. Both enums above are
+  the only accepted values.
 - **Skills** — which are squad-wide (every agent gets them) vs agent-specific.
 - **Required identities** — external sites the squad needs connected, each with a reason.
 - **Required vault secrets** — each `{ key, label, type }`.
@@ -43,10 +43,10 @@ Copy [`template/`](../../../template/) to `squads/<name>/`, then fill every file
 - **`manifest.json`** — package descriptor only. `agents` is a string array of kebab ids.
   No per-agent runtime config in this file. Delete optional sections the squad doesn't use.
 - **`agents/<id>/agent.json`** for every agent — the per-agent runtime config (subset of
-  OpenClaw's `agents.list[]`). Required: `id`, `description`. Strict string enums for
-  `model` (`haiku`/`sonnet`/`opus`) and `heartbeat` (`15m`/`30m`/`2h`/`daily`) — no object
-  wrappers, no other values. Optional: `skills`, `contextInjection`, `bootstrapMaxChars`,
-  `params`. Unknown fields are rejected.
+  OpenClaw's `agents.list[]`). Required: `id`, `description`. `model` is a string from
+  `haiku`/`sonnet`/`opus`. `heartbeat` is an object `{ "every": "15m"|"30m"|"2h"|"daily" }`
+  — the OpenClaw runtime shape; a plain string like `"daily"` is rejected. Optional:
+  `skills`, `contextInjection`, `bootstrapMaxChars`, `params`. Unknown fields are rejected.
 - **`agents/<id>/IDENTITY.md`, `SOUL.md`, and `HEARTBEAT.md`** for every agent; add
   `agents/<id>/MEMORY.md` if useful. `HEARTBEAT.md` is **required** when `agent.json`
   declares a heartbeat — keep it out of `SOUL.md` (behaviour) and `MEMORY.md` (pointer

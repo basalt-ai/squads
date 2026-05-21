@@ -213,8 +213,17 @@ function validateAgentJson(input, expectedId, pathPrefix) {
     err("model", `must be one of: ${MODELS.join(", ")}`);
   }
 
-  if (input.heartbeat !== undefined && !HEARTBEATS.includes(input.heartbeat)) {
-    err("heartbeat", `must be one of: ${HEARTBEATS.join(", ")}`);
+  if (input.heartbeat !== undefined) {
+    if (!isObject(input.heartbeat)) {
+      err("heartbeat", `must be an object of the shape { "every": "${HEARTBEATS.join('"|"')}" }`);
+    } else {
+      for (const key of Object.keys(input.heartbeat)) {
+        if (key !== "every") err(`heartbeat.${key}`, "unknown field — only `every` is allowed");
+      }
+      if (!HEARTBEATS.includes(input.heartbeat.every)) {
+        err("heartbeat.every", `must be one of: ${HEARTBEATS.join(", ")}`);
+      }
+    }
   }
 
   if (input.skills !== undefined && !isStringArray(input.skills)) {
@@ -517,7 +526,7 @@ async function validateBundle(bundleDir) {
     refs.push(`agents/${id}/IDENTITY.md`, `agents/${id}/SOUL.md`);
     const agent = agentsById.get(id);
     if (isObject(agent)) {
-      if (typeof agent.heartbeat === "string") {
+      if (isObject(agent.heartbeat) && typeof agent.heartbeat.every === "string") {
         refs.push(`agents/${id}/HEARTBEAT.md`);
       }
       if (isStringArray(agent.skills)) refs.push(...agent.skills);
