@@ -86,22 +86,14 @@ const cases = [
     expect: null,
   },
   {
-    name: "valid bundle with full heartbeat sub-fields",
+    name: "valid bundle with every curated heartbeat sub-field",
     mutate: (b) => {
       b["agents/test-agent/agent.json"].heartbeat = {
         every: "2h",
-        model: "openai/gpt-5.4-mini",
-        includeReasoning: false,
-        includeSystemPromptSection: true,
-        lightContext: false,
-        isolatedSession: false,
-        skipWhenBusy: false,
-        session: "main",
-        directPolicy: "allow",
-        target: "none",
-        prompt: "Read HEARTBEAT.md if it exists",
-        ackMaxChars: 300,
-        suppressToolErrorWarnings: false,
+        model: "haiku",
+        lightContext: true,
+        isolatedSession: true,
+        skipWhenBusy: true,
         timeoutSeconds: 45,
       };
       b["agents/test-agent/HEARTBEAT.md"] = "wake procedure\n";
@@ -143,12 +135,20 @@ const cases = [
     expect: /heartbeat\.lightContext.*must be a boolean/,
   },
   {
-    name: "heartbeat.directPolicy outside allow|block is rejected",
+    name: "heartbeat.model outside haiku|sonnet|opus is rejected",
     mutate: (b) => {
-      b["agents/test-agent/agent.json"].heartbeat = { every: "30m", directPolicy: "maybe" };
+      b["agents/test-agent/agent.json"].heartbeat = { every: "30m", model: "openai/gpt-5.4-mini" };
       b["agents/test-agent/HEARTBEAT.md"] = "wake\n";
     },
-    expect: /heartbeat\.directPolicy.*must be one of: allow, block/,
+    expect: /heartbeat\.model.*must be one of: haiku, sonnet, opus/,
+  },
+  {
+    name: "pod-level heartbeat field (e.g. directPolicy) is rejected",
+    mutate: (b) => {
+      b["agents/test-agent/agent.json"].heartbeat = { every: "30m", directPolicy: "allow" };
+      b["agents/test-agent/HEARTBEAT.md"] = "wake\n";
+    },
+    expect: /heartbeat\.directPolicy.*unknown field/,
   },
   {
     name: "heartbeat.timeoutSeconds = 0 is rejected (must be positive)",

@@ -1,0 +1,11 @@
+# Editor & IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# OS junk
+Thumbs.db
+
+# Node (in case anyone adds a package.json later — there is none today)
+node_modules/

@@ -73,7 +73,6 @@ squads/                          ← this repo
 ├── CONTRIBUTING.md               curation policy
 ├── manifest.schema.json          JSON Schema for manifest.json
 ├── agent.schema.json             JSON Schema for agents/<id>/agent.json
-├── .vscode/settings.json         maps manifest.json and agent.json files to the schemas
 ├── .github/                      CI validator workflow + PR template
 ├── .claude/skills/               create-squad, validate-squad
 ├── docs/                         how-squads-work, bundle-reference, creating-a-squad, publishing

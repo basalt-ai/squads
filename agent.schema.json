@@ -25,7 +25,7 @@
     "heartbeat": {
       "type": "object",
       "additionalProperties": false,
-      "description": "OpenClaw heartbeat config — mirrors agents.defaults.heartbeat / agents.list[].heartbeat in OpenClaw. Every sub-field is optional; omitted values inherit from the pod's agents.defaults.heartbeat. When the heartbeat object is present, agents/<id>/HEARTBEAT.md must exist.",
+      "description": "OpenClaw heartbeat config — the curated subset of agents.list[].heartbeat that squad authors are allowed to set. Pod-level fields (prompt, target, directPolicy, etc.) are intentionally omitted. Every sub-field below is optional; omitted values inherit from the pod's agents.defaults.heartbeat. When the heartbeat object is present, agents/<id>/HEARTBEAT.md must exist.",
       "properties": {
         "every": {
           "type": "string",
@@ -34,22 +34,26 @@
         },
         "model": {
           "type": "string",
-          "minLength": 1,
-          "description": "Override the agent-level model just for heartbeat runs. Free-form OpenClaw model id (provider/model or a configured alias)."
+          "enum": ["haiku", "sonnet", "opus"],
+          "description": "Override the agent-level model just for heartbeat runs. Same strict enum as the top-level model field."
         },
-        "includeReasoning": { "type": "boolean" },
-        "includeSystemPromptSection": { "type": "boolean" },
-        "lightContext": { "type": "boolean" },
-        "isolatedSession": { "type": "boolean" },
-        "skipWhenBusy": { "type": "boolean" },
-        "session": { "type": "string", "minLength": 1 },
-        "to": { "type": "string", "minLength": 1 },
-        "directPolicy": { "type": "string", "enum": ["allow", "block"] },
-        "target": { "type": "string", "minLength": 1 },
-        "prompt": { "type": "string" },
-        "ackMaxChars": { "type": "integer", "minimum": 0 },
-        "suppressToolErrorWarnings": { "type": "boolean" },
-        "timeoutSeconds": { "type": "integer", "minimum": 1 }
+        "lightContext": {
+          "type": "boolean",
+          "description": "When true, the wake bootstrap loads only HEARTBEAT.md from the workspace — useful for cheap, narrow wakes."
+        },
+        "isolatedSession": {
+          "type": "boolean",
+          "description": "When true, each heartbeat runs in a fresh session with no prior conversation history."
+        },
+        "skipWhenBusy": {
+          "type": "boolean",
+          "description": "When true, defer the wake while this agent's other lanes (subagents, nested tasks) are still running."
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum seconds the heartbeat run is allowed before OpenClaw aborts it."
+        }
       }
     },
     "skills": {

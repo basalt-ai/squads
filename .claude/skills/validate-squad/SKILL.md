@@ -31,12 +31,17 @@ The validator's checks fall into the following categories:
   `manifest.agents` must have a matching `agents/<id>/agent.json` file.
 - **`agent.json` schema** (e.g. `agents/<id>/agent.json#/model  must be one of: haiku,
   sonnet, opus`) — the per-agent config is invalid. Common causes:
-  - Wrong `model` value (string enum `haiku`/`sonnet`/`opus`).
-  - `heartbeat` written as a plain string instead of the OpenClaw object shape (e.g.
+  - Wrong `model` value (string enum `haiku`/`sonnet`/`opus`) — applies to both
+    top-level `model` and `heartbeat.model`.
+  - `heartbeat` written as a plain string instead of the object shape (e.g.
     `"heartbeat": "daily"` instead of `"heartbeat": { "every": "24h" }`).
   - `heartbeat.every` written as a named value (`"daily"`) instead of an OpenClaw duration
     in `ms`/`s`/`m`/`h` (`"30m"`, `"2h"`, `"24h"`, `"0m"`).
-  - Unknown field on the agent or inside `heartbeat`.
+  - Unknown field on the agent or inside `heartbeat`. Only six heartbeat sub-fields are
+    accepted (`every`, `model`, `lightContext`, `isolatedSession`, `skipWhenBusy`,
+    `timeoutSeconds`); pod-level fields like `prompt`, `target`, `directPolicy`,
+    `session`, `to`, `ackMaxChars` are rejected because they're not authorable from a
+    bundle.
   - `id` not matching the directory name.
 - **Referenced-file errors** — a file the manifest or agent.json points to (`SQUAD.md`,
   `ONBOARD.md`, a skill, `IDENTITY.md`, `SOUL.md`, `HEARTBEAT.md` when the agent has a
