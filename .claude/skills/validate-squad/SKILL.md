@@ -30,9 +30,14 @@ The validator's checks fall into the following categories:
 - **`agent.json` missing** (`agents/<id>/agent.json  not found`) — every id in
   `manifest.agents` must have a matching `agents/<id>/agent.json` file.
 - **`agent.json` schema** (e.g. `agents/<id>/agent.json#/model  must be one of: haiku,
-  sonnet, opus`) — the per-agent config is invalid. Common causes: wrong `model` value
-  (string enum), `heartbeat` written as a plain string instead of the object shape
-  `{ "every": "daily" }`, an unknown field, or `id` not matching the directory name.
+  sonnet, opus`) — the per-agent config is invalid. Common causes:
+  - Wrong `model` value (string enum `haiku`/`sonnet`/`opus`).
+  - `heartbeat` written as a plain string instead of the OpenClaw object shape (e.g.
+    `"heartbeat": "daily"` instead of `"heartbeat": { "every": "24h" }`).
+  - `heartbeat.every` written as a named value (`"daily"`) instead of an OpenClaw duration
+    in `ms`/`s`/`m`/`h` (`"30m"`, `"2h"`, `"24h"`, `"0m"`).
+  - Unknown field on the agent or inside `heartbeat`.
+  - `id` not matching the directory name.
 - **Referenced-file errors** — a file the manifest or agent.json points to (`SQUAD.md`,
   `ONBOARD.md`, a skill, `IDENTITY.md`, `SOUL.md`, `HEARTBEAT.md` when the agent has a
   heartbeat) is missing, is a symlink, is not a regular file, or resolves outside the

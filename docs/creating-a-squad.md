@@ -108,7 +108,7 @@ For every id in `manifest.agents`, create `agents/<id>/agent.json`:
   "id": "your-agent-id",
   "description": "One line on what this agent owns.",
   "model": "sonnet",
-  "heartbeat": { "every": "daily" },
+  "heartbeat": { "every": "24h" },
   "skills": ["agents/your-agent-id/skills/your-skill.md"]
 }
 ```
@@ -204,7 +204,7 @@ Every field accepted in `agents/<id>/agent.json`:
 | `id` | string | ✔ | kebab-case. Must match the directory name and the `manifest.agents` entry. |
 | `description` | string | ✔ | Non-empty. One-line role description. |
 | `model` | string | · | Enum: `haiku` \| `sonnet` \| `opus`. Defaults to the pod default (`sonnet`). |
-| `heartbeat` | object | · | `{ "every": "15m" \| "30m" \| "2h" \| "daily" }`. Object shape mirrors OpenClaw's `agents.list[].heartbeat`. Defaults to the pod default (`{ every: "2h" }`). When set, `agents/<id>/HEARTBEAT.md` must exist. |
+| `heartbeat` | object | · | Mirrors [OpenClaw's `agents.list[].heartbeat`](https://docs.openclaw.ai/gateway/config-agents#agents-defaults-heartbeat). Common shape `{ "every": "<duration>" }`; full sub-field list in [`bundle-reference.md`](./bundle-reference.md#agents-id-agent-json--per-agent-runtime-config). `every` is a duration in OpenClaw units `ms`/`s`/`m`/`h` (e.g. `"30m"`, `"2h"`, `"24h"`, `"0m"` to disable) — named values like `"daily"` are rejected. When the heartbeat object is present, `agents/<id>/HEARTBEAT.md` must exist. |
 | `skills` | string[] | · | Bundle-relative paths to this agent's skill files. |
 | `contextInjection` | string | · | Enum: `always` \| `continuation-skip` \| `never`. Pod default applies when omitted. |
 | `bootstrapMaxChars` | integer | · | Positive integer. OpenClaw bootstrap budget. |

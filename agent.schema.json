@@ -25,14 +25,32 @@
     "heartbeat": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["every"],
+      "description": "OpenClaw heartbeat config — mirrors agents.defaults.heartbeat / agents.list[].heartbeat in OpenClaw. Every sub-field is optional; omitted values inherit from the pod's agents.defaults.heartbeat. When the heartbeat object is present, agents/<id>/HEARTBEAT.md must exist.",
       "properties": {
         "every": {
           "type": "string",
-          "enum": ["15m", "30m", "2h", "daily"]
-        }
-      },
-      "description": "OpenClaw heartbeat config — object with a strict-enum `every` value. Defaults to the pod's agents.defaults when omitted. When set, agents/<id>/HEARTBEAT.md must exist."
+          "pattern": "^\\d+(ms|s|m|h)$",
+          "description": "Duration string in OpenClaw format — units ms / s / m / h. e.g. \"30m\", \"2h\", \"24h\". Set \"0m\" to disable. Named values like \"daily\" are not valid."
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Override the agent-level model just for heartbeat runs. Free-form OpenClaw model id (provider/model or a configured alias)."
+        },
+        "includeReasoning": { "type": "boolean" },
+        "includeSystemPromptSection": { "type": "boolean" },
+        "lightContext": { "type": "boolean" },
+        "isolatedSession": { "type": "boolean" },
+        "skipWhenBusy": { "type": "boolean" },
+        "session": { "type": "string", "minLength": 1 },
+        "to": { "type": "string", "minLength": 1 },
+        "directPolicy": { "type": "string", "enum": ["allow", "block"] },
+        "target": { "type": "string", "minLength": 1 },
+        "prompt": { "type": "string" },
+        "ackMaxChars": { "type": "integer", "minimum": 0 },
+        "suppressToolErrorWarnings": { "type": "boolean" },
+        "timeoutSeconds": { "type": "integer", "minimum": 1 }
+      }
     },
     "skills": {
       "type": "array",

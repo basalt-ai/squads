@@ -26,10 +26,33 @@ const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 const MODELS = ["haiku", "sonnet", "opus"];
-const HEARTBEATS = ["15m", "30m", "2h", "daily"];
 const CONTEXT_INJECTIONS = ["always", "continuation-skip", "never"];
 const SECRET_TYPES = ["string", "api_key", "token"];
 const MAX_DESCRIPTION = 200;
+
+// Heartbeat config mirrors OpenClaw's agents.defaults.heartbeat /
+// agents.list[].heartbeat — see https://docs.openclaw.ai/gateway/config-agents.
+// `every` is a duration string in OpenClaw's ms/s/m/h format (e.g. "30m",
+// "2h", "24h", "0m" to disable) — named values like "daily" are invalid.
+const HEARTBEAT_EVERY_PATTERN = /^\d+(ms|s|m|h)$/;
+const HEARTBEAT_DIRECT_POLICIES = ["allow", "block"];
+const HEARTBEAT_FIELDS = {
+  every:                       { kind: "duration" },
+  model:                       { kind: "nonEmptyString" },
+  includeReasoning:            { kind: "boolean" },
+  includeSystemPromptSection:  { kind: "boolean" },
+  lightContext:                { kind: "boolean" },
+  isolatedSession:             { kind: "boolean" },
+  skipWhenBusy:                { kind: "boolean" },
+  session:                     { kind: "nonEmptyString" },
+  to:                          { kind: "nonEmptyString" },
+  directPolicy:                { kind: "enum", values: HEARTBEAT_DIRECT_POLICIES },
+  target:                      { kind: "nonEmptyString" },
+  prompt:                      { kind: "string" },
+  ackMaxChars:                 { kind: "nonNegativeInteger" },
+  suppressToolErrorWarnings:   { kind: "boolean" },
+  timeoutSeconds:              { kind: "positiveInteger" },
+};
 
 const FORBIDDEN_BASENAMES = new Set(["agents.md", "user.md", "bootstrap.md", "boot.md"]);
 
@@ -168,6 +191,47 @@ function validateManifest(input) {
   return errors;
 }
 
+// ── heartbeat sub-schema validation ─────────────────────────────────────────
+// Mirrors OpenClaw's heartbeat config exactly. Every sub-field is optional;
+// unknown sub-fields are rejected.
+
+function validateHeartbeat(input, prefix, err) {
+  for (const key of Object.keys(input)) {
+    const spec = HEARTBEAT_FIELDS[key];
+    if (!spec) {
+      err(`${prefix}.${key}`, `unknown field — allowed: ${Object.keys(HEARTBEAT_FIELDS).join(", ")}`);
+      continue;
+    }
+    const v = input[key];
+    const at = `${prefix}.${key}`;
+    switch (spec.kind) {
+      case "duration":
+        if (typeof v !== "string" || !HEARTBEAT_EVERY_PATTERN.test(v)) {
+          err(at, 'must be an OpenClaw duration string in units ms/s/m/h (e.g. "30m", "2h", "24h", "0m" to disable). Named values like "daily" are not valid.');
+        }
+        break;
+      case "string":
+        if (typeof v !== "string") err(at, "must be a string");
+        break;
+      case "nonEmptyString":
+        if (typeof v !== "string" || v.length === 0) err(at, "must be a non-empty string");
+        break;
+      case "boolean":
+        if (typeof v !== "boolean") err(at, "must be a boolean");
+        break;
+      case "positiveInteger":
+        if (!Number.isInteger(v) || v < 1) err(at, "must be a positive integer");
+        break;
+      case "nonNegativeInteger":
+        if (!Number.isInteger(v) || v < 0) err(at, "must be a non-negative integer");
+        break;
+      case "enum":
+        if (!spec.values.includes(v)) err(at, `must be one of: ${spec.values.join(", ")}`);
+        break;
+    }
+  }
+}
+
 // ── agent.json validation ───────────────────────────────────────────────────
 // Validates agents/<id>/agent.json against the agent.schema.json subset of
 // OpenClaw's agents.list[].
@@ -215,14 +279,9 @@ function validateAgentJson(input, expectedId, pathPrefix) {
 
   if (input.heartbeat !== undefined) {
     if (!isObject(input.heartbeat)) {
-      err("heartbeat", `must be an object of the shape { "every": "${HEARTBEATS.join('"|"')}" }`);
+      err("heartbeat", "must be an object mirroring OpenClaw's agents.list[].heartbeat (see docs.openclaw.ai/gateway/config-agents)");
     } else {
-      for (const key of Object.keys(input.heartbeat)) {
-        if (key !== "every") err(`heartbeat.${key}`, "unknown field — only `every` is allowed");
-      }
-      if (!HEARTBEATS.includes(input.heartbeat.every)) {
-        err("heartbeat.every", `must be one of: ${HEARTBEATS.join(", ")}`);
-      }
+      validateHeartbeat(input.heartbeat, "heartbeat", err);
     }
   }
 

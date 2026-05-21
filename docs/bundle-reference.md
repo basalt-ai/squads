@@ -88,7 +88,7 @@ for the canonical upstream spec.
 | `id` | string | ✔ | kebab-case. Must match the directory name `agents/<id>/` and the entry in `manifest.json#/agents`. |
 | `description` | string | ✔ | non-empty one-liner — what this agent owns. |
 | `model` | string | · | enum `haiku` \| `sonnet` \| `opus`. Defaults to the pod's `agents.defaults.model` (`sonnet`) when omitted. |
-| `heartbeat` | object | · | `{ "every": "15m" \| "30m" \| "2h" \| "daily" }`. Object shape mirrors OpenClaw's `agents.list[].heartbeat`. Defaults to the pod default (`{ every: "2h" }`) when omitted. When set, `agents/<id>/HEARTBEAT.md` must exist. |
+| `heartbeat` | object | · | Mirrors [OpenClaw's `agents.list[].heartbeat`](https://docs.openclaw.ai/gateway/config-agents#agents-defaults-heartbeat) — `{ every, model, includeReasoning, includeSystemPromptSection, lightContext, isolatedSession, skipWhenBusy, session, to, directPolicy, target, prompt, ackMaxChars, suppressToolErrorWarnings, timeoutSeconds }`. All sub-fields optional. `every` is an OpenClaw duration string (units `ms`/`s`/`m`/`h`, e.g. `"30m"`, `"2h"`, `"24h"`, or `"0m"` to disable) — named values like `"daily"` are rejected. Inherits any omitted sub-field from the pod's `agents.defaults.heartbeat`. When the heartbeat object is present, `agents/<id>/HEARTBEAT.md` must exist. |
 | `skills` | string[] | · | bundle-relative paths to this agent's skill files. |
 | `contextInjection` | string | · | enum `always` \| `continuation-skip` \| `never`. Pod default applies when omitted. |
 | `bootstrapMaxChars` | integer | · | positive. OpenClaw bootstrap budget; pod default applies when omitted. |
