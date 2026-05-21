@@ -1,21 +1,10 @@
 {
   "name": "reddit-squad",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Single-agent Reddit squad: Reddit-agent monitors subreddits, drafts comments, manages multi-account karma strategy, and runs weekly account health checks.",
   "author": "pancake-official",
   "license": "MIT",
-  "agents": [
-    {
-      "id": "reddit-agent",
-      "description": "Reddit presence agent — monitors subreddits, drafts comments, manages multi-account karma strategy.",
-      "model": "sonnet",
-      "heartbeat": "daily",
-      "skills": [
-        "agents/reddit-agent/skills/reddit-playbook.md",
-        "agents/reddit-agent/skills/reddit-multiaccount.md"
-      ]
-    }
-  ],
+  "agents": ["reddit-agent"],
   "required_vault_secrets": [
     {
       "key": "team.reddit_accounts",

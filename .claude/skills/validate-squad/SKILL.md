@@ -21,26 +21,45 @@ bundle has an error; warnings never fail the run.
 
 For every error, tell the user in plain language **what** is wrong and **why** it matters,
 referencing [`docs/bundle-reference.md`](../../../docs/bundle-reference.md) for the rule.
-The validator's checks fall into four groups:
+The validator's checks fall into the following categories:
 
-- **Manifest errors** (dotted path, e.g. `agents[0].id`) — a field in `manifest.json`
-  breaks a rule: bad kebab-case or semver, a missing required field, a value outside an
-  enum, a duplicate agent id. See the field reference in `bundle-reference.md`.
-- **Referenced-file errors** — a file the manifest points to (`SQUAD.md`, `ONBOARD.md`, a
-  skill, an agent's `IDENTITY.md`/`SOUL.md`) is missing, is a symlink, is not a regular
-  file, or resolves outside the bundle root.
+- **Manifest schema** (e.g. `agents[0]  "Geo Agent" must be kebab-case`) — a field in
+  `manifest.json` breaks a rule: bad kebab-case or semver, a missing required field, a
+  value outside an enum, a duplicate agent id, or `agents` is no longer an object array
+  (it must now be a string array of agent ids).
+- **`agent.json` missing** (`agents/<id>/agent.json  not found`) — every id in
+  `manifest.agents` must have a matching `agents/<id>/agent.json` file.
+- **`agent.json` schema** (e.g. `agents/<id>/agent.json#/model  must be one of: haiku,
+  sonnet, opus`) — the per-agent config is invalid. Common causes: wrong `model` or
+  `heartbeat` value (both are strict string enums), an unknown field, or `id` not matching
+  the directory name.
+- **Referenced-file errors** — a file the manifest or agent.json points to (`SQUAD.md`,
+  `ONBOARD.md`, a skill, `IDENTITY.md`, `SOUL.md`, `HEARTBEAT.md` when the agent has a
+  heartbeat) is missing, is a symlink, is not a regular file, or resolves outside the
+  bundle root.
 - **Targeting errors** (`crons/jobs.json`) — a cron's `sessionTarget` names an agent the
   squad does not declare. Squad crons may target only the squad's own agents.
-- **Frontmatter warnings** — `SQUAD.md` is missing `tags` / `token_intensity`, or
-  `ONBOARD.md` has no frontmatter block. These do not fail the run, but advise the user to
-  fix them so the catalog card renders correctly.
+- **Forbidden file** (e.g. `agents/<id>/USER.md  forbidden filename`) — the bundle
+  contains a file named `AGENTS.md`, `USER.md`, `BOOTSTRAP.md`, or `BOOT.md`. Those are
+  pod-managed by Pancake Cloud and must not appear inside a bundle. Delete the file.
+  `TOOLS.md` is *allowed* and is not flagged.
+- **Deprecated field** (e.g. `SQUAD.md  frontmatter has a deprecated 'token_intensity:'
+  line`) — `token_intensity` has been removed from the contract. Pancake Cloud computes
+  token usage automatically; delete the line.
+- **Unresolved TODO** (e.g. `SQUAD.md  unresolved TODO marker on line 12`) — the bundle
+  still contains `<!-- TODO`, `TODO:`, or a bare `TODO` line left over from the template.
+  Strip the placeholder.
+- **Frontmatter warnings** — `SQUAD.md` missing `tags`, or `ONBOARD.md` missing its
+  frontmatter block. These do not fail the run but advise the user to fix them so the
+  catalog card renders correctly.
 
 ## Step 3 — Fix the offending files
 
 Correct each error in the relevant file. Make the smallest change that satisfies the
 contract — don't rewrite content that isn't broken. For a missing referenced file, either
 create the file or remove the manifest reference, depending on the user's intent (ask if
-unclear).
+unclear). For a forbidden filename, delete the file (or rename it if the content is
+worth keeping — e.g. `USER.md` content can move into `MEMORY.md` as a pointer).
 
 ## Step 4 — Re-run until clean
 

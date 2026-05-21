@@ -27,8 +27,11 @@ const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const SEMVER = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 const MODELS = ["haiku", "sonnet", "opus"];
 const HEARTBEATS = ["15m", "30m", "2h", "daily"];
+const CONTEXT_INJECTIONS = ["always", "continuation-skip", "never"];
 const SECRET_TYPES = ["string", "api_key", "token"];
 const MAX_DESCRIPTION = 200;
+
+const FORBIDDEN_BASENAMES = new Set(["agents.md", "user.md", "bootstrap.md", "boot.md"]);
 
 const isObject = (v) => typeof v === "object" && v !== null && !Array.isArray(v);
 const isStringArray = (v) => Array.isArray(v) && v.every((x) => typeof x === "string");
@@ -78,37 +81,23 @@ function validateManifest(input) {
     err("skills", "must be an array of bundle-relative file paths");
   }
 
-  // agents
+  // agents — now a string[] of kebab ids; per-agent config lives in agents/<id>/agent.json
   if (!Array.isArray(input.agents) || input.agents.length === 0) {
-    err("agents", "required, must be a non-empty array");
+    err("agents", "required, must be a non-empty array of kebab-case agent ids");
   } else {
     const seen = new Set();
-    input.agents.forEach((agent, i) => {
+    input.agents.forEach((id, i) => {
       const at = `agents[${i}]`;
-      if (!isObject(agent)) {
-        err(at, "must be an object");
+      if (typeof id !== "string" || id.length === 0) {
+        err(at, "must be a non-empty kebab-case agent id string");
         return;
       }
-      if (typeof agent.id !== "string" || agent.id.length === 0) {
-        err(`${at}.id`, "required, must be a non-empty string");
-      } else if (!KEBAB.test(agent.id)) {
-        err(`${at}.id`, "must be kebab-case");
-      } else if (seen.has(agent.id)) {
-        err(`${at}.id`, `duplicate agent id "${agent.id}"`);
+      if (!KEBAB.test(id)) {
+        err(at, `"${id}" must be kebab-case`);
+      } else if (seen.has(id)) {
+        err(at, `duplicate agent id "${id}"`);
       } else {
-        seen.add(agent.id);
-      }
-      if (typeof agent.description !== "string" || agent.description.length === 0) {
-        err(`${at}.description`, "required, must be a non-empty string");
-      }
-      if (agent.model !== undefined && !MODELS.includes(agent.model)) {
-        err(`${at}.model`, `must be one of: ${MODELS.join(", ")}`);
-      }
-      if (agent.heartbeat !== undefined && !HEARTBEATS.includes(agent.heartbeat)) {
-        err(`${at}.heartbeat`, `must be one of: ${HEARTBEATS.join(", ")}`);
-      }
-      if (agent.skills !== undefined && !isStringArray(agent.skills)) {
-        err(`${at}.skills`, "must be an array of bundle-relative file paths");
+        seen.add(id);
       }
     });
   }
@@ -171,6 +160,82 @@ function validateManifest(input) {
     err("min_pancake_version", "must be a string when present");
   }
 
+  // deprecated fields
+  if ("token_intensity" in input) {
+    err("token_intensity", "deprecated — Pancake Cloud now computes token usage automatically; remove this field");
+  }
+
+  return errors;
+}
+
+// ── agent.json validation ───────────────────────────────────────────────────
+// Validates agents/<id>/agent.json against the agent.schema.json subset of
+// OpenClaw's agents.list[].
+
+const AGENT_ALLOWED_KEYS = new Set([
+  "id",
+  "description",
+  "model",
+  "heartbeat",
+  "skills",
+  "contextInjection",
+  "bootstrapMaxChars",
+  "params",
+]);
+
+function validateAgentJson(input, expectedId, pathPrefix) {
+  const errors = [];
+  const err = (path, message) => errors.push({ path: `${pathPrefix}  ${path}`, message });
+
+  if (!isObject(input)) {
+    return [{ path: pathPrefix, message: "must be a JSON object" }];
+  }
+
+  for (const key of Object.keys(input)) {
+    if (!AGENT_ALLOWED_KEYS.has(key)) {
+      err(key, `unknown field — allowed: ${[...AGENT_ALLOWED_KEYS].join(", ")}`);
+    }
+  }
+
+  if (typeof input.id !== "string" || input.id.length === 0) {
+    err("id", "required, must be a non-empty kebab-case string");
+  } else if (!KEBAB.test(input.id)) {
+    err("id", "must be kebab-case");
+  } else if (input.id !== expectedId) {
+    err("id", `"${input.id}" must match the directory name "${expectedId}"`);
+  }
+
+  if (typeof input.description !== "string" || input.description.length === 0) {
+    err("description", "required, must be a non-empty string");
+  }
+
+  if (input.model !== undefined && !MODELS.includes(input.model)) {
+    err("model", `must be one of: ${MODELS.join(", ")}`);
+  }
+
+  if (input.heartbeat !== undefined && !HEARTBEATS.includes(input.heartbeat)) {
+    err("heartbeat", `must be one of: ${HEARTBEATS.join(", ")}`);
+  }
+
+  if (input.skills !== undefined && !isStringArray(input.skills)) {
+    err("skills", "must be an array of bundle-relative file paths");
+  }
+
+  if (input.contextInjection !== undefined && !CONTEXT_INJECTIONS.includes(input.contextInjection)) {
+    err("contextInjection", `must be one of: ${CONTEXT_INJECTIONS.join(", ")}`);
+  }
+
+  if (
+    input.bootstrapMaxChars !== undefined &&
+    (!Number.isInteger(input.bootstrapMaxChars) || input.bootstrapMaxChars < 1)
+  ) {
+    err("bootstrapMaxChars", "must be a positive integer when present");
+  }
+
+  if (input.params !== undefined && !isObject(input.params)) {
+    err("params", "must be an object when present");
+  }
+
   return errors;
 }
 
@@ -209,8 +274,8 @@ async function checkReferencedFile(bundleDir, bundleRoot, rel) {
 function collectAgentIds(manifest) {
   const ids = new Set();
   if (isObject(manifest) && Array.isArray(manifest.agents)) {
-    for (const a of manifest.agents) {
-      if (isObject(a) && typeof a.id === "string" && a.id.length > 0) ids.add(a.id);
+    for (const id of manifest.agents) {
+      if (typeof id === "string" && id.length > 0) ids.add(id);
     }
   }
   return ids;
@@ -258,9 +323,12 @@ async function checkTargeting(bundleDir, agentIds) {
   return { errors, warnings };
 }
 
-// ── frontmatter sanity (warnings only) ──────────────────────────────────────
+// ── frontmatter sanity ──────────────────────────────────────────────────────
+// SQUAD.md frontmatter is minimal after the refactor: `tags` (recommended) and
+// optional `preview_image`. The deprecated `token_intensity` field is an error.
 
 async function checkFrontmatter(bundleDir) {
+  const errors = [];
   const warnings = [];
 
   const squadMd = await readFileOrNull(join(bundleDir, "SQUAD.md"));
@@ -269,7 +337,7 @@ async function checkFrontmatter(bundleDir) {
     if (!fm) {
       warnings.push({
         path: "SQUAD.md",
-        message: "no YAML frontmatter block — the marketplace reads `tags` and `token_intensity` from it",
+        message: "no YAML frontmatter block — the marketplace reads `tags` (and optional `preview_image`) from it",
       });
     } else {
       const block = fm[1];
@@ -279,10 +347,10 @@ async function checkFrontmatter(bundleDir) {
           message: "frontmatter has no `tags: [...]` line — the catalog card will show no tags",
         });
       }
-      if (!/^token_intensity:\s*(low|medium|high)\s*$/m.test(block)) {
-        warnings.push({
+      if (/^token_intensity:/m.test(block)) {
+        errors.push({
           path: "SQUAD.md",
-          message: 'frontmatter has no `token_intensity: low|medium|high` — marketplace defaults it to "medium"',
+          message: "frontmatter has a deprecated `token_intensity:` line — Pancake Cloud computes token usage automatically; remove this line",
         });
       }
     }
@@ -295,7 +363,86 @@ async function checkFrontmatter(bundleDir) {
       message: "no YAML frontmatter block — expected `required_tools`, `required_identities`, `estimated_setup_minutes`",
     });
   }
-  return warnings;
+  return { errors, warnings };
+}
+
+// ── forbidden filenames ─────────────────────────────────────────────────────
+// AGENTS.md, USER.md, BOOTSTRAP.md, BOOT.md are pod-level files managed by
+// Pancake Cloud — never ship them inside a bundle. TOOLS.md is allowed; it is
+// bundle-authored documentation of the squad's tool surface.
+
+async function scanForbiddenFiles(bundleDir) {
+  const errors = [];
+  async function walk(dir) {
+    let entries;
+    try {
+      entries = await readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      const full = join(dir, e.name);
+      if (e.isDirectory()) {
+        await walk(full);
+        continue;
+      }
+      if (e.isFile() && FORBIDDEN_BASENAMES.has(e.name.toLowerCase())) {
+        errors.push({
+          path: relative(bundleDir, full),
+          message:
+            "forbidden filename — AGENTS.md / USER.md / BOOTSTRAP.md / BOOT.md are pod-managed by Pancake Cloud and must not appear inside a bundle (TOOLS.md is allowed)",
+        });
+      }
+    }
+  }
+  await walk(bundleDir);
+  return errors;
+}
+
+// ── TODO scan ───────────────────────────────────────────────────────────────
+// Catches the three placeholder shapes the template ships with: `<!-- TODO`
+// comment blocks, `TODO:` colon markers, and a bare `TODO` line on its own.
+// Plain prose using the word "TODO" (e.g. "my TODO list") is not flagged.
+// The template/ bundle is exempt — it must ship placeholders to be useful.
+
+const TODO_PATTERNS = [
+  /<!--\s*TODO\b/i,
+  /\bTODO:/,
+  /^\s*TODO\s*$/,
+];
+
+async function scanForTodos(bundleDir) {
+  const errors = [];
+  async function walk(dir) {
+    let entries;
+    try {
+      entries = await readdir(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const e of entries) {
+      const full = join(dir, e.name);
+      if (e.isDirectory()) {
+        await walk(full);
+        continue;
+      }
+      if (!e.isFile() || !e.name.toLowerCase().endsWith(".md")) continue;
+      const content = await readFileOrNull(full);
+      if (content === null) continue;
+      const lines = content.split(/\r?\n/);
+      for (let i = 0; i < lines.length; i++) {
+        if (TODO_PATTERNS.some((p) => p.test(lines[i]))) {
+          errors.push({
+            path: relative(bundleDir, full),
+            message: `unresolved TODO marker on line ${i + 1} — strip placeholders before publishing`,
+          });
+          break;
+        }
+      }
+    }
+  }
+  await walk(bundleDir);
+  return errors;
 }
 
 // ── per-bundle orchestration ────────────────────────────────────────────────
@@ -308,8 +455,35 @@ async function readFileOrNull(path) {
   }
 }
 
+async function loadAgentJsons(bundleDir, agentIds) {
+  // Returns { byId: Map<id, agent>, errors: [...] }. A missing or invalid
+  // agent.json is an error; the returned agent is undefined in that case so
+  // downstream checks can still emit useful messages.
+  const byId = new Map();
+  const errors = [];
+  for (const id of agentIds) {
+    const rel = `agents/${id}/agent.json`;
+    const raw = await readFileOrNull(join(bundleDir, rel));
+    if (raw === null) {
+      errors.push({ path: rel, message: "not found — every agent id in manifest.agents must have an agent.json" });
+      continue;
+    }
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      errors.push({ path: rel, message: "is not valid JSON" });
+      continue;
+    }
+    for (const e of validateAgentJson(parsed, id, rel)) errors.push(e);
+    byId.set(id, parsed);
+  }
+  return { byId, errors };
+}
+
 async function validateBundle(bundleDir) {
   const label = basename(bundleDir);
+  const isTemplate = label === "template";
   const errors = [];
   const warnings = [];
 
@@ -329,18 +503,24 @@ async function validateBundle(bundleDir) {
     }
   }
 
-  // 2. referenced files exist, are regular files, no symlink/traversal.
+  const agentIds = collectAgentIds(manifest);
+
+  // 2. agent.json per declared agent
+  const { byId: agentsById, errors: agentJsonErrors } = await loadAgentJsons(bundleDir, agentIds);
+  errors.push(...agentJsonErrors);
+
+  // 3. referenced files exist, are regular files, no symlink/traversal.
   const bundleRoot = await realpath(bundleDir).catch(() => bundleDir);
   const refs = ["SQUAD.md", "ONBOARD.md"];
-  if (isObject(manifest)) {
-    if (isStringArray(manifest.skills)) refs.push(...manifest.skills);
-    if (Array.isArray(manifest.agents)) {
-      for (const a of manifest.agents) {
-        if (isObject(a) && typeof a.id === "string" && a.id.length > 0) {
-          refs.push(`agents/${a.id}/IDENTITY.md`, `agents/${a.id}/SOUL.md`);
-          if (isStringArray(a.skills)) refs.push(...a.skills);
-        }
+  if (isObject(manifest) && isStringArray(manifest.skills)) refs.push(...manifest.skills);
+  for (const id of agentIds) {
+    refs.push(`agents/${id}/IDENTITY.md`, `agents/${id}/SOUL.md`);
+    const agent = agentsById.get(id);
+    if (isObject(agent)) {
+      if (typeof agent.heartbeat === "string") {
+        refs.push(`agents/${id}/HEARTBEAT.md`);
       }
+      if (isStringArray(agent.skills)) refs.push(...agent.skills);
     }
   }
   for (const rel of [...new Set(refs)]) {
@@ -348,13 +528,23 @@ async function validateBundle(bundleDir) {
     if (problem) errors.push({ path: rel, message: problem });
   }
 
-  // 3. cron / task targeting
-  const targeting = await checkTargeting(bundleDir, collectAgentIds(manifest));
+  // 4. cron / task targeting
+  const targeting = await checkTargeting(bundleDir, agentIds);
   errors.push(...targeting.errors);
   warnings.push(...targeting.warnings);
 
-  // 4. frontmatter sanity
-  warnings.push(...(await checkFrontmatter(bundleDir)));
+  // 5. frontmatter — warnings for missing tags, errors for deprecated token_intensity
+  const fm = await checkFrontmatter(bundleDir);
+  errors.push(...fm.errors);
+  warnings.push(...fm.warnings);
+
+  // 6. forbidden filenames (AGENTS.md / USER.md / BOOTSTRAP.md / BOOT.md)
+  errors.push(...(await scanForbiddenFiles(bundleDir)));
+
+  // 7. TODO markers in markdown — skipped for template/, which ships placeholders
+  if (!isTemplate) {
+    errors.push(...(await scanForTodos(bundleDir)));
+  }
 
   return { label, errors, warnings };
 }

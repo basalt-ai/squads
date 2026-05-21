@@ -1,42 +1,36 @@
 ---
-name: example-squad
-version: 0.1.0
-description: "TODO: one-line description — keep it consistent with manifest.json"
-author: pancake-official
 tags: [example, growth]
-token_intensity: medium
-agents:
-  - id: example-agent
-    description: "TODO: one-line role description"
-preview_image: https://example.com/example-squad-preview.png
+preview_image: https://squads.getpancake.ai/avatars/astronaut.png
 ---
 
 <!-- TODO: SQUAD.md is the marketplace catalog card. The marketplace ingest
-     reads ONLY `tags` and `token_intensity` from the frontmatter above — the
-     rest (name/version/description/author/agents) is display duplication of
-     manifest.json, so keep it consistent. `preview_image` is optional. The
-     body below renders as the squad's store detail page. Strip every TODO
+     reads ONLY `tags` and the optional `preview_image` from the frontmatter
+     above — every other package-level field lives in manifest.json. The body
+     below renders as the squad's store detail page, and is where each agent
+     must be described in user-facing prose (the catalog reads agent
+     descriptions from this body, not from manifest.json). Strip every TODO
      before publishing. -->
 
 ## What this squad does
 
 <!-- TODO: 2-3 sentences. What does installing this squad deploy, and what
-     problem does it solve? Name each agent and the one job it owns. -->
+     problem does it solve? Name each agent and the one job it owns —
+     this is the prose the marketplace surfaces per agent. -->
 
-TODO
+Placeholder body — replace before publishing.
 
 ## What you'll need
 
 <!-- TODO: bullet list — identities to connect, secrets to provide, accounts
      the user must already have. Mark optional items as optional. -->
 
-- TODO
+- Placeholder requirement — replace before publishing.
 
 ## What you get
 
 <!-- TODO: bullet list of the concrete, recurring outcomes the user receives. -->
 
-- TODO
+- Placeholder outcome — replace before publishing.
 
 ## How it works
 
@@ -44,4 +38,4 @@ TODO
      heartbeat, and how the user interacts with the squad through the
      co-founder (the user never talks to a squad agent directly). -->
 
-TODO
+Placeholder operating rhythm — replace before publishing.

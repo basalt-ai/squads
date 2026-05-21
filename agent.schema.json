@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://squads.getpancake.ai/agent.schema.json",
+  "title": "Agent Squad — per-agent config",
+  "description": "Schema for agents/<id>/agent.json inside a squad bundle. Mirrors the subset of OpenClaw's agents.list[] that squad bundles may declare. See https://docs.openclaw.ai/gateway/config-agents for the canonical OpenClaw spec.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Kebab-case, must match the agents/<id>/ directory name and the entry in manifest.json#/agents."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-line role description — what this agent owns. Shown in catalog tooling and at runtime."
+    },
+    "model": {
+      "type": "string",
+      "enum": ["haiku", "sonnet", "opus"],
+      "description": "Strict enum. Defaults to the pod's agents.defaults when omitted."
+    },
+    "heartbeat": {
+      "type": "string",
+      "enum": ["15m", "30m", "2h", "daily"],
+      "description": "Strict enum. Defaults to the pod's agents.defaults when omitted. When set, agents/<id>/HEARTBEAT.md must exist."
+    },
+    "skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Bundle-relative paths to agent-specific skill files."
+    },
+    "contextInjection": {
+      "type": "string",
+      "enum": ["always", "continuation-skip", "never"],
+      "description": "OpenClaw context-injection mode. Optional — pod default applies when omitted."
+    },
+    "bootstrapMaxChars": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "OpenClaw bootstrap budget in characters. Optional — pod default applies when omitted."
+    },
+    "params": {
+      "type": "object",
+      "description": "Provider-level params passed through to OpenClaw (e.g. cacheRetention). Free-form."
+    }
+  }
+}

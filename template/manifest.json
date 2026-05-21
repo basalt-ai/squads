@@ -1,19 +1,11 @@
 {
   "name": "example-squad",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "TODO: one-line description of what this squad does — shown on the marketplace catalog card (max 200 characters).",
   "author": "pancake-official",
   "license": "MIT",
   "skills": ["skills/example-playbook.md"],
-  "agents": [
-    {
-      "id": "example-agent",
-      "description": "TODO: one-line description of this agent's single, focused role.",
-      "model": "sonnet",
-      "heartbeat": "daily",
-      "skills": ["agents/example-agent/skills/example-agent-skill.md"]
-    }
-  ],
+  "agents": ["example-agent"],
   "required_identities": [
     {
       "site": "github.com",

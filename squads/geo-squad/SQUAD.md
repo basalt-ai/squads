@@ -1,13 +1,5 @@
 ---
-name: geo-squad
-version: 1.0.0
-description: "Single-agent GEO squad: GEO-agent owns AI-engine citation audits, blog content, and GEO engineering PRs."
-author: pancake-official
 tags: [seo, content, growth, geo, ai-visibility]
-token_intensity: high
-agents:
-  - id: geo-agent
-    description: "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt. Self-merges content and engineering PRs."
 ---
 
 ## What this squad does

@@ -3,6 +3,10 @@
     {
       "fileMatch": ["squads/**/manifest.json", "template/manifest.json"],
       "url": "./manifest.schema.json"
+    },
+    {
+      "fileMatch": ["squads/**/agents/*/agent.json", "template/agents/*/agent.json"],
+      "url": "./agent.schema.json"
     }
   ]
 }
