@@ -1,5 +1,6 @@
 ---
 tags: [reddit, community, growth, social, karma]
+preview_image: https://squads.getpancake.ai/avatars/alien.png
 ---
 
 ## What this squad does
