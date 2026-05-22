@@ -96,6 +96,25 @@ and placeholder content. Your job over the next steps is to replace all of it.
 - `description` is the one-line catalog card subtitle, ≤ 200 chars.
 - `agents` is a string array of kebab-case agent ids — each id must have a matching
   `agents/<id>/agent.json` file (next step).
+- `required_tool_permissions` must contain only **accepted Pancake tool keys**. Anything
+  else is a validation error. Tools shipped today (with their accepted aliases):
+
+  | Tool | Accepted keys |
+  |---|---|
+  | Browser (Anchor) | `browser` |
+  | Web search (Exa) | `exa`, `web_search` |
+  | GitHub | `github` |
+  | Google Workspace | `google-workspace`, `google_workspace` |
+  | Notion | `notion` |
+  | Email (AgentMail) | `agentmail` |
+  | Identity vault | `vault` |
+  | Preview hosting | `preview-host`, `publish_preview` |
+  | Slack Block Kit | `slack-block-kit`, `slack_block_kit_send` |
+  | MCP installer | `mcp-installer` |
+  | Image generation | `image-generation`, `image_generate`, `image` |
+  | Voice / TTS | `voice`, `tts` |
+  | Scheduling | `cron` |
+
 - Delete every optional section your squad doesn't use. The validator complains about
   empty values, not absent fields.
 

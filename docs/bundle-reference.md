@@ -63,7 +63,7 @@ package-level metadata only — per-agent runtime config lives in `agents/<id>/a
 | `agents` | string[] | ✔ | non-empty array of kebab-case agent ids. Each id must have a matching `agents/<id>/agent.json`. |
 | `required_identities` | object[] | · | each `{ site, reason }` — both non-empty. `site` is an eTLD+1, e.g. `github.com`. |
 | `required_vault_secrets` | object[] | · | each `{ key, label, type }` — `key`/`label` non-empty; `type` ∈ `string` \| `api_key` \| `token` |
-| `required_tool_permissions` | string[] | · | informational only — not enforced |
+| `required_tool_permissions` | string[] | · | each entry must be an accepted Pancake tool key (see [*Tool permissions*](#tool-permissions) below). Unknown keys are an error. |
 | `min_pancake_version` | string | · | informational only |
 
 Validation returns **all** problems found, not just the first — so a bad manifest can be
@@ -312,6 +312,35 @@ forbids the *files themselves*, not references to them.
 
 `TOOLS.md` is explicitly **allowed** inside a bundle — it is bundle-authored documentation
 of the squad's tool surface, distinct from the pod-level files above.
+
+## Tool permissions
+
+`manifest.required_tool_permissions` is the list of Pancake-shipped tools the squad needs
+access to. The marketplace will not grant a permission for a tool Pancake does not ship, so
+the validator rejects anything outside this list.
+
+Each tool has one or more **accepted keys**. Either snake_case or kebab-case variants are
+accepted where listed; pick one and stick with it. Duplicates within the same array are
+rejected.
+
+| Tool | Accepted keys |
+|---|---|
+| Browser (Anchor) | `browser` |
+| Web search (Exa) | `exa`, `web_search` |
+| GitHub | `github` |
+| Google Workspace | `google-workspace`, `google_workspace` |
+| Notion | `notion` |
+| Email (AgentMail) | `agentmail` |
+| Identity vault | `vault` |
+| Preview hosting | `preview-host`, `publish_preview` |
+| Slack Block Kit | `slack-block-kit`, `slack_block_kit_send` |
+| MCP installer | `mcp-installer` |
+| Image generation | `image-generation`, `image_generate`, `image` |
+| Voice / TTS | `voice`, `tts` |
+| Scheduling | `cron` |
+
+When Pancake ships a new tool, this list — and the validator's `ACCEPTED_TOOL_PERMISSIONS`
+table in `scripts/validate.mjs` — are updated together.
 
 ## Deprecated fields
 

@@ -30,6 +30,28 @@ const CONTEXT_INJECTIONS = ["always", "continuation-skip", "never"];
 const SECRET_TYPES = ["string", "api_key", "token"];
 const MAX_DESCRIPTION = 200;
 
+// Accepted tool keys for manifest.required_tool_permissions. Each tool is
+// reachable via one or more keys (aliases) — both kebab- and snake-case
+// variants are listed where Pancake itself accepts both. Anything not on
+// this list is rejected: the marketplace will not grant a permission for
+// a tool Pancake does not ship.
+const ACCEPTED_TOOL_PERMISSIONS = {
+  "Browser (Anchor)":   ["browser"],
+  "Web search (Exa)":   ["exa", "web_search"],
+  "GitHub":             ["github"],
+  "Google Workspace":   ["google-workspace", "google_workspace"],
+  "Notion":             ["notion"],
+  "Email (AgentMail)":  ["agentmail"],
+  "Identity vault":     ["vault"],
+  "Preview hosting":    ["preview-host", "publish_preview"],
+  "Slack Block Kit":    ["slack-block-kit", "slack_block_kit_send"],
+  "MCP installer":      ["mcp-installer"],
+  "Image generation":   ["image-generation", "image_generate", "image"],
+  "Voice / TTS":        ["voice", "tts"],
+  "Scheduling":         ["cron"],
+};
+const ACCEPTED_TOOL_KEYS = new Set(Object.values(ACCEPTED_TOOL_PERMISSIONS).flat());
+
 // Heartbeat config is the curated subset of OpenClaw's
 // agents.list[].heartbeat (see https://docs.openclaw.ai/gateway/config-agents)
 // that squad authors are allowed to set. Pod-level fields (prompt, target,
@@ -166,11 +188,22 @@ function validateManifest(input) {
   }
 
   // required_tool_permissions
-  if (
-    input.required_tool_permissions !== undefined &&
-    !isStringArray(input.required_tool_permissions)
-  ) {
-    err("required_tool_permissions", "must be an array of strings when present");
+  if (input.required_tool_permissions !== undefined) {
+    if (!isStringArray(input.required_tool_permissions)) {
+      err("required_tool_permissions", "must be an array of strings when present");
+    } else {
+      const seen = new Set();
+      input.required_tool_permissions.forEach((key, i) => {
+        const at = `required_tool_permissions[${i}]`;
+        if (!ACCEPTED_TOOL_KEYS.has(key)) {
+          err(at, `"${key}" is not an accepted tool key — must be one of: ${[...ACCEPTED_TOOL_KEYS].join(", ")}`);
+        } else if (seen.has(key)) {
+          err(at, `duplicate tool key "${key}"`);
+        } else {
+          seen.add(key);
+        }
+      });
+    }
   }
 
   // min_pancake_version

@@ -257,6 +257,29 @@ const cases = [
     expect: /SQUAD\.md.*unresolved TODO marker/,
   },
 
+  // Negative — required_tool_permissions
+  {
+    name: "unknown required_tool_permissions key is rejected",
+    mutate: (b) => {
+      b["manifest.json"].required_tool_permissions = ["browser", "web_fetch"];
+    },
+    expect: /required_tool_permissions\[1\].*"web_fetch" is not an accepted tool key/,
+  },
+  {
+    name: "duplicate required_tool_permissions key is rejected",
+    mutate: (b) => {
+      b["manifest.json"].required_tool_permissions = ["browser", "browser"];
+    },
+    expect: /required_tool_permissions\[1\].*duplicate tool key "browser"/,
+  },
+  {
+    name: "valid required_tool_permissions list passes",
+    mutate: (b) => {
+      b["manifest.json"].required_tool_permissions = ["browser", "web_search", "slack-block-kit", "github"];
+    },
+    expect: null,
+  },
+
   // Negative — cron targeting
   {
     name: "cron sessionTarget naming a non-declared agent is rejected",

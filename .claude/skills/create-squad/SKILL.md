@@ -36,6 +36,13 @@ Ask the user what they want, and don't scaffold until you have answers for all o
 - **Skills** — which are squad-wide (every agent gets them) vs agent-specific.
 - **Required identities** — external sites the squad needs connected, each with a reason.
 - **Required vault secrets** — each `{ key, label, type }`.
+- **Required tool permissions** — must be drawn from the canonical Pancake tool list
+  ([`docs/bundle-reference.md#tool-permissions`](../../../docs/bundle-reference.md#tool-permissions)).
+  Accepted keys today: `browser`, `exa` / `web_search`, `github`,
+  `google-workspace` / `google_workspace`, `notion`, `agentmail`, `vault`,
+  `preview-host` / `publish_preview`, `slack-block-kit` / `slack_block_kit_send`,
+  `mcp-installer`, `image-generation` / `image_generate` / `image`, `voice` / `tts`,
+  `cron`. Anything else is rejected by the validator.
 - **Crons** — any scheduled jobs, and what each one does.
 - **Catalog metadata** — `tags` for the marketplace card (no `token_intensity` — it is
   deprecated and Pancake Cloud computes token usage automatically).

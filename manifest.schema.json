@@ -74,8 +74,26 @@
     },
     "required_tool_permissions": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Informational only in v1 — not enforced."
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "browser",
+          "exa", "web_search",
+          "github",
+          "google-workspace", "google_workspace",
+          "notion",
+          "agentmail",
+          "vault",
+          "preview-host", "publish_preview",
+          "slack-block-kit", "slack_block_kit_send",
+          "mcp-installer",
+          "image-generation", "image_generate", "image",
+          "voice", "tts",
+          "cron"
+        ]
+      },
+      "description": "Enforced — each value must be an accepted Pancake tool key. See docs/bundle-reference.md for the canonical list."
     },
     "min_pancake_version": {
       "type": "string",

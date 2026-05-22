@@ -1,6 +1,6 @@
 {
   "name": "example-squad",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "TODO: one-line description of what this squad does — shown on the marketplace catalog card (max 200 characters).",
   "author": "pancake-official",
   "license": "MIT",
@@ -19,6 +19,6 @@
       "type": "string"
     }
   ],
-  "required_tool_permissions": ["web_search", "web_fetch", "message"],
+  "required_tool_permissions": ["browser", "web_search", "slack-block-kit"],
   "min_pancake_version": "1.0.0"
 }

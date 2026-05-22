@@ -47,6 +47,12 @@ The validator's checks fall into the following categories:
   `ONBOARD.md`, a skill, `IDENTITY.md`, `SOUL.md`, `HEARTBEAT.md` when the agent has a
   heartbeat) is missing, is a symlink, is not a regular file, or resolves outside the
   bundle root.
+- **Unknown tool permission** (e.g. `required_tool_permissions[2]  "web_fetch" is not an
+  accepted tool key`) — an entry in `manifest.required_tool_permissions` is not in the
+  canonical Pancake tool list (see [`bundle-reference.md#tool-permissions`](../../../docs/bundle-reference.md#tool-permissions)).
+  Replace it with an accepted key (e.g. `web_fetch` → `web_search`, `message` →
+  `slack-block-kit`, `browser_task`/`browser_open`/`browser_action` → `browser`), or
+  delete it if the tool isn't actually needed.
 - **Targeting errors** (`crons/jobs.json`) — a cron's `sessionTarget` names an agent the
   squad does not declare. Squad crons may target only the squad's own agents.
 - **Forbidden file** (e.g. `agents/<id>/USER.md  forbidden filename`) — the bundle
