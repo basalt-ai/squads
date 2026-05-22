@@ -1,22 +1,10 @@
 {
   "name": "geo-squad",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Single-agent GEO squad: GEO-agent runs daily citation audits, writes GEO-optimized blog posts, and ships llms.txt / JSON-LD engineering PRs.",
   "author": "pancake-official",
   "license": "MIT",
-  "agents": [
-    {
-      "id": "geo-agent",
-      "description": "GEO/SEO strategist — daily citation audits, blog posts, JSON-LD/llms.txt engineering. Self-merges blog and technical GEO PRs.",
-      "model": "sonnet",
-      "heartbeat": "daily",
-      "skills": [
-        "agents/geo-agent/skills/geo-llmseo-playbook.md",
-        "agents/geo-agent/skills/advanced-seo.md",
-        "agents/geo-agent/skills/blog-writing-guide.md"
-      ]
-    }
-  ],
+  "agents": ["geo-agent"],
   "required_identities": [
     {
       "site": "github.com",
@@ -36,12 +24,10 @@
     }
   ],
   "required_tool_permissions": [
+    "browser",
     "web_search",
     "web_fetch",
-    "message",
-    "browser_task",
-    "browser_open",
-    "browser_action"
+    "github"
   ],
   "min_pancake_version": "1.0.0"
 }

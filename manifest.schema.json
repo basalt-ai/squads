@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://squads.getpancake.ai/manifest.schema.json",
   "title": "Agent Squad manifest",
-  "description": "Schema for an Agent Squad bundle's manifest.json. Source of truth for validation is apps/marketplace/src/services/manifest.ts — this file mirrors it for bundle authors.",
+  "description": "Schema for an Agent Squad bundle's manifest.json — the package descriptor. Per-agent runtime config lives in agents/<id>/agent.json, validated separately by agent.schema.json. Source of truth for validation is apps/marketplace/src/services/manifest.ts — this file mirrors it for bundle authors.",
   "type": "object",
   "additionalProperties": false,
   "required": ["name", "version", "description", "author", "agents"],
@@ -39,34 +39,13 @@
     "agents": {
       "type": "array",
       "minItems": 1,
+      "uniqueItems": true,
       "items": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["id", "description"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
-            "description": "kebab-case, unique within the squad. Becomes the OpenClaw sub-agent id."
-          },
-          "description": { "type": "string", "minLength": 1 },
-          "model": {
-            "type": "string",
-            "enum": ["haiku", "sonnet", "opus"],
-            "description": "Defaults to the pod's agents.defaults (sonnet) when omitted."
-          },
-          "heartbeat": {
-            "type": "string",
-            "enum": ["15m", "30m", "2h", "daily"],
-            "description": "Defaults to the pod's agents.defaults (2h) when omitted."
-          },
-          "skills": {
-            "type": "array",
-            "items": { "type": "string" },
-            "description": "Bundle-relative paths to agent-specific skill files."
-          }
-        }
-      }
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+        "description": "Kebab-case agent id, unique within the squad. Each id must have a matching agents/<id>/agent.json file."
+      },
+      "description": "List of agent ids declared by this squad. Per-agent config lives in agents/<id>/agent.json."
     },
     "required_identities": {
       "type": "array",
@@ -95,8 +74,24 @@
     },
     "required_tool_permissions": {
       "type": "array",
-      "items": { "type": "string" },
-      "description": "Informational only in v1 — not enforced."
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "enum": [
+          "browser",
+          "exa", "web_search", "web_fetch",
+          "github",
+          "google-workspace", "google_workspace",
+          "notion",
+          "agentmail",
+          "vault",
+          "preview-host", "publish_preview",
+          "mcp-installer",
+          "image-generation", "image_generate", "image",
+          "cron"
+        ]
+      },
+      "description": "Enforced — each value must be an accepted Pancake tool key. See docs/bundle-reference.md for the canonical list."
     },
     "min_pancake_version": {
       "type": "string",

@@ -1,8 +1,9 @@
 # Bundle reference — the Agent Squad contract
 
 This is the exact file contract for an Agent Squad bundle. It is the source of truth that
-[`manifest.schema.json`](../manifest.schema.json), [`scripts/validate.mjs`](../scripts/validate.mjs),
-the [`template/`](../template/) skeleton, and the marketplace's own ingest all agree on.
+[`manifest.schema.json`](../manifest.schema.json), [`agent.schema.json`](../agent.schema.json),
+[`scripts/validate.mjs`](../scripts/validate.mjs), the [`template/`](../template/) skeleton,
+and the marketplace's own ingest all agree on.
 
 If you haven't yet, read [`how-squads-work.md`](./how-squads-work.md) first for the concepts.
 The examples below point at [`template/`](../template/), the complete, valid skeleton bundle.
@@ -21,29 +22,33 @@ The file contract below is identical in both cases. Only the location differs.
 Required (✔) and optional (·) members of a bundle:
 
 ```
-manifest.json                  ✔  machine-readable contract (validated on ingest)
+manifest.json                  ✔  package descriptor (validated on ingest)
 SQUAD.md                       ✔  marketplace catalog card — frontmatter + Markdown body
 ONBOARD.md                     ✔  the onboarding script the co-founder runs after deploy
 MEMORY.md                      ·  squad-wide seed memory (used by an agent lacking its own)
 skills/<name>.md               ·  squad-wide skills — referenced by manifest.skills[]
+TOOLS.md                       ·  optional documentation of the squad's tool surface
 agents/<agent-id>/
+  agent.json                   ✔  per-agent runtime config (mirrors OpenClaw agents.list[])
   IDENTITY.md                  ✔  per agent — name, role, scope
   SOUL.md                      ✔  per agent — personality, principles, boundaries
-  HEARTBEAT.md                 ·  per agent — the procedure run on every wake
+  HEARTBEAT.md                 ·* per agent — the procedure run on every wake (required when agent.json declares a heartbeat)
   MEMORY.md                    ·  per agent — seed memory (overrides the squad-wide one)
-  skills/<name>.md             ·  agent-specific skills — referenced by agents[].skills[]
+  skills/<name>.md             ·  agent-specific skills — referenced by agent.json#/skills
 crons/jobs.json                ·  native OpenClaw cron jobs
 ```
 
 On ingest the marketplace **verifies every file the manifest references** — it must exist,
 be a regular file, not be a symlink, and resolve **inside the bundle root** (no `..`
 escape, no absolute path). The files always checked are `SQUAD.md`, `ONBOARD.md`, every
-`skills[]` path, and per agent `agents/<id>/IDENTITY.md`, `agents/<id>/SOUL.md`, and every
-`agents[].skills[]` path. `scripts/validate.mjs` performs the identical check.
+`skills[]` path, and per agent `agents/<id>/agent.json`, `agents/<id>/IDENTITY.md`,
+`agents/<id>/SOUL.md`, every `agent.json#/skills[]` path, and `agents/<id>/HEARTBEAT.md`
+when the agent declares a heartbeat. `scripts/validate.mjs` performs the identical check.
 
-## `manifest.json` — the machine-readable contract
+## `manifest.json` — the package descriptor
 
-The only file the marketplace fully parses and validates. JSON, no comments.
+The file the marketplace fully parses and validates. JSON, no comments. It carries the
+package-level metadata only — per-agent runtime config lives in `agents/<id>/agent.json`.
 
 **Required:** `name`, `version`, `description`, `author`, `agents`.
 
@@ -55,21 +60,11 @@ The only file the marketplace fully parses and validates. JSON, no comments.
 | `author` | string | ✔ | non-empty. Official squads: `pancake-official`. External: a GitHub user/org. |
 | `license` | string | · | any string when present |
 | `skills` | string[] | · | bundle-relative paths to squad-wide skill files (e.g. `skills/playbook.md`) |
-| `agents` | object[] | ✔ | non-empty array (see below) |
+| `agents` | string[] | ✔ | non-empty array of kebab-case agent ids. Each id must have a matching `agents/<id>/agent.json`. |
 | `required_identities` | object[] | · | each `{ site, reason }` — both non-empty. `site` is an eTLD+1, e.g. `github.com`. |
 | `required_vault_secrets` | object[] | · | each `{ key, label, type }` — `key`/`label` non-empty; `type` ∈ `string` \| `api_key` \| `token` |
-| `required_tool_permissions` | string[] | · | informational only — not enforced |
+| `required_tool_permissions` | string[] | · | each entry must be an accepted Pancake tool key (see [*Tool permissions*](#tool-permissions) below). Unknown keys are an error. |
 | `min_pancake_version` | string | · | informational only |
-
-Each entry in **`agents[]`**:
-
-| Field | Type | Req | Rules |
-|---|---|---|---|
-| `id` | string | ✔ | kebab-case, **unique within the squad**. Becomes the OpenClaw sub-agent id. |
-| `description` | string | ✔ | non-empty |
-| `model` | string | · | `haiku` \| `sonnet` \| `opus` (default: pod default, `sonnet`) |
-| `heartbeat` | string | · | `15m` \| `30m` \| `2h` \| `daily` (default: pod default, `2h`) |
-| `skills` | string[] | · | bundle-relative paths to agent-specific skill files |
 
 Validation returns **all** problems found, not just the first — so a bad manifest can be
 fixed in one pass. The authoritative validator in production is
@@ -79,23 +74,58 @@ passes `validate.mjs` passes marketplace ingestion.
 
 See [`template/manifest.json`](../template/manifest.json) for the complete file structure.
 
+## `agents/<id>/agent.json` — per-agent runtime config
+
+The file the OpenClaw deploy plugin reads to register each squad agent. JSON, no comments.
+The schema mirrors the subset of OpenClaw's `agents.list[]` that bundles are allowed to
+declare — see [the OpenClaw config-agents reference](https://docs.openclaw.ai/gateway/config-agents)
+for the canonical upstream spec.
+
+**Required:** `id`, `description`.
+
+| Field | Type | Req | Rules |
+|---|---|---|---|
+| `id` | string | ✔ | kebab-case. Must match the directory name `agents/<id>/` and the entry in `manifest.json#/agents`. |
+| `description` | string | ✔ | non-empty one-liner — what this agent owns. |
+| `model` | string | · | enum `haiku` \| `sonnet` \| `opus`. Defaults to the pod's `agents.defaults.model` (`sonnet`) when omitted. |
+| `heartbeat` | object | · | Curated subset of [OpenClaw's `agents.list[].heartbeat`](https://docs.openclaw.ai/gateway/config-agents#agents-defaults-heartbeat) — `{ every, model, lightContext, isolatedSession, skipWhenBusy, timeoutSeconds }`. All sub-fields optional; the validator rejects anything else (pod-level fields like `prompt`, `target`, `directPolicy`, `session`, `to`, `ackMaxChars` etc. are not authorable from a bundle). `every` is an OpenClaw duration string (units `ms`/`s`/`m`/`h`, e.g. `"30m"`, `"2h"`, `"24h"`, or `"0m"` to disable) — named values like `"daily"` are rejected. `heartbeat.model` follows the same `haiku`/`sonnet`/`opus` enum as the top-level `model`. Inherits any omitted sub-field from the pod's `agents.defaults.heartbeat`. When the heartbeat object is present, `agents/<id>/HEARTBEAT.md` must exist. |
+| `skills` | string[] | · | bundle-relative paths to this agent's skill files. |
+| `contextInjection` | string | · | enum `always` \| `continuation-skip` \| `never`. Pod default applies when omitted. |
+| `bootstrapMaxChars` | integer | · | positive. OpenClaw bootstrap budget; pod default applies when omitted. |
+| `params` | object | · | free-form provider params passed through to OpenClaw (e.g. `{ "cacheRetention": "1h" }`). |
+
+`additionalProperties` is false — unknown keys are an error. The validator rejects
+unknown fields rather than silently dropping them, so any new OpenClaw field a squad needs
+must be added here first.
+
+See [`template/agents/example-agent/agent.json`](../template/agents/example-agent/agent.json).
+
 ## `SQUAD.md` — the marketplace catalog card
 
 Markdown with a YAML frontmatter block, then a body.
 
-**Frontmatter** carries `name`, `version`, `description`, `author`, `tags: [a, b, c]`,
-`token_intensity: low|medium|high`, `agents: [{id, description}]`, and an optional
-`preview_image: <url>`.
+**Frontmatter** is minimal — only two fields are read by the marketplace:
 
-> **What the marketplace actually reads:** ingest parses only **`tags`** and
-> **`token_intensity`** from this frontmatter — everything else (name, version, …) comes
-> from `manifest.json`, so the rest of the frontmatter is catalog/display duplication. Keep
-> it consistent with `manifest.json` anyway. `token_intensity` defaults to `medium` if
-> absent; `tags` defaults to empty. Keep the `tags` and `token_intensity` lines plain — no
-> inline `#` comments, or the parser will miss them.
+```yaml
+---
+tags: [gtm, outbound, linkedin, sales, growth]
+preview_image: https://squads.getpancake.ai/avatars/astronaut.png  # optional
+---
+```
 
-The **body** renders as the squad's store detail page. The recommended sections: *What this
-squad does*, *What you'll need*, *What you get*, *How it works*.
+- `tags` — string array. Drives catalog filtering. Recommended; if absent, the card shows
+  no tags.
+- `preview_image` — optional URL. Shown as the squad's avatar in the marketplace.
+
+Every other package-level field (name, version, description, author) lives in
+`manifest.json` and must not be duplicated here. The deprecated `token_intensity` field
+is a validation error — Pancake Cloud now computes token usage automatically.
+
+**The body** renders as the squad's store detail page **and is the catalog's source of
+truth for per-agent prose**. The marketplace reads each agent's user-facing description
+from this body, not from `manifest.json` or `agent.json`. Describe every agent here in
+plain language — the recommended sections cover it naturally: *What this squad does*,
+*What you'll need*, *What you get*, *How it works*.
 
 ## `ONBOARD.md` — the onboarding script
 
@@ -150,11 +180,11 @@ not in `SOUL.md` — keep behavioural rules here and the procedure there.
 
 ## `HEARTBEAT.md` — the wake procedure
 
-Optional, per agent. OpenClaw loads `agents/<id>/HEARTBEAT.md` on **every wake**
-— both heartbeat pulses and dispatched tasks — before the agent starts work.
-This is the right home for the recurring procedure the agent runs each tick:
-what to read, what to decide, what to file. Keeping it out of `SOUL.md` is the
-convention because:
+Per agent. **Required when `agent.json` declares a `heartbeat`** — the validator errors
+otherwise. OpenClaw loads `agents/<id>/HEARTBEAT.md` on **every wake** — both heartbeat
+pulses and dispatched tasks — before the agent starts work. This is the right home for
+the recurring procedure the agent runs each tick: what to read, what to decide, what to
+file. Keeping it out of `SOUL.md` is the convention because:
 
 - **`SOUL.md` is about behaviour** — personality, principles, escalation rules.
   It should not also carry the step-by-step procedure.
@@ -183,9 +213,8 @@ Write it in the imperative, addressed to the agent. A solid structure
    A wake without a digest is an unfinished wake.
 7. **Close the loop** — `complete_task` / `fail_task`, surface blockers.
 
-If the file is absent, the pod's default wake template is used. The validator
-does not enforce `HEARTBEAT.md` (like `MEMORY.md`, it is convention-based and
-not referenced from `manifest.json`).
+If `heartbeat` is omitted from `agent.json`, `HEARTBEAT.md` is optional and the pod's
+default wake template is used when the agent does wake.
 
 ## `MEMORY.md` — seed memory
 
@@ -221,7 +250,7 @@ Two levels:
 
 - **Squad-wide skills** — listed in the top-level `manifest.skills[]`, files under
   `skills/<name>.md`. Copied into **every** agent of the squad at install.
-- **Agent-specific skills** — listed in an agent's `agents[].skills[]`, files under
+- **Agent-specific skills** — listed in `agents/<id>/agent.json#/skills`, files under
   `agents/<id>/skills/<name>.md`. Deployed only into that one agent.
 
 **Skill isolation:** at install, every referenced skill is deployed into each agent's *own*
@@ -251,7 +280,7 @@ Optional. Native OpenClaw cron jobs registered at install.
 }
 ```
 
-- **`sessionTarget` must be an agent id declared in `manifest.agents[]`.** Squad crons may
+- **`sessionTarget` must be an agent id declared in `manifest.agents`.** Squad crons may
   only target the squad's own agents — this is the *squad-only targeting* invariant, and it
   is enforced at install (and by `validate.mjs`).
 - At install, job ids are namespaced `<squad-name>__<id>` so two squads cannot collide.
@@ -263,7 +292,66 @@ Optional. Native OpenClaw cron jobs registered at install.
 
 Squads do not ship task templates. The agent's recurring wake procedure lives in
 `HEARTBEAT.md`, and ad-hoc work is dispatched by the co-founder at runtime via the
-tasks plugin (`create_task`) — there is no per-bundle template file.
+tasks plugin (`create_task`) — there is no per-bundle template file. A `tasks/` directory
+inside a bundle has no meaning to the runtime; do not create one.
+
+## Forbidden files
+
+These filenames are **pod-managed by Pancake Cloud** and live at the pod workspace root
+(alongside `CLAUDE.md`), not inside any bundle. The validator rejects them at any depth
+inside a bundle directory (case-insensitive):
+
+- `AGENTS.md`
+- `USER.md`
+- `BOOTSTRAP.md`
+- `BOOT.md`
+
+A bundle's `MEMORY.md` is allowed (and idiomatic) to *reference* these files by relative
+path (e.g. `../../USER.md` as the user-pointer in an agent's MEMORY) — the validator only
+forbids the *files themselves*, not references to them.
+
+`TOOLS.md` is explicitly **allowed** inside a bundle — it is bundle-authored documentation
+of the squad's tool surface, distinct from the pod-level files above.
+
+## Tool permissions
+
+`manifest.required_tool_permissions` is the list of Pancake-shipped tools the squad needs
+access to. The marketplace will not grant a permission for a tool Pancake does not ship, so
+the validator rejects anything outside this list.
+
+Each tool has one or more **accepted keys**. Either snake_case or kebab-case variants are
+accepted where listed; pick one and stick with it. Duplicates within the same array are
+rejected.
+
+| Tool | Accepted keys |
+|---|---|
+| Browser (Anchor) | `browser` |
+| Web search / fetch (Exa) | `exa`, `web_search`, `web_fetch` |
+| GitHub | `github` |
+| Google Workspace | `google-workspace`, `google_workspace` |
+| Notion | `notion` |
+| Email (AgentMail) | `agentmail` |
+| Identity vault | `vault` |
+| Preview hosting | `preview-host`, `publish_preview` |
+| MCP installer | `mcp-installer` |
+| Image generation | `image-generation`, `image_generate`, `image` |
+| Scheduling | `cron` |
+
+Slack Block Kit and Voice / TTS are intentionally **not** authorable from a squad
+bundle — those are user-facing channels owned by the pod's co-founder agent. Squad agents
+report to the co-founder, which relays to the user; routing through Slack or voice from
+inside a sub-agent breaks that contract.
+
+When Pancake ships a new tool, this list — and the validator's `ACCEPTED_TOOL_PERMISSIONS`
+table in `scripts/validate.mjs` — are updated together.
+
+## Deprecated fields
+
+The validator emits an error if it finds any of these:
+
+- `token_intensity` in `manifest.json` or in `SQUAD.md` frontmatter. Pancake Cloud now
+  computes token usage automatically from the model, tools called, and crons declared —
+  the author-declared field is no longer trusted.
 
 ## Naming conventions
 
@@ -281,6 +369,19 @@ node scripts/validate.mjs                      # every squads/* bundle and templ
 node scripts/validate.mjs squads/<bundle-name> # one bundle
 ```
 
-It exits non-zero on any error; warnings (e.g. a missing `token_intensity`) never fail the
-run. Next: [`authoring-a-squad.md`](./authoring-a-squad.md) and
-[`publishing.md`](./publishing.md).
+It exits non-zero on any error; warnings (e.g. a missing `tags` line) never fail the run.
+Error categories the validator emits:
+
+| Category | Example |
+|---|---|
+| Manifest schema | `agents[0]  "Geo Agent" must be kebab-case` |
+| `agent.json` missing | `agents/foo/agent.json  not found` |
+| `agent.json` schema | `agents/foo/agent.json#/model  must be one of: haiku, sonnet, opus` |
+| Referenced file | `agents/foo/HEARTBEAT.md  referenced by the manifest but not found` |
+| Cron targeting | `crons/jobs.json  cron job "x" sessionTarget "y" is not a declared agent id` |
+| Forbidden file | `agents/foo/USER.md  forbidden filename — …` |
+| Deprecated field | `SQUAD.md  frontmatter has a deprecated 'token_intensity:' line` |
+| Unresolved TODO | `SQUAD.md  unresolved TODO marker on line 12` |
+
+Next: [`creating-a-squad.md`](./creating-a-squad.md) for the step-by-step authoring guide,
+and [`publishing.md`](./publishing.md) for getting your squad into the marketplace.

@@ -12,7 +12,7 @@ To publish one:
 
 1. Add the bundle as a new `squads/<name>/` directory (use the
    [`create-squad`](../.claude/skills/create-squad/SKILL.md) skill, or copy
-   [`template/`](../template/) — see [`authoring-a-squad.md`](./authoring-a-squad.md)).
+   [`template/`](../template/) — see [`creating-a-squad.md`](./creating-a-squad.md)).
 2. Run `node scripts/validate.mjs` and confirm it is clean.
 3. Update the squad table in the [`README.md`](../README.md).
 4. Open a PR. CI runs the validator on every push — it must be green.

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://squads.getpancake.ai/agent.schema.json",
+  "title": "Agent Squad — per-agent config",
+  "description": "Schema for agents/<id>/agent.json inside a squad bundle. Mirrors the subset of OpenClaw's agents.list[] that squad bundles may declare. See https://docs.openclaw.ai/gateway/config-agents for the canonical OpenClaw spec.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "description"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Kebab-case, must match the agents/<id>/ directory name and the entry in manifest.json#/agents."
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "description": "One-line role description — what this agent owns. Shown in catalog tooling and at runtime."
+    },
+    "model": {
+      "type": "string",
+      "enum": ["haiku", "sonnet", "opus"],
+      "description": "Strict enum. Defaults to the pod's agents.defaults when omitted."
+    },
+    "heartbeat": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "OpenClaw heartbeat config — the curated subset of agents.list[].heartbeat that squad authors are allowed to set. Pod-level fields (prompt, target, directPolicy, etc.) are intentionally omitted. Every sub-field below is optional; omitted values inherit from the pod's agents.defaults.heartbeat. When the heartbeat object is present, agents/<id>/HEARTBEAT.md must exist.",
+      "properties": {
+        "every": {
+          "type": "string",
+          "pattern": "^\\d+(ms|s|m|h)$",
+          "description": "Duration string in OpenClaw format — units ms / s / m / h. e.g. \"30m\", \"2h\", \"24h\". Set \"0m\" to disable. Named values like \"daily\" are not valid."
+        },
+        "model": {
+          "type": "string",
+          "enum": ["haiku", "sonnet", "opus"],
+          "description": "Override the agent-level model just for heartbeat runs. Same strict enum as the top-level model field."
+        },
+        "lightContext": {
+          "type": "boolean",
+          "description": "When true, the wake bootstrap loads only HEARTBEAT.md from the workspace — useful for cheap, narrow wakes."
+        },
+        "isolatedSession": {
+          "type": "boolean",
+          "description": "When true, each heartbeat runs in a fresh session with no prior conversation history."
+        },
+        "skipWhenBusy": {
+          "type": "boolean",
+          "description": "When true, defer the wake while this agent's other lanes (subagents, nested tasks) are still running."
+        },
+        "timeoutSeconds": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Maximum seconds the heartbeat run is allowed before OpenClaw aborts it."
+        }
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Bundle-relative paths to agent-specific skill files."
+    },
+    "contextInjection": {
+      "type": "string",
+      "enum": ["always", "continuation-skip", "never"],
+      "description": "OpenClaw context-injection mode. Optional — pod default applies when omitted."
+    },
+    "bootstrapMaxChars": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "OpenClaw bootstrap budget in characters. Optional — pod default applies when omitted."
+    },
+    "params": {
+      "type": "object",
+      "description": "Provider-level params passed through to OpenClaw (e.g. cacheRetention). Free-form."
+    }
+  }
+}

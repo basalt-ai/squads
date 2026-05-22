@@ -1,7 +1,7 @@
 # How Agent Squads work
 
 This is the conceptual map. Read it before [`bundle-reference.md`](./bundle-reference.md)
-(the exact file contract) and [`authoring-a-squad.md`](./authoring-a-squad.md) (the
+(the exact file contract) and [`creating-a-squad.md`](./creating-a-squad.md) (the
 step-by-step build).
 
 ## What an Agent Squad is
@@ -62,9 +62,12 @@ When a user asks the co-founder to install a squad, four things happen:
 
 2. **Mechanical deploy.** The `squad-store` plugin downloads the marketplace-verified
    `.tar.gz`, extracts it, re-validates the manifest, and for each agent: creates
-   `workspace/agents/<id>/` (with `IDENTITY.md` + `SOUL.md` from the bundle), adds an
-   `agents.list` entry to `openclaw.json` (port, model, heartbeat), deploys the agent's
-   skills into its own skills folder, merges the bundle's crons, and seeds memory.
+   `workspace/agents/<id>/` (with `IDENTITY.md` + `SOUL.md` from the bundle), reads the
+   per-agent `agents/<id>/agent.json` to add an `agents.list` entry to `openclaw.json`
+   (model, heartbeat, skills, and the rest of the runtime config), deploys the agent's
+   skills into its own skills folder, merges the bundle's crons, and seeds memory. The
+   marketplace catalog also surfaces each agent's user-facing description from `SQUAD.md`
+   body prose — `manifest.json` and `agent.json` are runtime config, not catalog copy.
 
 3. **Onboarding.** The co-founder runs the bundle's [`ONBOARD.md`](./bundle-reference.md#onboardmd)
    **as a script** — not as documentation. `ONBOARD.md` tells the co-founder what to ask the
@@ -91,7 +94,7 @@ this repo checks them too.
   `workspace/agents/<id>/skills/`.
 
 - **Squad-only targeting.** A squad's crons may target **only the agents that the squad
-  itself declares** in `manifest.agents[]`. A cron cannot target the co-founder or
+  itself declares** in `manifest.agents`. A cron cannot target the co-founder or
   another squad's agent.
 
 ## Where this repo sits

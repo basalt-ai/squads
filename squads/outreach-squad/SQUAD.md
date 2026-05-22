@@ -1,13 +1,5 @@
 ---
-name: outreach-squad
-version: 0.1.0
-description: "Daily outbound engine: finds leads, runs sequences, handles replies, and posts a digest. Simple mode by default, upgrades to Advanced when signals stack."
-author: pancake-official
 tags: [gtm, outbound, linkedin, sales, growth]
-token_intensity: medium
-agents:
-  - id: outreach-agent
-    description: "Runs the full daily outbound loop autonomously — lead finding, sequencing, reply handling, and digest reporting."
 ---
 
 ## What this squad does

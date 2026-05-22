@@ -1,13 +1,5 @@
 ---
-name: reddit-squad
-version: 1.0.0
-description: "Single-agent Reddit squad: Reddit-agent monitors subreddits, drafts comments, and manages multi-account karma strategy."
-author: pancake-official
 tags: [reddit, community, growth, social, karma]
-token_intensity: high
-agents:
-  - id: reddit-agent
-    description: "Reddit agent — monitors threads, drafts comments, manages karma strategy"
 ---
 
 ## What this squad does

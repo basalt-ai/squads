@@ -13,7 +13,8 @@ squad.
 - **`template/`** — a complete, valid skeleton bundle to copy from.
 - **`docs/`** — the full contract and authoring guides.
 - **`scripts/validate.mjs`** — a zero-dependency validator that mirrors marketplace ingestion.
-- **`manifest.schema.json`** — JSON Schema for editor validation of `manifest.json`.
+- **`scripts/test-validator.mjs`** — self-tests for the validator: builds known-bad bundles in a temp dir and asserts each is rejected with the expected error. CI runs it alongside the validator so a weakened check turns red.
+- **`manifest.schema.json`** + **`agent.schema.json`** — JSON Schemas for editor validation of `manifest.json` and per-agent `agent.json`.
 - **`.claude/skills/`** — Claude Code skills to author and validate squads.
 
 ## Official squads
@@ -22,6 +23,7 @@ squad.
 |---|---|---|
 | [`geo-squad`](./squads/geo-squad/) | GEO / LLM SEO — daily citation audits, blog posts, and GEO engineering PRs (self-merging). | `geo-agent` |
 | [`reddit-squad`](./squads/reddit-squad/) | Reddit growth — monitors subreddits, drafts replies, and ships founder-voice posts. | `reddit-agent` |
+| [`outreach-squad`](./squads/outreach-squad/) | Daily outbound — finds leads, runs sequences, handles replies, and posts a digest. | `outreach-agent` |
 
 ## How squads work
 
@@ -32,7 +34,7 @@ install lifecycle.
 
 ## Build your own
 
-Read [`docs/authoring-a-squad.md`](./docs/authoring-a-squad.md), then either:
+Read [`docs/creating-a-squad.md`](./docs/creating-a-squad.md), then either:
 
 - **In Claude Code:** run the [`create-squad`](./.claude/skills/create-squad/SKILL.md) skill
   — it interviews you, scaffolds the bundle, and validates it.
@@ -48,7 +50,9 @@ node scripts/validate.mjs squads/<bundle-name> # one bundle
 ```
 
 Zero dependencies — just Node. It mirrors marketplace ingestion exactly, so a bundle that
-passes here passes ingestion. CI runs it on every push and pull request.
+passes here passes ingestion. CI runs it on every push and pull request, alongside
+`node scripts/test-validator.mjs` which self-tests the validator against negative
+fixtures (forbidden files, wrong heartbeat shape, etc.) — both must pass for a merge.
 
 ## Publish
 
@@ -68,10 +72,10 @@ squads/                          ← this repo
 ├── CLAUDE.md                     orientation for Claude Code sessions
 ├── CONTRIBUTING.md               curation policy
 ├── manifest.schema.json          JSON Schema for manifest.json
-├── .vscode/settings.json         maps manifest.json files to the schema
+├── agent.schema.json             JSON Schema for agents/<id>/agent.json
 ├── .github/                      CI validator workflow + PR template
 ├── .claude/skills/               create-squad, validate-squad
-├── docs/                         how-squads-work, bundle-reference, authoring, publishing
+├── docs/                         how-squads-work, bundle-reference, creating-a-squad, publishing
 ├── scripts/validate.mjs          zero-dependency validator
 ├── template/                     a complete, valid skeleton bundle
 └── squads/                       official squad bundles, one directory each

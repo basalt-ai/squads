@@ -11,7 +11,7 @@ If you want to build your own Agent Squad, you keep it in **your own** public Gi
 and submit the URL to the marketplace. You do not contribute it here — this repo is an
 example to copy from, not a place to contribute to.
 
-Start with [`docs/authoring-a-squad.md`](./docs/authoring-a-squad.md), and see
+Start with [`docs/creating-a-squad.md`](./docs/creating-a-squad.md), and see
 [`docs/publishing.md`](./docs/publishing.md) for self-hosting and submission.
 
 ## Pancake team — adding an official squad

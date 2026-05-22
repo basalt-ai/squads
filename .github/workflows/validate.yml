@@ -4,8 +4,16 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  validate:
+  validate-bundles:
+    name: validate bundles
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,3 +22,14 @@ jobs:
           node-version: '24'
       - name: Validate squad bundles
         run: node scripts/validate.mjs
+
+  test-validator:
+    name: test validator
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Self-tests for the validator (negative fixtures)
+        run: node scripts/test-validator.mjs

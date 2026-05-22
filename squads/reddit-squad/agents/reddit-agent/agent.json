@@ -1,0 +1,10 @@
+{
+  "id": "reddit-agent",
+  "description": "Reddit presence agent — monitors subreddits, drafts comments, manages multi-account karma strategy.",
+  "model": "sonnet",
+  "heartbeat": { "every": "24h" },
+  "skills": [
+    "agents/reddit-agent/skills/reddit-playbook.md",
+    "agents/reddit-agent/skills/reddit-multiaccount.md"
+  ]
+}
