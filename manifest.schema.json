@@ -79,17 +79,15 @@
         "type": "string",
         "enum": [
           "browser",
-          "exa", "web_search",
+          "exa", "web_search", "web_fetch",
           "github",
           "google-workspace", "google_workspace",
           "notion",
           "agentmail",
           "vault",
           "preview-host", "publish_preview",
-          "slack-block-kit", "slack_block_kit_send",
           "mcp-installer",
           "image-generation", "image_generate", "image",
-          "voice", "tts",
           "cron"
         ]
       },

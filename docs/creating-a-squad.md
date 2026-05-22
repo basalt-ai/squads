@@ -102,18 +102,20 @@ and placeholder content. Your job over the next steps is to replace all of it.
   | Tool | Accepted keys |
   |---|---|
   | Browser (Anchor) | `browser` |
-  | Web search (Exa) | `exa`, `web_search` |
+  | Web search / fetch (Exa) | `exa`, `web_search`, `web_fetch` |
   | GitHub | `github` |
   | Google Workspace | `google-workspace`, `google_workspace` |
   | Notion | `notion` |
   | Email (AgentMail) | `agentmail` |
   | Identity vault | `vault` |
   | Preview hosting | `preview-host`, `publish_preview` |
-  | Slack Block Kit | `slack-block-kit`, `slack_block_kit_send` |
   | MCP installer | `mcp-installer` |
   | Image generation | `image-generation`, `image_generate`, `image` |
-  | Voice / TTS | `voice`, `tts` |
   | Scheduling | `cron` |
+
+  Slack and voice/TTS are intentionally not authorable from a squad — those are
+  user-facing channels owned by the co-founder agent. Squad agents report to the
+  co-founder, which relays to the user.
 
 - Delete every optional section your squad doesn't use. The validator complains about
   empty values, not absent fields.

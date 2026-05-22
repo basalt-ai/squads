@@ -1,6 +1,6 @@
 {
   "name": "geo-squad",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Single-agent GEO squad: GEO-agent runs daily citation audits, writes GEO-optimized blog posts, and ships llms.txt / JSON-LD engineering PRs.",
   "author": "pancake-official",
   "license": "MIT",
@@ -26,8 +26,8 @@
   "required_tool_permissions": [
     "browser",
     "web_search",
-    "github",
-    "slack-block-kit"
+    "web_fetch",
+    "github"
   ],
   "min_pancake_version": "1.0.0"
 }

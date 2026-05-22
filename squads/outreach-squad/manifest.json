@@ -1,6 +1,6 @@
 {
   "name": "outreach-squad",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Daily outbound engine: finds leads, runs sequences, handles replies, and posts a digest every day. Simple mode by default, upgrades to Advanced when signals stack.",
   "author": "pancake-official",
   "license": "MIT",
@@ -12,7 +12,8 @@
   "required_tool_permissions": [
     "browser",
     "web_search",
-    "slack-block-kit"
+    "web_fetch",
+    "exa"
   ],
   "min_pancake_version": "1.0.0"
 }

@@ -326,18 +326,21 @@ rejected.
 | Tool | Accepted keys |
 |---|---|
 | Browser (Anchor) | `browser` |
-| Web search (Exa) | `exa`, `web_search` |
+| Web search / fetch (Exa) | `exa`, `web_search`, `web_fetch` |
 | GitHub | `github` |
 | Google Workspace | `google-workspace`, `google_workspace` |
 | Notion | `notion` |
 | Email (AgentMail) | `agentmail` |
 | Identity vault | `vault` |
 | Preview hosting | `preview-host`, `publish_preview` |
-| Slack Block Kit | `slack-block-kit`, `slack_block_kit_send` |
 | MCP installer | `mcp-installer` |
 | Image generation | `image-generation`, `image_generate`, `image` |
-| Voice / TTS | `voice`, `tts` |
 | Scheduling | `cron` |
+
+Slack Block Kit and Voice / TTS are intentionally **not** authorable from a squad
+bundle — those are user-facing channels owned by the pod's co-founder agent. Squad agents
+report to the co-founder, which relays to the user; routing through Slack or voice from
+inside a sub-agent breaks that contract.
 
 When Pancake ships a new tool, this list — and the validator's `ACCEPTED_TOOL_PERMISSIONS`
 table in `scripts/validate.mjs` — are updated together.

@@ -37,17 +37,15 @@ const MAX_DESCRIPTION = 200;
 // a tool Pancake does not ship.
 const ACCEPTED_TOOL_PERMISSIONS = {
   "Browser (Anchor)":   ["browser"],
-  "Web search (Exa)":   ["exa", "web_search"],
+  "Web search / fetch": ["exa", "web_search", "web_fetch"],
   "GitHub":             ["github"],
   "Google Workspace":   ["google-workspace", "google_workspace"],
   "Notion":             ["notion"],
   "Email (AgentMail)":  ["agentmail"],
   "Identity vault":     ["vault"],
   "Preview hosting":    ["preview-host", "publish_preview"],
-  "Slack Block Kit":    ["slack-block-kit", "slack_block_kit_send"],
   "MCP installer":      ["mcp-installer"],
   "Image generation":   ["image-generation", "image_generate", "image"],
-  "Voice / TTS":        ["voice", "tts"],
   "Scheduling":         ["cron"],
 };
 const ACCEPTED_TOOL_KEYS = new Set(Object.values(ACCEPTED_TOOL_PERMISSIONS).flat());

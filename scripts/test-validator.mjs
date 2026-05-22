@@ -261,9 +261,23 @@ const cases = [
   {
     name: "unknown required_tool_permissions key is rejected",
     mutate: (b) => {
-      b["manifest.json"].required_tool_permissions = ["browser", "web_fetch"];
+      b["manifest.json"].required_tool_permissions = ["browser", "message"];
     },
-    expect: /required_tool_permissions\[1\].*"web_fetch" is not an accepted tool key/,
+    expect: /required_tool_permissions\[1\].*"message" is not an accepted tool key/,
+  },
+  {
+    name: "slack-block-kit is rejected (intentionally not authorable from a squad)",
+    mutate: (b) => {
+      b["manifest.json"].required_tool_permissions = ["browser", "slack-block-kit"];
+    },
+    expect: /required_tool_permissions\[1\].*"slack-block-kit" is not an accepted tool key/,
+  },
+  {
+    name: "voice / tts are rejected (intentionally not authorable from a squad)",
+    mutate: (b) => {
+      b["manifest.json"].required_tool_permissions = ["browser", "voice"];
+    },
+    expect: /required_tool_permissions\[1\].*"voice" is not an accepted tool key/,
   },
   {
     name: "duplicate required_tool_permissions key is rejected",
@@ -273,9 +287,9 @@ const cases = [
     expect: /required_tool_permissions\[1\].*duplicate tool key "browser"/,
   },
   {
-    name: "valid required_tool_permissions list passes",
+    name: "valid required_tool_permissions list (with web_fetch + exa) passes",
     mutate: (b) => {
-      b["manifest.json"].required_tool_permissions = ["browser", "web_search", "slack-block-kit", "github"];
+      b["manifest.json"].required_tool_permissions = ["browser", "web_search", "web_fetch", "exa", "github"];
     },
     expect: null,
   },

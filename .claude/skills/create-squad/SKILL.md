@@ -38,11 +38,12 @@ Ask the user what they want, and don't scaffold until you have answers for all o
 - **Required vault secrets** — each `{ key, label, type }`.
 - **Required tool permissions** — must be drawn from the canonical Pancake tool list
   ([`docs/bundle-reference.md#tool-permissions`](../../../docs/bundle-reference.md#tool-permissions)).
-  Accepted keys today: `browser`, `exa` / `web_search`, `github`,
+  Accepted keys today: `browser`, `exa` / `web_search` / `web_fetch`, `github`,
   `google-workspace` / `google_workspace`, `notion`, `agentmail`, `vault`,
-  `preview-host` / `publish_preview`, `slack-block-kit` / `slack_block_kit_send`,
-  `mcp-installer`, `image-generation` / `image_generate` / `image`, `voice` / `tts`,
-  `cron`. Anything else is rejected by the validator.
+  `preview-host` / `publish_preview`, `mcp-installer`,
+  `image-generation` / `image_generate` / `image`, `cron`. Anything else is rejected by
+  the validator. Slack and voice/TTS are intentionally excluded — those are user-facing
+  channels owned by the co-founder, not by a sub-agent.
 - **Crons** — any scheduled jobs, and what each one does.
 - **Catalog metadata** — `tags` for the marketplace card (no `token_intensity` — it is
   deprecated and Pancake Cloud computes token usage automatically).
