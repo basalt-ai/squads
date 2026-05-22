@@ -1,5 +1,6 @@
 ---
 tags: [gtm, outbound, linkedin, sales, growth]
+preview_image: https://squads.getpancake.ai/avatars/influencer.png
 ---
 
 ## What this squad does

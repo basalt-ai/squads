@@ -1,5 +1,6 @@
 ---
 tags: [seo, content, growth, geo, ai-visibility]
+preview_image: https://squads.getpancake.ai/avatars/detective.png
 ---
 
 ## What this squad does
