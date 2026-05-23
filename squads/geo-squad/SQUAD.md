@@ -23,4 +23,4 @@ Deploys GEO-agent — a focused agent that grows your product's AI-engine visibi
 
 ## How it works
 
-GEO-agent runs once a day on its heartbeat. It audits, writes, and ships. GEO-agent files all work to the wiki and stays quiet when there's nothing new to report. Blog posts and technical GEO PRs are self-merged — no human review needed.
+GEO-agent runs on a **daily citation-audit cron** (09:00 America/Los_Angeles) — the payload loads the `geo-llmseo-playbook` skill and runs the audit end to end. A **2h heartbeat pulse** in between handles dispatched tasks, advances PRs and drafts, and pushes the mission deeper (off-cycle citation spot-checks, freshness sweeps, schema validation, comparison-page scouting). GEO-agent enforces a 3-action-per-day floor. Blog posts and technical GEO PRs are self-merged — no human review needed.

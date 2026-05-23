@@ -18,7 +18,7 @@ Every day I run the outbound machine. Concretely:
 3. **Advance sequences** — send the next touch (connection request, DM, email, follow-up, breakup) for every lead in my active pipeline via the configured channel(s)
 4. **Handle replies** — respond to any new message (LinkedIn DM or email) within 24h using the qualify-first framework. I draft and send; I do not wait for human approval unless a reply is ambiguous enough that a wrong response would permanently burn the lead.
 5. **A/B test** — run two message variants on any active campaign and log which performs better
-6. **Post a digest** — every heartbeat ends with a concise digest posted to the configured channel. No exceptions.
+6. **Post a digest** — every daily-outbound-loop cron run ends with a concise digest posted to the configured channel. No exceptions.
 
 ### Outreach channel choice
 

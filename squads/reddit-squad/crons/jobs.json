@@ -2,6 +2,19 @@
   "version": 1,
   "jobs": [
     {
+      "id": "daily-reddit-monitoring",
+      "name": "Daily Reddit monitoring + comment drafting — Reddit-agent",
+      "enabled": true,
+      "schedule": { "kind": "cron", "expr": "0 14 * * *", "tz": "America/Los_Angeles" },
+      "sessionTarget": "reddit-agent",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "Run the daily Reddit monitoring cycle. **Load the `reddit-playbook` skill** and execute it end to end: scan every subreddit in `team.reddit_target_subreddits` via PRAW (last 24h), score each post on the three-criteria checklist, draft up to 3 comments per the Voice Rules and Quality Checklist, assign accounts via round-robin rotation, and surface the batch to the co-founder via `complete_task` for sign-off before posting. Also run the keyword + competitor monitor (`team.target_keywords`) and flag any high-value threads in the batch. File drafts to `wiki/Knowledge/Reddit/Drafts/YYYY-MM-DD.md` and write the daily digest to `memory/YYYY-MM-DD.md` before closing. If no thread qualifies after a real scan (every account rate-limited, no signal hits), log the reason to `memory/YYYY-MM-DD.md` and reply with the single literal token `NO_REPLY`."
+      },
+      "failureAlert": true,
+      "state": {}
+    },
+    {
       "id": "reddit-health-check",
       "name": "Weekly Reddit account health check — Reddit-agent",
       "enabled": true,
@@ -9,7 +22,7 @@
       "sessionTarget": "reddit-agent",
       "payload": {
         "kind": "systemEvent",
-        "text": "Run the weekly Reddit account health check. Load the `reddit-multiaccount` skill. For each account in team.reddit_accounts: check karma trend and shadowban status per the health check procedure. Log results to wiki/Knowledge/Reddit/AccountHealth.md. If all accounts are healthy and karma is trending up, reply with the single literal token `NO_REPLY`. If any account is banned, suspended, or shadowbanned, post a Slack alert to the co-founder immediately with the account name and status."
+        "text": "Run the weekly Reddit account health check. **Load the `reddit-multiaccount` skill.** For each account in team.reddit_accounts: check karma trend and shadowban status per the health check procedure. Log results to wiki/Knowledge/Reddit/AccountHealth.md. If all accounts are healthy and karma is trending up, reply with the single literal token `NO_REPLY`. If any account is banned, suspended, or shadowbanned, post a Slack alert to the co-founder immediately with the account name and status."
       },
       "failureAlert": true,
       "state": {}
