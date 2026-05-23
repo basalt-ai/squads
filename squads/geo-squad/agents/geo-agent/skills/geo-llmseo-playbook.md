@@ -73,6 +73,6 @@ If nothing moved and nothing shipped: one line saying so. Never pad.
 
 ## Cadence
 
-The daily audit runs on GEO-agent's daily heartbeat. One-off posts arrive as dispatched tasks.
+The daily audit runs on GEO-agent's daily cron (09:00 LA). One-off posts arrive as dispatched tasks.
 Default is to execute — don't ask the co-founder for permission to draft content or open
 a PR. Ship it, report back via `complete_task`.

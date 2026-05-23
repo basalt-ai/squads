@@ -144,7 +144,7 @@ Log each test in MEMORY.md under Active A/B Test. Log the winner and learning in
 
 ## Step 6 — Mode Upgrade Decision
 
-At every heartbeat, check upgrade conditions:
+At every daily-outbound-loop cron run, check upgrade conditions:
 1. Reply rate >8% sustained for 2+ weeks
 2. At least one tool beyond LinkedIn available (Heyreach or Lemlist confirmed in vault)
 

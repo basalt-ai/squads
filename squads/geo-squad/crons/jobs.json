@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "jobs": [
+    {
+      "id": "daily-citation-audit",
+      "name": "Daily GEO / AI-engine citation audit — GEO-agent",
+      "enabled": true,
+      "schedule": { "kind": "cron", "expr": "0 9 * * *", "tz": "America/Los_Angeles" },
+      "sessionTarget": "geo-agent",
+      "payload": {
+        "kind": "systemEvent",
+        "text": "Run the daily GEO citation audit. **Load the `geo-llmseo-playbook` skill** and execute it end to end: query ChatGPT, Gemini, and Perplexity for every `team.target_keywords` entry, record citation (mentioned / cited / outranked / competitor citation), score citation share per keyword and overall, file the full table to `wiki/Knowledge/GEO/Audits/YYYY-MM-DD.md`, update the rolling trend in `wiki/Knowledge/GEO/citation-share.md`, and post the three-line delta to the configured Slack channel. Then identify the 3 highest-value tasks via `create_task` and **execute the top one in the same session**: for a blog post, **load the `blog-writing-guide` skill**; for llms.txt / JSON-LD / schema work, **load the `advanced-seo` skill**. Self-merge blog and technical GEO PRs (no human review). Before closing, refresh `publishedAt` / `date` front-matter on any post not refreshed in the last 7 days, write the digest to `memory/YYYY-MM-DD.md`, and queue the next task. If nothing shipped and nothing moved, post a single-line digest and reply with the single literal token `NO_REPLY`."
+      },
+      "failureAlert": true,
+      "state": {}
+    }
+  ]
+}

@@ -1,16 +1,80 @@
 # Heartbeat
 
-Every time you wake, run this procedure **in order**, then act. The entire
-outbound workflow lives here — there is no external task system. The pipeline
-ledger in `MEMORY.md` is the only state that persists between wakes.
+Every time you wake, run this procedure **in order**, then act. Wakes come
+from four sources:
+
+- **`daily-outbound-loop` cron** — 08:00 LA daily. Loads `simple-outreach`
+  (and `advanced-outreach` when Mode = Advanced) and runs the full Sections
+  1–10 below.
+- **`reply-sweep` cron** — every 2h (00:00, 02:00, 04:00, 06:00, 10:00,
+  12:00, 14:00, 16:00, 18:00, 20:00, 22:00 LA — skips 08:00, which the
+  daily cron covers). Loads `simple-outreach` and runs **only Section 2
+  (Handle inbound replies)**. This is the guaranteed reply-latency
+  mechanism — replies are never older than 2h.
+- **2h heartbeat pulse** — your self-driven check-in (relative timer, so
+  restart-fragile — that's why the reply-sweep cron exists). Use the pulse
+  to advance work in flight, push the mission deeper (signal scouting, A/B
+  tightening, ICP refinement), and stay on track for the 3-action-per-day
+  floor below.
+- **Dispatched tasks** — ad-hoc work from the co-founder; handle first.
+
+The entire outbound workflow lives in this file — there is no external task
+system. The pipeline ledger in `MEMORY.md` is the only state that persists
+between wakes.
 
 ## The non-negotiable
 
-**At least one action must be EXECUTED before you close the session.** A wake
-is not "orient, decide nothing is due, NO_REPLY". A wake is "orient, send the
-next touch, handle the reply, post the digest". The digest goes out *every*
-heartbeat — no exceptions. If the pipeline is genuinely dry, the digest says
-so in three lines and you log why in `memory/YYYY-MM-DD.md`.
+**Three floors, all must hold.**
+
+1. **At least one action must be EXECUTED before you close the session.** A
+   wake is not "orient, decide nothing is due, NO_REPLY". A wake is
+   "orient, send the next touch, handle the reply, advance the pipeline".
+2. **At least 3 distinct actions must be logged in `memory/YYYY-MM-DD.md`
+   before the day ends.** Count them at the end of every wake. Under the
+   floor with wakes left? Execute a mission-deepening action now (Section
+   3.5).
+3. **The digest goes out on every `daily-outbound-loop` cron run** — no
+   exceptions. If the pipeline is genuinely dry, the digest says so in
+   three lines and you log why in `memory/YYYY-MM-DD.md`. The
+   `reply-sweep` cron and heartbeat pulses do **not** re-post the digest
+   — that would spam the channel.
+
+---
+
+## What runs on which wake
+
+| Section | Daily cron (08:00 LA) | Reply-sweep cron (every 2h, not 08:00) | 2h heartbeat pulse | Dispatched task |
+|---|---|---|---|---|
+| 1. Orient | ✓ | ✓ (lightweight — just the Pipeline table) | ✓ | ✓ |
+| 2. Handle inbound replies | ✓ | ✓ — **the only thing this cron does** | ✓ (backup, in case the cron drifted) | only if task says so |
+| 3. Advance active sequences | ✓ | skip | ✓ (rows due today not yet touched) | only if task says so |
+| 4. Enrich leads | ✓ | skip | only if blocking an in-pulse touch | only if task says so |
+| 5. Find new leads | ✓ | skip | skip — daily cron's job | only if task says so |
+| 6. A/B test check | ✓ | skip | skip | skip |
+| 7. Mode upgrade/downgrade check | ✓ | skip | skip | skip |
+| 8. Post the digest | ✓ — **always** | skip | skip — no digest spam | skip |
+| 9. Log internal digest | ✓ | ✓ (one line: replies handled) | ✓ | ✓ |
+| 10. Weekly learning | Sunday only | skip | skip | skip |
+| **Mission-deepening (below)** | execute one if all of 1–9 came up empty | skip — cron is reply-only | execute one if active queue is empty | skip |
+
+### Mission-deepening — what to do when the pipeline is quiet
+
+On any wake where the active work is already handled, push the mission
+deeper. Pick one and do it (then log it as one of your 3+ daily actions):
+
+- **Scout a new signal source** — pick one candidate from your ICP universe
+  (a niche conference attendee list, a competitor's recent commenters, a
+  new Y Combinator batch, a fresh round of funding announcements) and
+  evaluate whether it produces qualifying leads. Surface the conclusion in
+  the next digest.
+- **Tighten an A/B variant** — if the current opener has hit 20+ sends, kill
+  the loser early and queue the challenger.
+- **Refine the ICP** — re-read the last 7 days of replies. Any pattern of
+  "not a fit"? Propose an anti-ICP addition in the next digest.
+- **Audit the pipeline** — any lead stuck >7 days at the same stage? Force
+  the next touch or close them out.
+- **Look at the funnel by source** — which signal source has the best
+  reply→meeting conversion? Queue more leads from it for tomorrow's cron.
 
 ---
 
@@ -226,7 +290,9 @@ Log in MEMORY.md under Active A/B Test.
 
 ## 8. Post the digest
 
-10. Post to the configured digest channel — *every heartbeat, no exceptions*.
+10. Post to the configured digest channel — *every daily-outbound-loop run,
+    no exceptions* (skip on `reply-sweep` cron wakes and heartbeat-pulse
+    wakes — those would spam the channel).
     3–5 lines. Lead with a number (touches sent, replies received, meetings booked).
     Even if nothing happened, post it and say so.
 
@@ -251,7 +317,7 @@ Minimum content:
 
 ---
 
-## 10. Weekly learning (last heartbeat of the week)
+## 10. Weekly learning (Sunday's daily-outbound-loop run)
 
 12. Compute 7-day pipeline performance from the Closed leads table and the
     actions logged in `memory/YYYY-MM-DD.md` files: reply rate, acceptance

@@ -38,7 +38,7 @@
 - Crunchbase: false *(set to true when team.crunchbase_api_key is in vault)*
 
 ## Pipeline
-*The pipeline is the source of truth for who's been contacted, what stage they're at, and what's due. Maintained inline here — read it at the start of every heartbeat, update it after every action.*
+*The pipeline is the source of truth for who's been contacted, what stage they're at, and what's due. Maintained inline here — read it at the start of every wake, update it after every action.*
 
 ### Active leads
 <!-- One row per lead currently in a sequence. Drop the row when the lead closes (move to Closed below).
@@ -68,7 +68,7 @@ Reply states: `replied`, `qualifying`, `meeting_booked`
 - Results so far:
 
 ## Weekly Learnings
-*(One entry per week, last heartbeat of the week)*
+*(One entry per week, Sunday's daily-outbound-loop run)*
 <!-- Format: Week of YYYY-MM-DD | What worked | What didn't | Hypothesis -->
 
 ## KPI Tracking

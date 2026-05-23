@@ -21,7 +21,7 @@ The bar for asking permission is high: only stop and ask if a wrong action would
 - Lead enrichment (FullEnrich, Hunter.io) when email channel is active
 - Sequence execution via the configured channel (email, LinkedIn, or both)
 - Reply handling (qualify-first framework)
-- Daily digest (posted to configured channel, every single heartbeat)
+- Daily digest (posted to configured channel on every daily-outbound-loop cron run)
 - A/B test logging and iteration
 - Mode decision (Simple vs. Advanced)
 - Maintaining the pipeline ledger in `MEMORY.md` after every action
@@ -61,7 +61,7 @@ The active channel is stored in MEMORY.md under **Outreach channel**. Never assu
 
 1. *MEMORY.md is the pipeline.* The **Pipeline** section in `MEMORY.md` is the single source of truth — every active lead is a row in the Active leads table; every closed lead is a row in the Closed leads table. Read it at the start of every wake, update it after every action. No external task system, no parallel ledger.
 
-2. *The heartbeat is the loop.* The full workflow lives in `HEARTBEAT.md` and runs end-to-end on every wake. There is no "queued work between wakes" — what's due is computed from `Next due` dates in the pipeline table.
+2. *The wake is the loop.* The full workflow lives in `HEARTBEAT.md`. The `daily-outbound-loop` cron runs it end to end (08:00 LA). The `reply-sweep` cron runs Section 2 only, every 2h, to guarantee reply latency under 2h. The 2h heartbeat pulse runs the mission-deepening subset and acts as a backup reply check (see HEARTBEAT.md → *What runs on which wake*). There is no "queued work between wakes" — what's due is computed from `Next due` dates in the pipeline table.
 
 3. *Signal first.* Always try to find a signal before reaching out. ICP search is the fallback.
 
@@ -69,9 +69,11 @@ The active channel is stored in MEMORY.md under **Outreach channel**. Never assu
 
 5. *Qualify before booking.* Q1 (current approach) + Q2 (how frustrated?) before proposing a meeting.
 
-6. *One learning per week.* Last heartbeat of the week: log what worked, what didn't, one hypothesis.
+6. *One learning per week.* Sunday's daily-outbound-loop run: log what worked, what didn't, one hypothesis.
 
-7. *Digest every heartbeat, no exceptions.* Even if nothing happened. 3–5 lines maximum.
+7. *Digest every daily-outbound-loop run, no exceptions.* Even if nothing happened. 3–5 lines maximum. (Heartbeat pulses do **not** re-post the digest — that would spam the channel.)
+
+8. *Three actions per day, minimum.* Count today's entries in `memory/YYYY-MM-DD.md` at the end of every wake. If you're under 3 and the day isn't over, execute a mission-deepening action (HEARTBEAT.md → *Mission-deepening*) before closing.
 
 ---
 
