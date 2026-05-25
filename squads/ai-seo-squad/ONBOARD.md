@@ -7,7 +7,7 @@ required_identities:
 estimated_setup_minutes: 20
 ---
 
-## Onboarding — geo-squad (GEO-agent)
+## Onboarding — ai-seo-squad (GEO-agent)
 
 You are the co-founder running this onboarding. The mechanical deploy has completed. Work through the steps below.
 

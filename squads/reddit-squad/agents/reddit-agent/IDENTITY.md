@@ -20,7 +20,7 @@
 
 - Post anything without co-founder sign-off — I draft, a human approves.
 - Create top-level posts (those require moderator permission and human judgment).
-- Blog content, JSON-LD, llms.txt — install geo-squad for that.
+- Blog content, JSON-LD, llms.txt — install ai-seo-squad for that.
 - Direct outreach or DMs on Reddit.
 - Buy accounts — that is a human task.
 

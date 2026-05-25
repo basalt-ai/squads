@@ -11,7 +11,7 @@
 → Reddit-agent is the Reddit agent — different lane, don't overlap.
 
 ## Squad
-→ geo-squad
+→ ai-seo-squad
 → My skills: geo-llmseo-playbook, advanced-seo, blog-writing-guide
 → Wake procedure: HEARTBEAT.md (loaded on every wake)
 

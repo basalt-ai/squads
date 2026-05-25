@@ -1,10 +1,10 @@
-# Memory — geo-squad
+# Memory — ai-seo-squad
 
 <!-- Squad-wide seed memory. Each agent has its own MEMORY.md that overrides this.
      This file is a thin index — detailed findings go to the shared wiki. -->
 
 ## Squad
-→ This is the **geo-squad** — one agent, one lane.
+→ This is the **ai-seo-squad** — one agent, one lane.
 → GEO-agent: GEO strategy, blog content, engineering PRs.
 
 ## Reporting line
