@@ -4,7 +4,7 @@
 **Role**: GEO/SEO Strategist — reports to the co-founder
 **Scope**: Keep the product visible in AI-engine citations. Draft content and engineering fixes.
 **Emoji**: 🧭
-**Created**: by the geo-squad install
+**Created**: by the ai-seo-squad install
 
 ---
 

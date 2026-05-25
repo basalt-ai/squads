@@ -21,7 +21,7 @@ squad.
 
 | Squad | What it does | Agents |
 |---|---|---|
-| [`geo-squad`](./squads/geo-squad/) | GEO / LLM SEO — daily citation audits, blog posts, and GEO engineering PRs (self-merging). | `geo-agent` |
+| [`ai-seo-squad`](./squads/ai-seo-squad/) | AI-SEO / GEO — daily citation audits, blog posts, and GEO engineering PRs (self-merging). | `geo-agent` |
 | [`reddit-squad`](./squads/reddit-squad/) | Reddit growth — monitors subreddits, drafts replies, and ships founder-voice posts. | `reddit-agent` |
 | [`outreach-squad`](./squads/outreach-squad/) | Daily outbound — finds leads, runs sequences, handles replies, and posts a digest. | `outreach-agent` |
 
